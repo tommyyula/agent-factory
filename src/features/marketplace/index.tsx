@@ -78,7 +78,17 @@ function MarketplaceHome() {
     { value: 'data-analysis', label: '数据分析' },
     { value: 'automation', label: '自动化' },
     { value: 'customer-service', label: '客户服务' },
-    { value: 'monitoring', label: '监控' }
+    { value: 'monitoring', label: '监控' },
+    { value: 'productivity', label: '生产力' },
+    { value: 'optimization', label: '优化' },
+    { value: 'analytics', label: '分析' },
+    { value: 'self-improvement', label: '自我改进' },
+    { value: 'code-analysis', label: '代码分析' },
+    { value: 'generation', label: '生成' },
+    { value: 'integration', label: '集成' },
+    { value: 'visualization', label: '可视化' },
+    { value: 'memory-management', label: '内存管理' },
+    { value: 'lifestyle', label: '生活方式' }
   ];
 
   const industries = [
@@ -86,7 +96,16 @@ function MarketplaceHome() {
     { value: 'WMS', label: '仓储管理' },
     { value: 'TMS', label: '运输管理' },
     { value: 'HRM', label: '人力资源' },
-    { value: 'general', label: '通用' }
+    { value: 'FMS', label: '车队管理' },
+    { value: 'YMS', label: '场站管理' },
+    { value: 'OMS', label: '订单管理' },
+    { value: 'general', label: '通用' },
+    { value: 'healthcare', label: '医疗健康' },
+    { value: 'ai-tools', label: 'AI工具' },
+    { value: 'development', label: '开发' },
+    { value: 'creative', label: '创意' },
+    { value: 'knowledge', label: '知识' },
+    { value: 'marketing', label: '营销' }
   ];
 
   if (loading) {
@@ -229,21 +248,55 @@ function AgentMarketCard({ agent, viewMode }: AgentMarketCardProps) {
       'WMS': '仓储',
       'TMS': '运输',
       'HRM': '人事',
-      'general': '通用'
+      'FMS': '车队',
+      'YMS': '场站',
+      'OMS': '订单',
+      'general': '通用',
+      'healthcare': '医疗',
+      'ai-tools': 'AI工具',
+      'development': '开发',
+      'creative': '创意',
+      'knowledge': '知识',
+      'marketing': '营销'
     };
-    
+
     const functionMap = {
       'data-analysis': '数据分析',
       'automation': '自动化',
       'customer-service': '客服',
-      'monitoring': '监控'
+      'monitoring': '监控',
+      'productivity': '生产力',
+      'optimization': '优化',
+      'analytics': '分析',
+      'self-improvement': '自我改进',
+      'code-analysis': '代码分析',
+      'generation': '生成',
+      'integration': '集成',
+      'visualization': '可视化',
+      'memory-management': '内存管理',
+      'lifestyle': '生活方式'
     };
 
     return `${industryMap[category.industry as keyof typeof industryMap] || category.industry} • ${functionMap[category.function as keyof typeof functionMap] || category.function}`;
   };
 
-  const formatPrice = (price: number) => {
-    return price === 0 ? '免费' : `$${price}/月`;
+  const formatPrice = (agent: AgentDefinition) => {
+    if (agent.pricing.price === 0) {
+      return '免费';
+    }
+
+    switch (agent.pricing.model) {
+      case 'subscription':
+        return `$${agent.pricing.price}/月`;
+      case 'usage':
+        return `$${agent.pricing.price}/次`;
+      case 'pay-per-use':
+        return `$${agent.pricing.price}/次`;
+      case 'free':
+        return '免费';
+      default:
+        return `$${agent.pricing.price}`;
+    }
   };
 
   if (viewMode === 'list') {
@@ -260,7 +313,7 @@ function AgentMarketCard({ agent, viewMode }: AgentMarketCardProps) {
                   </p>
                 </div>
                 <div className="text-right">
-                  <div className="text-lg font-bold">{formatPrice(agent.pricing.price)}</div>
+                  <div className="text-lg font-bold">{formatPrice(agent)}</div>
                   <div className="flex items-center text-sm text-muted-foreground">
                     <Star className="h-3 w-3 fill-current text-yellow-500 mr-1" />
                     {agent.metadata.rating.toFixed(1)}
@@ -305,7 +358,7 @@ function AgentMarketCard({ agent, viewMode }: AgentMarketCardProps) {
             </p>
           </div>
           <div className="text-right">
-            <div className="text-lg font-bold">{formatPrice(agent.pricing.price)}</div>
+            <div className="text-lg font-bold">{formatPrice(agent)}</div>
           </div>
         </div>
       </CardHeader>

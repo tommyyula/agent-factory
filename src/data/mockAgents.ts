@@ -354,26 +354,1157 @@ export const mockAgents: AgentDefinition[] = [
     },
     createdAt: new Date('2024-02-01'),
     updatedAt: new Date('2024-03-14')
+  },
+  // Phase 2 (P1) Agents
+  {
+    id: 'agent-007',
+    name: 'crm-agent',
+    displayName: 'CRM Agent',
+    description: '智能客户关系管理，自动化客户数据分析和跟进',
+    version: '1.4.2',
+    status: 'published',
+    category: {
+      industry: 'general',
+      function: 'data-analysis'
+    },
+    pricing: {
+      model: 'subscription',
+      price: 15,
+      currency: 'USD'
+    },
+    capabilities: ['客户画像分析', '销售机会识别', '自动跟进提醒', '客户满意度预测'],
+    skills: [
+      {
+        id: 'skill-crm-001',
+        name: '客户分析',
+        type: 'function',
+        parameters: [
+          {
+            name: 'customer_data',
+            type: 'object',
+            required: true,
+            description: '客户数据对象'
+          }
+        ],
+        enabled: true,
+        configuration: {}
+      }
+    ],
+    prompts: {
+      system: '你是一个CRM专家，帮助分析客户数据并提供业务洞察。',
+      user: '请分析客户 {customer_id} 的数据并提供建议',
+      variables: [
+        {
+          name: 'customer_id',
+          type: 'string',
+          description: '客户ID',
+          source: 'user'
+        }
+      ]
+    },
+    ontologySubset: ['oms-001'],
+    sdd: {
+      requirements: '# CRM Agent 需求\n\n构建智能客户关系管理系统...',
+      design: '# 技术设计\n\n集成CRM API和ML模型...',
+      domainAnalysis: '# 领域分析\n\n客户关系管理是销售流程的核心...',
+      tasks: '# 实现任务\n\n1. 客户数据集成\n2. 机器学习模型训练...'
+    },
+    build: {
+      status: 'success',
+      steps: [],
+      artifacts: [],
+      logs: []
+    },
+    test: {
+      status: 'passed',
+      suites: [],
+      coverage: 87
+    },
+    metadata: {
+      author: 'ITEM Sales Team',
+      tags: ['CRM', '销售', '客户分析'],
+      rating: 4.6,
+      downloads: 1420,
+      reviews: []
+    },
+    createdAt: new Date('2024-02-10'),
+    updatedAt: new Date('2024-03-12')
+  },
+  {
+    id: 'agent-008',
+    name: 'business-council',
+    displayName: 'Business Council Agent',
+    description: '商业决策支持委员会，提供战略建议和风险评估',
+    version: '2.0.0',
+    status: 'published',
+    category: {
+      industry: 'general',
+      function: 'data-analysis'
+    },
+    pricing: {
+      model: 'subscription',
+      price: 25,
+      currency: 'USD'
+    },
+    capabilities: ['战略分析', '风险评估', '市场趋势预测', '投资决策支持'],
+    skills: [
+      {
+        id: 'skill-bc-001',
+        name: '战略分析',
+        type: 'function',
+        parameters: [],
+        enabled: true,
+        configuration: {}
+      }
+    ],
+    prompts: {
+      system: '你是一个商业战略专家，提供专业的商业决策建议。',
+      user: '请分析 {business_scenario} 并提供决策建议',
+      variables: [
+        {
+          name: 'business_scenario',
+          type: 'string',
+          description: '商业场景描述',
+          source: 'user'
+        }
+      ]
+    },
+    ontologySubset: ['oms-001'],
+    sdd: {
+      requirements: '# Business Council Agent 需求\n\n建立智能商业决策支持系统...',
+      design: '# 技术设计\n\n多Agent协作决策架构...',
+      domainAnalysis: '# 领域分析\n\n商业决策需要多维度分析...',
+      tasks: '# 实现任务\n\n1. 决策模型设计\n2. 协作机制实现...'
+    },
+    build: {
+      status: 'success',
+      steps: [],
+      artifacts: [],
+      logs: []
+    },
+    test: {
+      status: 'passed',
+      suites: [],
+      coverage: 91
+    },
+    metadata: {
+      author: 'ITEM Strategy Team',
+      tags: ['战略', '决策支持', '商业分析'],
+      rating: 4.8,
+      downloads: 756,
+      reviews: []
+    },
+    createdAt: new Date('2024-02-05'),
+    updatedAt: new Date('2024-03-10')
+  },
+  {
+    id: 'agent-009',
+    name: 'security-council',
+    displayName: 'Security Council Agent',
+    description: '安全委员会Agent，多层安全威胁检测和响应',
+    version: '1.6.1',
+    status: 'published',
+    category: {
+      industry: 'general',
+      function: 'monitoring'
+    },
+    pricing: {
+      model: 'subscription',
+      price: 20,
+      currency: 'USD'
+    },
+    capabilities: ['威胁情报分析', '安全事件响应', '合规性检查', '安全策略制定'],
+    skills: [
+      {
+        id: 'skill-sc-001',
+        name: '威胁分析',
+        type: 'function',
+        parameters: [],
+        enabled: true,
+        configuration: {}
+      }
+    ],
+    prompts: {
+      system: '你是一个网络安全专家，负责威胁检测和安全策略制定。',
+      user: '请分析安全事件 {incident_data} 并提供响应建议',
+      variables: [
+        {
+          name: 'incident_data',
+          type: 'object',
+          description: '安全事件数据',
+          source: 'user'
+        }
+      ]
+    },
+    ontologySubset: [],
+    sdd: {
+      requirements: '# Security Council Agent 需求\n\n构建企业级安全管理系统...',
+      design: '# 技术设计\n\n分布式安全检测架构...',
+      domainAnalysis: '# 领域分析\n\n网络安全需要主动防御...',
+      tasks: '# 实现任务\n\n1. 威胁建模\n2. 检测规则开发...'
+    },
+    build: {
+      status: 'success',
+      steps: [],
+      artifacts: [],
+      logs: []
+    },
+    test: {
+      status: 'passed',
+      suites: [],
+      coverage: 93
+    },
+    metadata: {
+      author: 'ITEM Security Team',
+      tags: ['安全', '威胁检测', '事件响应'],
+      rating: 4.9,
+      downloads: 1189,
+      reviews: []
+    },
+    createdAt: new Date('2024-01-30'),
+    updatedAt: new Date('2024-03-08')
+  },
+  {
+    id: 'agent-010',
+    name: 'platform-council',
+    displayName: 'Platform Council Agent',
+    description: '平台治理委员会，管理平台资源和服务质量',
+    version: '1.3.5',
+    status: 'published',
+    category: {
+      industry: 'general',
+      function: 'monitoring'
+    },
+    pricing: {
+      model: 'subscription',
+      price: 18,
+      currency: 'USD'
+    },
+    capabilities: ['资源调度', '服务监控', '性能优化', '平台治理'],
+    skills: [
+      {
+        id: 'skill-pc-001',
+        name: '平台监控',
+        type: 'function',
+        parameters: [],
+        enabled: true,
+        configuration: {}
+      }
+    ],
+    prompts: {
+      system: '你是一个平台管理专家，负责平台资源优化和服务质量保障。',
+      user: '请分析平台状态 {platform_metrics} 并提供优化建议',
+      variables: [
+        {
+          name: 'platform_metrics',
+          type: 'object',
+          description: '平台指标数据',
+          source: 'user'
+        }
+      ]
+    },
+    ontologySubset: [],
+    sdd: {
+      requirements: '# Platform Council Agent 需求\n\n建立智能平台治理系统...',
+      design: '# 技术设计\n\n微服务架构监控体系...',
+      domainAnalysis: '# 领域分析\n\n平台治理是数字化基础...',
+      tasks: '# 实现任务\n\n1. 监控体系设计\n2. 自动化运维...'
+    },
+    build: {
+      status: 'success',
+      steps: [],
+      artifacts: [],
+      logs: []
+    },
+    test: {
+      status: 'passed',
+      suites: [],
+      coverage: 89
+    },
+    metadata: {
+      author: 'ITEM Platform Team',
+      tags: ['平台管理', '监控', '治理'],
+      rating: 4.7,
+      downloads: 892,
+      reviews: []
+    },
+    createdAt: new Date('2024-02-15'),
+    updatedAt: new Date('2024-03-05')
+  },
+  {
+    id: 'agent-011',
+    name: 'jira-tracker',
+    displayName: 'Jira Tracker Agent',
+    description: 'Jira项目管理集成，自动任务跟踪和进度同步',
+    version: '1.7.3',
+    status: 'published',
+    category: {
+      industry: 'general',
+      function: 'automation'
+    },
+    pricing: {
+      model: 'subscription',
+      price: 8,
+      currency: 'USD'
+    },
+    capabilities: ['任务自动创建', '状态同步', '工时统计', '进度报告'],
+    skills: [
+      {
+        id: 'skill-jira-001',
+        name: 'Jira集成',
+        type: 'integration',
+        parameters: [
+          {
+            name: 'jira_config',
+            type: 'object',
+            required: true,
+            description: 'Jira配置信息'
+          }
+        ],
+        enabled: true,
+        configuration: {}
+      }
+    ],
+    prompts: {
+      system: '你是一个项目管理专家，负责Jira任务的智能管理。',
+      user: '请处理Jira任务 {task_data}',
+      variables: [
+        {
+          name: 'task_data',
+          type: 'object',
+          description: '任务数据',
+          source: 'user'
+        }
+      ]
+    },
+    ontologySubset: [],
+    sdd: {
+      requirements: '# Jira Tracker Agent 需求\n\n实现Jira智能集成...',
+      design: '# 技术设计\n\nRESTful API集成架构...',
+      domainAnalysis: '# 领域分析\n\n项目管理自动化提高效率...',
+      tasks: '# 实现任务\n\n1. API集成开发\n2. 数据同步机制...'
+    },
+    build: {
+      status: 'success',
+      steps: [],
+      artifacts: [],
+      logs: []
+    },
+    test: {
+      status: 'passed',
+      suites: [],
+      coverage: 85
+    },
+    metadata: {
+      author: 'ITEM DevOps Team',
+      tags: ['Jira', '项目管理', '自动化'],
+      rating: 4.5,
+      downloads: 2156,
+      reviews: []
+    },
+    createdAt: new Date('2024-01-22'),
+    updatedAt: new Date('2024-03-14')
+  },
+  // Phase 3 (P2) Agents
+  {
+    id: 'agent-012',
+    name: 'meeting-notes',
+    displayName: 'Meeting Notes Agent',
+    description: '智能会议记录和总结，自动生成会议纪要',
+    version: '1.5.1',
+    status: 'published',
+    category: {
+      industry: 'general',
+      function: 'productivity'
+    },
+    pricing: {
+      model: 'subscription',
+      price: 6,
+      currency: 'USD'
+    },
+    capabilities: ['语音转文字', '关键信息提取', '待办事项识别', '会议总结'],
+    skills: [
+      {
+        id: 'skill-meeting-001',
+        name: '会议分析',
+        type: 'nlp',
+        parameters: [
+          {
+            name: 'meeting_transcript',
+            type: 'string',
+            required: true,
+            description: '会议转录文本'
+          }
+        ],
+        enabled: true,
+        configuration: {}
+      }
+    ],
+    prompts: {
+      system: '你是一个会议助手，负责分析会议内容并生成结构化总结。',
+      user: '请分析会议记录 {meeting_content} 并生成总结',
+      variables: [
+        {
+          name: 'meeting_content',
+          type: 'string',
+          description: '会议内容',
+          source: 'user'
+        }
+      ]
+    },
+    ontologySubset: ['hrm-001'],
+    sdd: {
+      requirements: '# Meeting Notes Agent 需求\n\n实现智能会议记录...',
+      design: '# 技术设计\n\n基于NLP的信息提取...',
+      domainAnalysis: '# 领域分析\n\n会议效率是团队协作关键...',
+      tasks: '# 实现任务\n\n1. 语音识别集成\n2. 信息提取算法...'
+    },
+    build: {
+      status: 'success',
+      steps: [],
+      artifacts: [],
+      logs: []
+    },
+    test: {
+      status: 'passed',
+      suites: [],
+      coverage: 88
+    },
+    metadata: {
+      author: 'ITEM Productivity Team',
+      tags: ['会议', '记录', 'NLP'],
+      rating: 4.6,
+      downloads: 1678,
+      reviews: []
+    },
+    createdAt: new Date('2024-02-12'),
+    updatedAt: new Date('2024-03-06')
+  },
+  {
+    id: 'agent-013',
+    name: 'diet-journal',
+    displayName: 'Diet Journal Agent',
+    description: '智能饮食记录和营养分析，健康生活助手',
+    version: '1.2.4',
+    status: 'published',
+    category: {
+      industry: 'healthcare',
+      function: 'lifestyle'
+    },
+    pricing: {
+      model: 'subscription',
+      price: 4,
+      currency: 'USD'
+    },
+    capabilities: ['营养成分分析', '热量计算', '饮食建议', '健康趋势跟踪'],
+    skills: [
+      {
+        id: 'skill-diet-001',
+        name: '营养分析',
+        type: 'function',
+        parameters: [
+          {
+            name: 'food_items',
+            type: 'array',
+            required: true,
+            description: '食物列表'
+          }
+        ],
+        enabled: true,
+        configuration: {}
+      }
+    ],
+    prompts: {
+      system: '你是一个营养专家，帮助用户分析饮食和制定健康计划。',
+      user: '请分析今日饮食 {diet_data} 并提供建议',
+      variables: [
+        {
+          name: 'diet_data',
+          type: 'object',
+          description: '饮食数据',
+          source: 'user'
+        }
+      ]
+    },
+    ontologySubset: [],
+    sdd: {
+      requirements: '# Diet Journal Agent 需求\n\n构建智能饮食管理系统...',
+      design: '# 技术设计\n\n营养数据库和分析算法...',
+      domainAnalysis: '# 领域分析\n\n健康管理是现代生活需求...',
+      tasks: '# 实现任务\n\n1. 营养数据集成\n2. 分析模型开发...'
+    },
+    build: {
+      status: 'success',
+      steps: [],
+      artifacts: [],
+      logs: []
+    },
+    test: {
+      status: 'passed',
+      suites: [],
+      coverage: 82
+    },
+    metadata: {
+      author: 'ITEM Health Team',
+      tags: ['健康', '营养', '生活方式'],
+      rating: 4.4,
+      downloads: 1234,
+      reviews: []
+    },
+    createdAt: new Date('2024-02-20'),
+    updatedAt: new Date('2024-03-01')
+  },
+  {
+    id: 'agent-014',
+    name: 'prompt-optimizer',
+    displayName: 'Prompt Optimizer Agent',
+    description: 'AI提示词优化器，提升模型交互效果',
+    version: '2.1.2',
+    status: 'published',
+    category: {
+      industry: 'ai-tools',
+      function: 'optimization'
+    },
+    pricing: {
+      model: 'subscription',
+      price: 12,
+      currency: 'USD'
+    },
+    capabilities: ['提示词分析', '效果预测', '自动优化', 'A/B测试'],
+    skills: [
+      {
+        id: 'skill-prompt-001',
+        name: '提示词优化',
+        type: 'optimization',
+        parameters: [
+          {
+            name: 'original_prompt',
+            type: 'string',
+            required: true,
+            description: '原始提示词'
+          }
+        ],
+        enabled: true,
+        configuration: {}
+      }
+    ],
+    prompts: {
+      system: '你是一个提示词工程专家，帮助优化AI模型的交互提示。',
+      user: '请优化提示词 {prompt_text}',
+      variables: [
+        {
+          name: 'prompt_text',
+          type: 'string',
+          description: '待优化的提示词',
+          source: 'user'
+        }
+      ]
+    },
+    ontologySubset: [],
+    sdd: {
+      requirements: '# Prompt Optimizer Agent 需求\n\n建立提示词优化系统...',
+      design: '# 技术设计\n\n基于强化学习的优化算法...',
+      domainAnalysis: '# 领域分析\n\n提示词工程是AI应用关键...',
+      tasks: '# 实现任务\n\n1. 优化算法设计\n2. 评估指标开发...'
+    },
+    build: {
+      status: 'success',
+      steps: [],
+      artifacts: [],
+      logs: []
+    },
+    test: {
+      status: 'passed',
+      suites: [],
+      coverage: 94
+    },
+    metadata: {
+      author: 'ITEM AI Team',
+      tags: ['提示词', 'AI优化', '机器学习'],
+      rating: 4.8,
+      downloads: 987,
+      reviews: []
+    },
+    createdAt: new Date('2024-01-18'),
+    updatedAt: new Date('2024-03-13')
+  },
+  {
+    id: 'agent-015',
+    name: 'usage-tracker',
+    displayName: 'Usage Tracker Agent',
+    description: '系统使用情况跟踪和分析，优化资源配置',
+    version: '1.4.7',
+    status: 'published',
+    category: {
+      industry: 'general',
+      function: 'analytics'
+    },
+    pricing: {
+      model: 'subscription',
+      price: 7,
+      currency: 'USD'
+    },
+    capabilities: ['使用统计', '行为分析', '性能监控', '资源优化建议'],
+    skills: [
+      {
+        id: 'skill-usage-001',
+        name: '使用分析',
+        type: 'analytics',
+        parameters: [
+          {
+            name: 'usage_data',
+            type: 'object',
+            required: true,
+            description: '使用数据'
+          }
+        ],
+        enabled: true,
+        configuration: {}
+      }
+    ],
+    prompts: {
+      system: '你是一个数据分析专家，负责系统使用情况的深度分析。',
+      user: '请分析使用数据 {usage_metrics} 并提供优化建议',
+      variables: [
+        {
+          name: 'usage_metrics',
+          type: 'object',
+          description: '使用指标数据',
+          source: 'user'
+        }
+      ]
+    },
+    ontologySubset: [],
+    sdd: {
+      requirements: '# Usage Tracker Agent 需求\n\n实现系统使用分析...',
+      design: '# 技术设计\n\n实时数据处理架构...',
+      domainAnalysis: '# 领域分析\n\n使用分析驱动产品优化...',
+      tasks: '# 实现任务\n\n1. 数据采集机制\n2. 分析报表设计...'
+    },
+    build: {
+      status: 'success',
+      steps: [],
+      artifacts: [],
+      logs: []
+    },
+    test: {
+      status: 'passed',
+      suites: [],
+      coverage: 90
+    },
+    metadata: {
+      author: 'ITEM Analytics Team',
+      tags: ['分析', '监控', '优化'],
+      rating: 4.6,
+      downloads: 1543,
+      reviews: []
+    },
+    createdAt: new Date('2024-02-03'),
+    updatedAt: new Date('2024-03-09')
+  },
+  {
+    id: 'agent-016',
+    name: 'self-updater',
+    displayName: 'Self Updater Agent',
+    description: '自我更新和学习Agent，持续改进系统能力',
+    version: '1.8.1',
+    status: 'published',
+    category: {
+      industry: 'ai-tools',
+      function: 'self-improvement'
+    },
+    pricing: {
+      model: 'subscription',
+      price: 16,
+      currency: 'USD'
+    },
+    capabilities: ['自我学习', '模型更新', '性能优化', '能力扩展'],
+    skills: [
+      {
+        id: 'skill-update-001',
+        name: '自我更新',
+        type: 'learning',
+        parameters: [],
+        enabled: true,
+        configuration: {}
+      }
+    ],
+    prompts: {
+      system: '你是一个自我进化的AI系统，负责持续学习和优化。',
+      user: '请分析当前性能并制定改进计划',
+      variables: []
+    },
+    ontologySubset: [],
+    sdd: {
+      requirements: '# Self Updater Agent 需求\n\n构建自我进化AI系统...',
+      design: '# 技术设计\n\n在线学习和模型更新架构...',
+      domainAnalysis: '# 领域分析\n\n自我改进是AGI发展方向...',
+      tasks: '# 实现任务\n\n1. 学习算法设计\n2. 安全更新机制...'
+    },
+    build: {
+      status: 'success',
+      steps: [],
+      artifacts: [],
+      logs: []
+    },
+    test: {
+      status: 'passed',
+      suites: [],
+      coverage: 96
+    },
+    metadata: {
+      author: 'ITEM Research Team',
+      tags: ['自我学习', 'AI进化', '持续改进'],
+      rating: 4.9,
+      downloads: 678,
+      reviews: []
+    },
+    createdAt: new Date('2024-01-08'),
+    updatedAt: new Date('2024-03-11')
+  },
+  // Phase 4 (P3) Agents
+  {
+    id: 'agent-017',
+    name: 'code-reviewer',
+    displayName: 'Code Reviewer Agent',
+    description: '智能代码审查，自动检测问题和优化建议',
+    version: '2.2.1',
+    status: 'published',
+    category: {
+      industry: 'development',
+      function: 'code-analysis'
+    },
+    pricing: {
+      model: 'subscription',
+      price: 14,
+      currency: 'USD'
+    },
+    capabilities: ['代码质量检测', '安全漏洞扫描', '性能分析', '最佳实践建议'],
+    skills: [
+      {
+        id: 'skill-code-001',
+        name: '代码分析',
+        type: 'function',
+        parameters: [
+          {
+            name: 'code_content',
+            type: 'string',
+            required: true,
+            description: '代码内容'
+          }
+        ],
+        enabled: true,
+        configuration: {}
+      }
+    ],
+    prompts: {
+      system: '你是一个资深代码审查专家，提供专业的代码质量评估。',
+      user: '请审查代码 {code_snippet} 并提供改进建议',
+      variables: [
+        {
+          name: 'code_snippet',
+          type: 'string',
+          description: '代码片段',
+          source: 'user'
+        }
+      ]
+    },
+    ontologySubset: [],
+    sdd: {
+      requirements: '# Code Reviewer Agent 需求\n\n建立智能代码审查系统...',
+      design: '# 技术设计\n\n静态分析和机器学习结合...',
+      domainAnalysis: '# 领域分析\n\n代码质量是软件工程基础...',
+      tasks: '# 实现任务\n\n1. 分析引擎开发\n2. 规则库建设...'
+    },
+    build: {
+      status: 'success',
+      steps: [],
+      artifacts: [],
+      logs: []
+    },
+    test: {
+      status: 'passed',
+      suites: [],
+      coverage: 92
+    },
+    metadata: {
+      author: 'ITEM Dev Team',
+      tags: ['代码审查', '质量检测', '开发工具'],
+      rating: 4.7,
+      downloads: 2890,
+      reviews: []
+    },
+    createdAt: new Date('2024-01-25'),
+    updatedAt: new Date('2024-03-15')
+  },
+  {
+    id: 'agent-018',
+    name: 'image-gen',
+    displayName: 'Image Generator Agent',
+    description: '智能图像生成，支持多种风格和场景',
+    version: '1.9.3',
+    status: 'published',
+    category: {
+      industry: 'creative',
+      function: 'generation'
+    },
+    pricing: {
+      model: 'pay-per-use',
+      price: 0.5,
+      currency: 'USD'
+    },
+    capabilities: ['文本到图像', '风格转换', '图像编辑', '批量生成'],
+    skills: [
+      {
+        id: 'skill-image-001',
+        name: '图像生成',
+        type: 'generation',
+        parameters: [
+          {
+            name: 'prompt',
+            type: 'string',
+            required: true,
+            description: '图像描述提示'
+          }
+        ],
+        enabled: true,
+        configuration: {}
+      }
+    ],
+    prompts: {
+      system: '你是一个创意图像生成专家，能够将文字描述转化为精美图像。',
+      user: '请生成图像：{image_description}',
+      variables: [
+        {
+          name: 'image_description',
+          type: 'string',
+          description: '图像描述',
+          source: 'user'
+        }
+      ]
+    },
+    ontologySubset: [],
+    sdd: {
+      requirements: '# Image Generator Agent 需求\n\n实现智能图像生成...',
+      design: '# 技术设计\n\n基于扩散模型的生成架构...',
+      domainAnalysis: '# 领域分析\n\n创意生成是AI应用热点...',
+      tasks: '# 实现任务\n\n1. 模型集成\n2. 生成优化...'
+    },
+    build: {
+      status: 'success',
+      steps: [],
+      artifacts: [],
+      logs: []
+    },
+    test: {
+      status: 'passed',
+      suites: [],
+      coverage: 86
+    },
+    metadata: {
+      author: 'ITEM Creative Team',
+      tags: ['图像生成', 'AI艺术', '创意工具'],
+      rating: 4.8,
+      downloads: 3456,
+      reviews: []
+    },
+    createdAt: new Date('2024-01-12'),
+    updatedAt: new Date('2024-03-07')
+  },
+  {
+    id: 'agent-019',
+    name: 'wiki-sync',
+    displayName: 'Wiki Sync Agent',
+    description: '知识库同步Agent，多平台知识统一管理',
+    version: '1.3.8',
+    status: 'published',
+    category: {
+      industry: 'knowledge',
+      function: 'integration'
+    },
+    pricing: {
+      model: 'subscription',
+      price: 9,
+      currency: 'USD'
+    },
+    capabilities: ['多平台同步', '版本控制', '冲突解决', '知识图谱更新'],
+    skills: [
+      {
+        id: 'skill-wiki-001',
+        name: 'Wiki同步',
+        type: 'integration',
+        parameters: [
+          {
+            name: 'wiki_platforms',
+            type: 'array',
+            required: true,
+            description: 'Wiki平台列表'
+          }
+        ],
+        enabled: true,
+        configuration: {}
+      }
+    ],
+    prompts: {
+      system: '你是一个知识管理专家，负责多平台知识的统一管理和同步。',
+      user: '请同步 {wiki_sources} 的知识内容',
+      variables: [
+        {
+          name: 'wiki_sources',
+          type: 'array',
+          description: '知识源列表',
+          source: 'user'
+        }
+      ]
+    },
+    ontologySubset: ['wms-001', 'tms-001', 'oms-001'],
+    sdd: {
+      requirements: '# Wiki Sync Agent 需求\n\n实现知识库智能同步...',
+      design: '# 技术设计\n\n分布式同步架构...',
+      domainAnalysis: '# 领域分析\n\n知识统一管理提高效率...',
+      tasks: '# 实现任务\n\n1. 同步机制设计\n2. 冲突解决算法...'
+    },
+    build: {
+      status: 'success',
+      steps: [],
+      artifacts: [],
+      logs: []
+    },
+    test: {
+      status: 'passed',
+      suites: [],
+      coverage: 88
+    },
+    metadata: {
+      author: 'ITEM Knowledge Team',
+      tags: ['知识同步', 'Wiki管理', '知识图谱'],
+      rating: 4.5,
+      downloads: 1876,
+      reviews: []
+    },
+    createdAt: new Date('2024-02-08'),
+    updatedAt: new Date('2024-03-04')
+  },
+  {
+    id: 'agent-020',
+    name: 'atlas-bridge',
+    displayName: 'Atlas Bridge Agent',
+    description: '物流地图集成Agent，全球物流网络可视化',
+    version: '2.0.4',
+    status: 'published',
+    category: {
+      industry: 'TMS',
+      function: 'visualization'
+    },
+    pricing: {
+      model: 'subscription',
+      price: 22,
+      currency: 'USD'
+    },
+    capabilities: ['地图集成', '路径优化', '实时跟踪', '网络分析'],
+    skills: [
+      {
+        id: 'skill-atlas-001',
+        name: '地图分析',
+        type: 'geospatial',
+        parameters: [
+          {
+            name: 'route_data',
+            type: 'object',
+            required: true,
+            description: '路线数据'
+          }
+        ],
+        enabled: true,
+        configuration: {}
+      }
+    ],
+    prompts: {
+      system: '你是一个物流地理信息专家，负责路线规划和网络优化。',
+      user: '请分析物流路线 {route_info} 并优化',
+      variables: [
+        {
+          name: 'route_info',
+          type: 'object',
+          description: '路线信息',
+          source: 'user'
+        }
+      ]
+    },
+    ontologySubset: ['tms-001'],
+    sdd: {
+      requirements: '# Atlas Bridge Agent 需求\n\n构建物流地图智能系统...',
+      design: '# 技术设计\n\nGIS和AI结合的架构...',
+      domainAnalysis: '# 领域分析\n\n地理信息是物流核心...',
+      tasks: '# 实现任务\n\n1. 地图API集成\n2. 路径算法优化...'
+    },
+    build: {
+      status: 'success',
+      steps: [],
+      artifacts: [],
+      logs: []
+    },
+    test: {
+      status: 'passed',
+      suites: [],
+      coverage: 91
+    },
+    metadata: {
+      author: 'ITEM TMS Team',
+      tags: ['地图', '物流', 'GIS'],
+      rating: 4.8,
+      downloads: 1345,
+      reviews: []
+    },
+    createdAt: new Date('2024-01-28'),
+    updatedAt: new Date('2024-03-13')
+  },
+  {
+    id: 'agent-021',
+    name: 'social-monitor',
+    displayName: 'Social Monitor Agent',
+    description: '社交媒体监控Agent，品牌声誉和舆情分析',
+    version: '1.6.2',
+    status: 'published',
+    category: {
+      industry: 'marketing',
+      function: 'monitoring'
+    },
+    pricing: {
+      model: 'subscription',
+      price: 13,
+      currency: 'USD'
+    },
+    capabilities: ['舆情监控', '情感分析', '趋势预测', '危机预警'],
+    skills: [
+      {
+        id: 'skill-social-001',
+        name: '社交分析',
+        type: 'nlp',
+        parameters: [
+          {
+            name: 'social_content',
+            type: 'string',
+            required: true,
+            description: '社交媒体内容'
+          }
+        ],
+        enabled: true,
+        configuration: {}
+      }
+    ],
+    prompts: {
+      system: '你是一个社交媒体分析专家，负责品牌舆情监控和分析。',
+      user: '请分析社交媒体内容 {social_data} 的情感和趋势',
+      variables: [
+        {
+          name: 'social_data',
+          type: 'object',
+          description: '社交媒体数据',
+          source: 'user'
+        }
+      ]
+    },
+    ontologySubset: [],
+    sdd: {
+      requirements: '# Social Monitor Agent 需求\n\n建立社交媒体监控系统...',
+      design: '# 技术设计\n\n实时数据抓取和NLP分析...',
+      domainAnalysis: '# 领域分析\n\n社交媒体是品牌传播重要渠道...',
+      tasks: '# 实现任务\n\n1. 数据抓取机制\n2. 情感分析模型...'
+    },
+    build: {
+      status: 'success',
+      steps: [],
+      artifacts: [],
+      logs: []
+    },
+    test: {
+      status: 'passed',
+      suites: [],
+      coverage: 87
+    },
+    metadata: {
+      author: 'ITEM Marketing Team',
+      tags: ['社交媒体', '舆情监控', '情感分析'],
+      rating: 4.6,
+      downloads: 2234,
+      reviews: []
+    },
+    createdAt: new Date('2024-02-01'),
+    updatedAt: new Date('2024-03-02')
+  },
+  {
+    id: 'agent-022',
+    name: 'memory-curator',
+    displayName: 'Memory Curator Agent',
+    description: '记忆管理Agent，智能信息存储和回忆',
+    version: '1.7.5',
+    status: 'published',
+    category: {
+      industry: 'ai-tools',
+      function: 'memory-management'
+    },
+    pricing: {
+      model: 'subscription',
+      price: 11,
+      currency: 'USD'
+    },
+    capabilities: ['记忆存储', '智能检索', '知识关联', '遗忘管理'],
+    skills: [
+      {
+        id: 'skill-memory-001',
+        name: '记忆管理',
+        type: 'memory',
+        parameters: [
+          {
+            name: 'memory_content',
+            type: 'object',
+            required: true,
+            description: '记忆内容'
+          }
+        ],
+        enabled: true,
+        configuration: {}
+      }
+    ],
+    prompts: {
+      system: '你是一个记忆管理专家，负责智能化的信息存储和检索。',
+      user: '请管理记忆内容 {memory_data}',
+      variables: [
+        {
+          name: 'memory_data',
+          type: 'object',
+          description: '记忆数据',
+          source: 'user'
+        }
+      ]
+    },
+    ontologySubset: [],
+    sdd: {
+      requirements: '# Memory Curator Agent 需求\n\n构建智能记忆管理系统...',
+      design: '# 技术设计\n\n向量数据库和关联网络...',
+      domainAnalysis: '# 领域分析\n\n记忆管理是认知智能核心...',
+      tasks: '# 实现任务\n\n1. 记忆模型设计\n2. 检索优化...'
+    },
+    build: {
+      status: 'success',
+      steps: [],
+      artifacts: [],
+      logs: []
+    },
+    test: {
+      status: 'passed',
+      suites: [],
+      coverage: 93
+    },
+    metadata: {
+      author: 'ITEM Cognitive Team',
+      tags: ['记忆管理', '认知智能', 'AI记忆'],
+      rating: 4.7,
+      downloads: 1567,
+      reviews: []
+    },
+    createdAt: new Date('2024-01-15'),
+    updatedAt: new Date('2024-03-10')
   }
-  // ... 更多 Agent 定义将在后续实现中添加
-];
-
-// 计划中的其余 15 个 Agent（简化版本）
-export const remainingAgents: string[] = [
-  'crm-agent',
-  'business-council',
-  'security-council', 
-  'platform-council',
-  'jira-tracker',
-  'meeting-notes',
-  'diet-journal',
-  'prompt-optimizer',
-  'usage-tracker',
-  'self-updater',
-  'code-reviewer',
-  'image-gen',
-  'wiki-sync',
-  'atlas-bridge',
-  'social-monitor',
-  'memory-curator'
 ];

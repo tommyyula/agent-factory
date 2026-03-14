@@ -6,11 +6,11 @@ export interface AgentDefinition {
   version: string;
   status: 'draft' | 'building' | 'testing' | 'published' | 'archived';
   category: {
-    industry: 'WMS' | 'TMS' | 'HRM' | 'general';
-    function: 'data-analysis' | 'automation' | 'customer-service' | 'monitoring';
+    industry: 'WMS' | 'TMS' | 'HRM' | 'FMS' | 'YMS' | 'OMS' | 'general' | 'healthcare' | 'ai-tools' | 'development' | 'creative' | 'knowledge' | 'marketing';
+    function: 'data-analysis' | 'automation' | 'customer-service' | 'monitoring' | 'productivity' | 'optimization' | 'analytics' | 'self-improvement' | 'code-analysis' | 'generation' | 'integration' | 'visualization' | 'memory-management' | 'lifestyle';
   };
   pricing: {
-    model: 'subscription' | 'usage' | 'free';
+    model: 'subscription' | 'usage' | 'free' | 'pay-per-use';
     price: number; // monthly price in USD
     currency: 'USD';
   };
@@ -35,7 +35,7 @@ export interface AgentDefinition {
 export interface SkillConfiguration {
   id: string;
   name: string;
-  type: 'api' | 'function' | 'workflow' | 'knowledge';
+  type: 'api' | 'function' | 'workflow' | 'knowledge' | 'nlp' | 'optimization' | 'analytics' | 'learning' | 'generation' | 'integration' | 'geospatial' | 'memory';
   parameters: SkillParameter[];
   enabled: boolean;
   configuration: Record<string, unknown>;

@@ -72,12 +72,13 @@ export async function seedDatabase(): Promise<boolean> {
   try {
     console.log('开始初始化数据库...');
 
-    // 检查是否已经有数据
+    // 检查是否已经有数据 - 暂时强制重新种子以确保数据正确
     const existingOntologies = await ontologyDB.ontologies.count();
-    if (existingOntologies > 0) {
-      console.log('数据库已包含数据，跳过种子数据初始化');
-      return true;
-    }
+    const existingAgents = await agentDB.agents.count();
+
+    // 暂时强制重新种子数据以确保所有数据正确加载
+    console.log(`发现现有数据: ${existingOntologies} 个本体, ${existingAgents} 个代理`);
+    console.log('强制重新种子数据以确保一致性...');
 
     // 清空所有表
     await Promise.all([
