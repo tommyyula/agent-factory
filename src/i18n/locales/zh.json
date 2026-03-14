@@ -1,0 +1,137 @@
+{
+  "navigation": {
+    "dashboard": "仪表盘",
+    "ontology": "知识本体",
+    "ide": "集成开发环境",
+    "marketplace": "应用市场",
+    "runtime": "运行时"
+  },
+  "dashboard": {
+    "title": "Dashboard",
+    "subtitle": "Agent Factory Platform 全局概览",
+    "stats": {
+      "totalAgents": "Agent 总数",
+      "activeAgents": "活跃实例",
+      "totalTasks": "任务执行",
+      "systemHealth": "系统健康度",
+      "newThisMonth": "本月新增",
+      "running": "正在运行中",
+      "comparedToYesterday": "较昨日",
+      "excellent": "优秀",
+      "good": "良好",
+      "needsAttention": "需要关注"
+    },
+    "architecture": {
+      "title": "5层架构概览",
+      "layers": {
+        "aaas": "AaaS 服务层",
+        "runtime": "Runtime 运行层",
+        "factory": "Factory 工厂层",
+        "ontology": "Ontology 知识层",
+        "dataSources": "Data Sources 数据源"
+      },
+      "status": {
+        "running": "运行中",
+        "healthy": "健康",
+        "active": "活跃",
+        "syncing": "同步中",
+        "connected": "连接正常"
+      }
+    },
+    "recentActivity": {
+      "title": "最近活动",
+      "deploySuccess": "部署成功",
+      "updateComplete": "更新完成",
+      "performanceIssue": "检测到性能问题",
+      "creationComplete": "创建完成",
+      "minutes": "分钟前",
+      "hours": "小时前"
+    }
+  },
+  "marketplace": {
+    "title": "MarketPlace",
+    "subtitle": "Agent 发布和交易市场",
+    "agentsAvailable": "个可用 Agent",
+    "search": {
+      "placeholder": "搜索 Agent...",
+      "filter": "筛选"
+    },
+    "categories": {
+      "all": "全部类别",
+      "dataAnalysis": "数据分析",
+      "automation": "自动化",
+      "customerService": "客户服务",
+      "monitoring": "监控",
+      "productivity": "生产力",
+      "optimization": "优化",
+      "analytics": "分析",
+      "selfImprovement": "自我改进",
+      "codeAnalysis": "代码分析",
+      "generation": "生成",
+      "integration": "集成",
+      "visualization": "可视化",
+      "memoryManagement": "内存管理",
+      "lifestyle": "生活方式"
+    },
+    "industries": {
+      "all": "全部行业",
+      "wms": "仓储管理",
+      "tms": "运输管理",
+      "hrm": "人力资源",
+      "fms": "车队管理",
+      "yms": "场站管理",
+      "oms": "订单管理",
+      "general": "通用",
+      "healthcare": "医疗健康",
+      "aiTools": "AI工具",
+      "development": "开发",
+      "creative": "创意",
+      "knowledge": "知识",
+      "marketing": "营销"
+    },
+    "sorting": {
+      "byRating": "按评分排序",
+      "byDownloads": "按下载量排序",
+      "byPrice": "按价格排序",
+      "byName": "按名称排序"
+    },
+    "agent": {
+      "hire": "雇佣",
+      "details": "详情",
+      "downloads": "次下载",
+      "free": "免费",
+      "perMonth": "/月",
+      "perUse": "/次"
+    },
+    "noResults": "没有找到符合条件的 Agent",
+    "tryAdjusting": "尝试调整搜索条件或筛选器"
+  },
+  "ontology": {
+    "title": "Ontology KB",
+    "subtitle": "企业知识本体库，6大领域知识图谱",
+    "comingSoon": "即将推出..."
+  },
+  "ide": {
+    "title": "Agent IDE",
+    "subtitle": "Agent 开发集成环境，从创意到部署",
+    "comingSoon": "即将推出..."
+  },
+  "runtime": {
+    "title": "Agent Runtime",
+    "subtitle": "运行时环境监控和任务管理",
+    "comingSoon": "即将推出..."
+  },
+  "common": {
+    "language": "语言",
+    "theme": "主题",
+    "loading": "加载中...",
+    "error": "错误",
+    "success": "成功",
+    "warning": "警告",
+    "info": "信息",
+    "pageNotFound": "页面未找到",
+    "checkUrl": "请检查 URL 地址",
+    "initializing": "正在初始化 Agent Factory Platform...",
+    "pleaseWait": "请稍候，正在加载数据和组件"
+  }
+}

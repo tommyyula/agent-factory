@@ -1,0 +1,137 @@
+{
+  "navigation": {
+    "dashboard": "ダッシュボード",
+    "ontology": "オントロジー",
+    "ide": "IDE",
+    "marketplace": "マーケットプレイス",
+    "runtime": "ランタイム"
+  },
+  "dashboard": {
+    "title": "ダッシュボード",
+    "subtitle": "Agent Factory Platform グローバル概要",
+    "stats": {
+      "totalAgents": "エージェント総数",
+      "activeAgents": "アクティブインスタンス",
+      "totalTasks": "タスク実行",
+      "systemHealth": "システムヘルス",
+      "newThisMonth": "今月の新規",
+      "running": "実行中",
+      "comparedToYesterday": "昨日比",
+      "excellent": "優秀",
+      "good": "良好",
+      "needsAttention": "注意が必要"
+    },
+    "architecture": {
+      "title": "5層アーキテクチャ概要",
+      "layers": {
+        "aaas": "AaaS サービス層",
+        "runtime": "ランタイム層",
+        "factory": "ファクトリ層",
+        "ontology": "オントロジー知識層",
+        "dataSources": "データソース"
+      },
+      "status": {
+        "running": "実行中",
+        "healthy": "正常",
+        "active": "アクティブ",
+        "syncing": "同期中",
+        "connected": "接続済み"
+      }
+    },
+    "recentActivity": {
+      "title": "最近のアクティビティ",
+      "deploySuccess": "デプロイ成功",
+      "updateComplete": "更新完了",
+      "performanceIssue": "パフォーマンス問題を検出",
+      "creationComplete": "作成完了",
+      "minutes": "分前",
+      "hours": "時間前"
+    }
+  },
+  "marketplace": {
+    "title": "マーケットプレイス",
+    "subtitle": "エージェント公開・取引市場",
+    "agentsAvailable": "個のエージェントが利用可能",
+    "search": {
+      "placeholder": "エージェントを検索...",
+      "filter": "フィルター"
+    },
+    "categories": {
+      "all": "すべてのカテゴリ",
+      "dataAnalysis": "データ分析",
+      "automation": "自動化",
+      "customerService": "カスタマーサービス",
+      "monitoring": "監視",
+      "productivity": "生産性",
+      "optimization": "最適化",
+      "analytics": "分析",
+      "selfImprovement": "自己改善",
+      "codeAnalysis": "コード分析",
+      "generation": "生成",
+      "integration": "統合",
+      "visualization": "可視化",
+      "memoryManagement": "メモリ管理",
+      "lifestyle": "ライフスタイル"
+    },
+    "industries": {
+      "all": "すべての業界",
+      "wms": "倉庫管理",
+      "tms": "輸送管理",
+      "hrm": "人事管理",
+      "fms": "フリート管理",
+      "yms": "ヤード管理",
+      "oms": "注文管理",
+      "general": "汎用",
+      "healthcare": "ヘルスケア",
+      "aiTools": "AIツール",
+      "development": "開発",
+      "creative": "クリエイティブ",
+      "knowledge": "ナレッジ",
+      "marketing": "マーケティング"
+    },
+    "sorting": {
+      "byRating": "評価順",
+      "byDownloads": "ダウンロード数順",
+      "byPrice": "価格順",
+      "byName": "名前順"
+    },
+    "agent": {
+      "hire": "採用",
+      "details": "詳細",
+      "downloads": "ダウンロード",
+      "free": "無料",
+      "perMonth": "/月",
+      "perUse": "/回"
+    },
+    "noResults": "条件に一致するエージェントが見つかりません",
+    "tryAdjusting": "検索条件やフィルターを調整してください"
+  },
+  "ontology": {
+    "title": "オントロジーKB",
+    "subtitle": "企業ナレッジベース、6領域ナレッジグラフ",
+    "comingSoon": "近日公開..."
+  },
+  "ide": {
+    "title": "エージェントIDE",
+    "subtitle": "エージェント開発環境、アイデアからデプロイまで",
+    "comingSoon": "近日公開..."
+  },
+  "runtime": {
+    "title": "エージェントランタイム",
+    "subtitle": "ランタイム環境監視とタスク管理",
+    "comingSoon": "近日公開..."
+  },
+  "common": {
+    "language": "言語",
+    "theme": "テーマ",
+    "loading": "読み込み中...",
+    "error": "エラー",
+    "success": "成功",
+    "warning": "警告",
+    "info": "情報",
+    "pageNotFound": "ページが見つかりません",
+    "checkUrl": "URLアドレスを確認してください",
+    "initializing": "Agent Factory Platform を初期化中...",
+    "pleaseWait": "しばらくお待ちください、データとコンポーネントを読み込んでいます"
+  }
+}

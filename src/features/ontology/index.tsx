@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Routes, Route } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
@@ -19,6 +20,7 @@ export function OntologyOverview() {
 }
 
 function OntologyList() {
+  const { t } = useTranslation();
   const { domains, setDomains, loading, setLoading } = useOntologyStore();
   const [searchQuery, setSearchQuery] = useState('');
 
@@ -69,8 +71,8 @@ function OntologyList() {
     return (
       <div className="space-y-6">
         <div>
-          <h1 className="text-3xl font-bold tracking-tight">Ontology KB</h1>
-          <p className="text-muted-foreground">知识图谱管理和可视化</p>
+          <h1 className="text-3xl font-bold tracking-tight">{t('ontology.title')}</h1>
+          <p className="text-muted-foreground">{t('ontology.subtitle')}</p>
         </div>
         <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
           {[...Array(6)].map((_, i) => (
@@ -92,9 +94,9 @@ function OntologyList() {
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-3xl font-bold tracking-tight">Ontology KB</h1>
+        <h1 className="text-3xl font-bold tracking-tight">{t('ontology.title')}</h1>
         <p className="text-muted-foreground">
-          知识图谱管理和可视化 - 6 个物流行业知识域
+          {t('ontology.subtitle')}
         </p>
       </div>
 

@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Routes, Route } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import { Plus, Code, Wrench, TestTube, FileText } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -19,6 +20,7 @@ export function IDEOverview() {
 }
 
 function IDEHome() {
+  const { t } = useTranslation();
   const { agents, setAgents, loading, setLoading } = useAgentStore();
   const [stats, setStats] = useState({
     total: 0,
@@ -80,8 +82,8 @@ function IDEHome() {
       <div className="space-y-6">
         <div className="flex justify-between items-start">
           <div>
-            <h1 className="text-3xl font-bold tracking-tight">IDE</h1>
-            <p className="text-muted-foreground">Agent 开发环境</p>
+            <h1 className="text-3xl font-bold tracking-tight">{t('ide.title')}</h1>
+            <p className="text-muted-foreground">{t('ide.subtitle')}</p>
           </div>
           <Button disabled>
             <Plus className="mr-2 h-4 w-4" />
@@ -106,9 +108,9 @@ function IDEHome() {
     <div className="space-y-6">
       <div className="flex justify-between items-start">
         <div>
-          <h1 className="text-3xl font-bold tracking-tight">IDE</h1>
+          <h1 className="text-3xl font-bold tracking-tight">{t('ide.title')}</h1>
           <p className="text-muted-foreground">
-            Agent 开发环境 - 管理 {stats.total} 个 Agent
+            {t('ide.subtitle')}
           </p>
         </div>
         <Button>

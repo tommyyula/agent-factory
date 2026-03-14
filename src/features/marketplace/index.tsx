@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Routes, Route } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import { Search, Star, Download, Filter, Grid, List } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -18,6 +19,7 @@ export function AgentCatalog() {
 }
 
 function MarketplaceHome() {
+  const { t } = useTranslation();
   const [agents, setAgents] = useState<AgentDefinition[]>([]);
   const [loading, setLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState('');
@@ -74,46 +76,46 @@ function MarketplaceHome() {
     });
 
   const categories = [
-    { value: 'all', label: '全部类别' },
-    { value: 'data-analysis', label: '数据分析' },
-    { value: 'automation', label: '自动化' },
-    { value: 'customer-service', label: '客户服务' },
-    { value: 'monitoring', label: '监控' },
-    { value: 'productivity', label: '生产力' },
-    { value: 'optimization', label: '优化' },
-    { value: 'analytics', label: '分析' },
-    { value: 'self-improvement', label: '自我改进' },
-    { value: 'code-analysis', label: '代码分析' },
-    { value: 'generation', label: '生成' },
-    { value: 'integration', label: '集成' },
-    { value: 'visualization', label: '可视化' },
-    { value: 'memory-management', label: '内存管理' },
-    { value: 'lifestyle', label: '生活方式' }
+    { value: 'all', label: t('marketplace.categories.all') },
+    { value: 'data-analysis', label: t('marketplace.categories.dataAnalysis') },
+    { value: 'automation', label: t('marketplace.categories.automation') },
+    { value: 'customer-service', label: t('marketplace.categories.customerService') },
+    { value: 'monitoring', label: t('marketplace.categories.monitoring') },
+    { value: 'productivity', label: t('marketplace.categories.productivity') },
+    { value: 'optimization', label: t('marketplace.categories.optimization') },
+    { value: 'analytics', label: t('marketplace.categories.analytics') },
+    { value: 'self-improvement', label: t('marketplace.categories.selfImprovement') },
+    { value: 'code-analysis', label: t('marketplace.categories.codeAnalysis') },
+    { value: 'generation', label: t('marketplace.categories.generation') },
+    { value: 'integration', label: t('marketplace.categories.integration') },
+    { value: 'visualization', label: t('marketplace.categories.visualization') },
+    { value: 'memory-management', label: t('marketplace.categories.memoryManagement') },
+    { value: 'lifestyle', label: t('marketplace.categories.lifestyle') }
   ];
 
   const industries = [
-    { value: 'all', label: '全部行业' },
-    { value: 'WMS', label: '仓储管理' },
-    { value: 'TMS', label: '运输管理' },
-    { value: 'HRM', label: '人力资源' },
-    { value: 'FMS', label: '车队管理' },
-    { value: 'YMS', label: '场站管理' },
-    { value: 'OMS', label: '订单管理' },
-    { value: 'general', label: '通用' },
-    { value: 'healthcare', label: '医疗健康' },
-    { value: 'ai-tools', label: 'AI工具' },
-    { value: 'development', label: '开发' },
-    { value: 'creative', label: '创意' },
-    { value: 'knowledge', label: '知识' },
-    { value: 'marketing', label: '营销' }
+    { value: 'all', label: t('marketplace.industries.all') },
+    { value: 'WMS', label: t('marketplace.industries.wms') },
+    { value: 'TMS', label: t('marketplace.industries.tms') },
+    { value: 'HRM', label: t('marketplace.industries.hrm') },
+    { value: 'FMS', label: t('marketplace.industries.fms') },
+    { value: 'YMS', label: t('marketplace.industries.yms') },
+    { value: 'OMS', label: t('marketplace.industries.oms') },
+    { value: 'general', label: t('marketplace.industries.general') },
+    { value: 'healthcare', label: t('marketplace.industries.healthcare') },
+    { value: 'ai-tools', label: t('marketplace.industries.aiTools') },
+    { value: 'development', label: t('marketplace.industries.development') },
+    { value: 'creative', label: t('marketplace.industries.creative') },
+    { value: 'knowledge', label: t('marketplace.industries.knowledge') },
+    { value: 'marketing', label: t('marketplace.industries.marketing') }
   ];
 
   if (loading) {
     return (
       <div className="space-y-6">
         <div>
-          <h1 className="text-3xl font-bold tracking-tight">MarketPlace</h1>
-          <p className="text-muted-foreground">Agent 发布和交易市场</p>
+          <h1 className="text-3xl font-bold tracking-tight">{t('marketplace.title')}</h1>
+          <p className="text-muted-foreground">{t('marketplace.subtitle')}</p>
         </div>
         <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
           {[...Array(6)].map((_, i) => (
@@ -137,7 +139,7 @@ function MarketplaceHome() {
       <div>
         <h1 className="text-3xl font-bold tracking-tight">MarketPlace</h1>
         <p className="text-muted-foreground">
-          Agent 发布和交易市场 - {filteredAndSortedAgents.length} 个可用 Agent
+          {t('marketplace.subtitle')} - {filteredAndSortedAgents.length} {t('marketplace.agentsAvailable')}
         </p>
       </div>
 
@@ -148,7 +150,7 @@ function MarketplaceHome() {
             <Search className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
             <input
               type="text"
-              placeholder="搜索 Agent..."
+              placeholder={t('marketplace.search.placeholder')}
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               className="w-full pl-10 pr-4 py-2 border border-input rounded-md bg-background"
@@ -156,7 +158,7 @@ function MarketplaceHome() {
           </div>
           <Button variant="outline">
             <Filter className="mr-2 h-4 w-4" />
-            筛选
+            {t('marketplace.search.filter')}
           </Button>
         </div>
 
@@ -187,10 +189,10 @@ function MarketplaceHome() {
               onChange={(e) => setSortBy(e.target.value)}
               className="px-3 py-2 border border-input rounded-md bg-background"
             >
-              <option value="rating">按评分排序</option>
-              <option value="downloads">按下载量排序</option>
-              <option value="price">按价格排序</option>
-              <option value="name">按名称排序</option>
+              <option value="rating">{t('marketplace.sorting.byRating')}</option>
+              <option value="downloads">{t('marketplace.sorting.byDownloads')}</option>
+              <option value="price">{t('marketplace.sorting.byPrice')}</option>
+              <option value="name">{t('marketplace.sorting.byName')}</option>
             </select>
           </div>
 
@@ -226,10 +228,10 @@ function MarketplaceHome() {
       {filteredAndSortedAgents.length === 0 && (
         <div className="text-center py-12">
           <p className="text-muted-foreground text-lg">
-            没有找到符合条件的 Agent
+            {t('marketplace.noResults')}
           </p>
           <p className="text-muted-foreground mt-2">
-            尝试调整搜索条件或筛选器
+            {t('marketplace.tryAdjusting')}
           </p>
         </div>
       )}
@@ -243,38 +245,40 @@ interface AgentMarketCardProps {
 }
 
 function AgentMarketCard({ agent, viewMode }: AgentMarketCardProps) {
+  const { t } = useTranslation();
+
   const getCategoryText = (category: { industry: string; function: string }) => {
     const industryMap = {
-      'WMS': '仓储',
-      'TMS': '运输',
-      'HRM': '人事',
-      'FMS': '车队',
-      'YMS': '场站',
-      'OMS': '订单',
-      'general': '通用',
-      'healthcare': '医疗',
-      'ai-tools': 'AI工具',
-      'development': '开发',
-      'creative': '创意',
-      'knowledge': '知识',
-      'marketing': '营销'
+      'WMS': t('marketplace.industries.wms'),
+      'TMS': t('marketplace.industries.tms'),
+      'HRM': t('marketplace.industries.hrm'),
+      'FMS': t('marketplace.industries.fms'),
+      'YMS': t('marketplace.industries.yms'),
+      'OMS': t('marketplace.industries.oms'),
+      'general': t('marketplace.industries.general'),
+      'healthcare': t('marketplace.industries.healthcare'),
+      'ai-tools': t('marketplace.industries.aiTools'),
+      'development': t('marketplace.industries.development'),
+      'creative': t('marketplace.industries.creative'),
+      'knowledge': t('marketplace.industries.knowledge'),
+      'marketing': t('marketplace.industries.marketing')
     };
 
     const functionMap = {
-      'data-analysis': '数据分析',
-      'automation': '自动化',
-      'customer-service': '客服',
-      'monitoring': '监控',
-      'productivity': '生产力',
-      'optimization': '优化',
-      'analytics': '分析',
-      'self-improvement': '自我改进',
-      'code-analysis': '代码分析',
-      'generation': '生成',
-      'integration': '集成',
-      'visualization': '可视化',
-      'memory-management': '内存管理',
-      'lifestyle': '生活方式'
+      'data-analysis': t('marketplace.categories.dataAnalysis'),
+      'automation': t('marketplace.categories.automation'),
+      'customer-service': t('marketplace.categories.customerService'),
+      'monitoring': t('marketplace.categories.monitoring'),
+      'productivity': t('marketplace.categories.productivity'),
+      'optimization': t('marketplace.categories.optimization'),
+      'analytics': t('marketplace.categories.analytics'),
+      'self-improvement': t('marketplace.categories.selfImprovement'),
+      'code-analysis': t('marketplace.categories.codeAnalysis'),
+      'generation': t('marketplace.categories.generation'),
+      'integration': t('marketplace.categories.integration'),
+      'visualization': t('marketplace.categories.visualization'),
+      'memory-management': t('marketplace.categories.memoryManagement'),
+      'lifestyle': t('marketplace.categories.lifestyle')
     };
 
     return `${industryMap[category.industry as keyof typeof industryMap] || category.industry} • ${functionMap[category.function as keyof typeof functionMap] || category.function}`;
@@ -282,18 +286,18 @@ function AgentMarketCard({ agent, viewMode }: AgentMarketCardProps) {
 
   const formatPrice = (agent: AgentDefinition) => {
     if (agent.pricing.price === 0) {
-      return '免费';
+      return t('marketplace.agent.free');
     }
 
     switch (agent.pricing.model) {
       case 'subscription':
-        return `$${agent.pricing.price}/月`;
+        return `$${agent.pricing.price}${t('marketplace.agent.perMonth')}`;
       case 'usage':
-        return `$${agent.pricing.price}/次`;
+        return `$${agent.pricing.price}${t('marketplace.agent.perUse')}`;
       case 'pay-per-use':
-        return `$${agent.pricing.price}/次`;
+        return `$${agent.pricing.price}${t('marketplace.agent.perUse')}`;
       case 'free':
-        return '免费';
+        return t('marketplace.agent.free');
       default:
         return `$${agent.pricing.price}`;
     }
@@ -338,8 +342,8 @@ function AgentMarketCard({ agent, viewMode }: AgentMarketCardProps) {
             </div>
             
             <div className="flex flex-col space-y-2">
-              <Button className="w-32">雇佣</Button>
-              <Button variant="outline" className="w-32">详情</Button>
+              <Button className="w-32">{t('marketplace.agent.hire')}</Button>
+              <Button variant="outline" className="w-32">{t('marketplace.agent.details')}</Button>
             </div>
           </div>
         </CardContent>
@@ -375,7 +379,7 @@ function AgentMarketCard({ agent, viewMode }: AgentMarketCardProps) {
           </div>
           <div className="flex items-center text-muted-foreground">
             <Download className="h-3 w-3 mr-1" />
-            {agent.metadata.downloads} 次下载
+            {agent.metadata.downloads} {t('marketplace.agent.downloads')}
           </div>
         </div>
         
@@ -389,10 +393,10 @@ function AgentMarketCard({ agent, viewMode }: AgentMarketCardProps) {
         
         <div className="flex space-x-2">
           <Button size="sm" className="flex-1">
-            雇佣
+            {t('marketplace.agent.hire')}
           </Button>
           <Button size="sm" variant="outline">
-            详情
+            {t('marketplace.agent.details')}
           </Button>
         </div>
       </CardContent>

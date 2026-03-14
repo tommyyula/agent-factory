@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Routes, Route } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import { useThemeStore } from './stores/themeStore';
 import { initializeDatabases } from './shared/services/database';
 import { seedDatabase } from './data/seedDatabase';
@@ -11,6 +12,7 @@ import { AgentCatalog } from './features/marketplace';
 import { RuntimeOverview } from './features/runtime';
 
 function App() {
+  const { t } = useTranslation();
   const { theme } = useThemeStore();
   const [isInitialized, setIsInitialized] = useState(false);
   const [initError, setInitError] = useState<string | null>(null);
@@ -57,8 +59,8 @@ function App() {
       <div className="min-h-screen bg-background flex items-center justify-center">
         <div className="text-center space-y-4">
           <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mx-auto"></div>
-          <h2 className="text-xl font-semibold">正在初始化 Agent Factory Platform...</h2>
-          <p className="text-muted-foreground">请稍候，正在加载数据和组件</p>
+          <h2 className="text-xl font-semibold">{t('common.initializing')}</h2>
+          <p className="text-muted-foreground">{t('common.pleaseWait')}</p>
         </div>
       </div>
     );
@@ -79,8 +81,8 @@ function App() {
         <Route path="runtime/*" element={<RuntimeOverview />} />
         <Route path="*" element={
           <div className="text-center py-12">
-            <h2 className="text-2xl font-bold">页面未找到</h2>
-            <p className="text-muted-foreground mt-2">请检查 URL 地址</p>
+            <h2 className="text-2xl font-bold">{t('common.pageNotFound')}</h2>
+            <p className="text-muted-foreground mt-2">{t('common.checkUrl')}</p>
           </div>
         } />
       </Route>

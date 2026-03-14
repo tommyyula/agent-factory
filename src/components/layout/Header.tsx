@@ -3,6 +3,7 @@ import { useLocation } from 'react-router-dom';
 import { Moon, Sun } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { useThemeStore } from '@/stores/themeStore';
+import { LanguageSwitcher } from '@/components/ui/language-switcher';
 import { Breadcrumb } from './Breadcrumb';
 
 export function Header() {
@@ -17,6 +18,9 @@ export function Header() {
 
         {/* Actions */}
         <div className="flex items-center gap-4">
+          {/* Language Switcher */}
+          <LanguageSwitcher />
+
           {/* Theme Toggle */}
           <Button
             variant="ghost"

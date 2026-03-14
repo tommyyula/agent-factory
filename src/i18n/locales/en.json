@@ -1,0 +1,137 @@
+{
+  "navigation": {
+    "dashboard": "Dashboard",
+    "ontology": "Ontology",
+    "ide": "IDE",
+    "marketplace": "Marketplace",
+    "runtime": "Runtime"
+  },
+  "dashboard": {
+    "title": "Dashboard",
+    "subtitle": "Agent Factory Platform Global Overview",
+    "stats": {
+      "totalAgents": "Total Agents",
+      "activeAgents": "Active Instances",
+      "totalTasks": "Task Execution",
+      "systemHealth": "System Health",
+      "newThisMonth": "new this month",
+      "running": "running",
+      "comparedToYesterday": "vs yesterday",
+      "excellent": "Excellent",
+      "good": "Good",
+      "needsAttention": "Needs Attention"
+    },
+    "architecture": {
+      "title": "5-Layer Architecture Overview",
+      "layers": {
+        "aaas": "AaaS Service Layer",
+        "runtime": "Runtime Layer",
+        "factory": "Factory Layer",
+        "ontology": "Ontology Knowledge Layer",
+        "dataSources": "Data Sources"
+      },
+      "status": {
+        "running": "Running",
+        "healthy": "Healthy",
+        "active": "Active",
+        "syncing": "Syncing",
+        "connected": "Connected"
+      }
+    },
+    "recentActivity": {
+      "title": "Recent Activity",
+      "deploySuccess": "deployed successfully",
+      "updateComplete": "update completed",
+      "performanceIssue": "performance issue detected",
+      "creationComplete": "creation completed",
+      "minutes": "minutes ago",
+      "hours": "hours ago"
+    }
+  },
+  "marketplace": {
+    "title": "MarketPlace",
+    "subtitle": "Agent Publishing and Trading Market",
+    "agentsAvailable": "agents available",
+    "search": {
+      "placeholder": "Search agents...",
+      "filter": "Filter"
+    },
+    "categories": {
+      "all": "All Categories",
+      "dataAnalysis": "Data Analysis",
+      "automation": "Automation",
+      "customerService": "Customer Service",
+      "monitoring": "Monitoring",
+      "productivity": "Productivity",
+      "optimization": "Optimization",
+      "analytics": "Analytics",
+      "selfImprovement": "Self Improvement",
+      "codeAnalysis": "Code Analysis",
+      "generation": "Generation",
+      "integration": "Integration",
+      "visualization": "Visualization",
+      "memoryManagement": "Memory Management",
+      "lifestyle": "Lifestyle"
+    },
+    "industries": {
+      "all": "All Industries",
+      "wms": "Warehouse Management",
+      "tms": "Transportation Management",
+      "hrm": "Human Resources",
+      "fms": "Fleet Management",
+      "yms": "Yard Management",
+      "oms": "Order Management",
+      "general": "General",
+      "healthcare": "Healthcare",
+      "aiTools": "AI Tools",
+      "development": "Development",
+      "creative": "Creative",
+      "knowledge": "Knowledge",
+      "marketing": "Marketing"
+    },
+    "sorting": {
+      "byRating": "Sort by Rating",
+      "byDownloads": "Sort by Downloads",
+      "byPrice": "Sort by Price",
+      "byName": "Sort by Name"
+    },
+    "agent": {
+      "hire": "Hire",
+      "details": "Details",
+      "downloads": "downloads",
+      "free": "Free",
+      "perMonth": "/month",
+      "perUse": "/use"
+    },
+    "noResults": "No agents found matching your criteria",
+    "tryAdjusting": "Try adjusting your search terms or filters"
+  },
+  "ontology": {
+    "title": "Ontology KB",
+    "subtitle": "Enterprise Knowledge Base, 6 Domain Knowledge Graphs",
+    "comingSoon": "Coming Soon..."
+  },
+  "ide": {
+    "title": "Agent IDE",
+    "subtitle": "Agent Development Environment, From Idea to Deployment",
+    "comingSoon": "Coming Soon..."
+  },
+  "runtime": {
+    "title": "Agent Runtime",
+    "subtitle": "Runtime Environment Monitoring and Task Management",
+    "comingSoon": "Coming Soon..."
+  },
+  "common": {
+    "language": "Language",
+    "theme": "Theme",
+    "loading": "Loading...",
+    "error": "Error",
+    "success": "Success",
+    "warning": "Warning",
+    "info": "Info",
+    "pageNotFound": "Page Not Found",
+    "checkUrl": "Please check the URL address",
+    "initializing": "Initializing Agent Factory Platform...",
+    "pleaseWait": "Please wait, loading data and components"
+  }
+}

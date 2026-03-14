@@ -1,10 +1,11 @@
 import React from 'react';
 import { NavLink } from 'react-router-dom';
-import { 
-  BarChart3, 
-  Brain, 
-  Code, 
-  Store, 
+import { useTranslation } from 'react-i18next';
+import {
+  BarChart3,
+  Brain,
+  Code,
+  Store,
   Monitor,
   ChevronLeft,
   ChevronRight
@@ -12,15 +13,16 @@ import {
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
 
-const navigation = [
-  { name: 'Dashboard', href: '/', icon: BarChart3 },
-  { name: 'Ontology KB', href: '/ontology', icon: Brain },
-  { name: 'IDE', href: '/ide', icon: Code },
-  { name: 'MarketPlace', href: '/marketplace', icon: Store },
-  { name: 'Runtime', href: '/runtime', icon: Monitor },
+const navigationItems = [
+  { key: 'dashboard', href: '/', icon: BarChart3 },
+  { key: 'ontology', href: '/ontology', icon: Brain },
+  { key: 'ide', href: '/ide', icon: Code },
+  { key: 'marketplace', href: '/marketplace', icon: Store },
+  { key: 'runtime', href: '/runtime', icon: Monitor },
 ];
 
 export function Sidebar() {
+  const { t } = useTranslation();
   const [isCollapsed, setIsCollapsed] = React.useState(false);
 
   return (
@@ -44,9 +46,9 @@ export function Sidebar() {
 
       {/* Navigation */}
       <nav className="flex-1 p-2 space-y-1">
-        {navigation.map((item) => (
+        {navigationItems.map((item) => (
           <NavLink
-            key={item.name}
+            key={item.key}
             to={item.href}
             className={({ isActive }) =>
               cn(
@@ -59,7 +61,7 @@ export function Sidebar() {
           >
             <item.icon className="h-5 w-5 shrink-0" />
             {!isCollapsed && (
-              <span className="ml-3">{item.name}</span>
+              <span className="ml-3">{t(`navigation.${item.key}`)}</span>
             )}
           </NavLink>
         ))}
