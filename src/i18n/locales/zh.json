@@ -1,4 +1,6 @@
 {
+  "/": "根路径",
+  "T": "T",
   "navigation": {
     "dashboard": "仪表盘",
     "ontology": "知识本体",
@@ -7,7 +9,7 @@
     "runtime": "运行时"
   },
   "dashboard": {
-    "title": "Dashboard",
+    "title": "仪表盘",
     "subtitle": "Agent Factory Platform 全局概览",
     "stats": {
       "totalAgents": "Agent 总数",
@@ -40,16 +42,59 @@
     },
     "recentActivity": {
       "title": "最近活动",
-      "deploySuccess": "部署成功",
-      "updateComplete": "更新完成",
-      "performanceIssue": "检测到性能问题",
-      "creationComplete": "创建完成",
       "minutes": "分钟前",
       "hours": "小时前"
+    },
+    "activity": {
+      "calendarAgentCreated": "日历智能体已创建",
+      "calendarAgentDesc": "新的日程管理智能体已成功部署",
+      "chatbotAgentDesc": "客服聊天机器人智能体已激活",
+      "chatbotAgentStarted": "聊天机器人智能体已启动",
+      "configurationDesc": "系统配置参数已更新",
+      "configurationUpdated": "配置已更新",
+      "dataModelDesc": "数据模型结构已上传完成",
+      "dataModelUploaded": "数据模型已上传",
+      "databaseBackupCompleted": "数据库备份已完成",
+      "databaseBackupDesc": "定期数据库备份任务执行成功",
+      "dayAgo": "天前",
+      "daysAgo": "天前",
+      "emailTriageDeployed": "邮件分类已部署",
+      "emailTriageDesc": "邮件智能分类系统已上线",
+      "last7Days": "最近7天",
+      "maintenanceDesc": "系统维护窗口已安排",
+      "maintenanceScheduled": "维护已安排",
+      "newUserDesc": "新用户完成平台注册",
+      "newUserOnboarded": "新用户已入驻",
+      "optimizationApplied": "优化已应用",
+      "optimizationDesc": "性能优化策略已实施",
+      "performanceIssueDesc": "检测到系统性能异常",
+      "performanceIssueDetected": "性能问题已检测",
+      "reportDesc": "系统分析报告已生成",
+      "reportGenerated": "报告已生成",
+      "securityScanCompleted": "安全扫描已完成",
+      "securityScanDesc": "安全漏洞扫描任务执行完成",
+      "wmsKnowledgeDesc": "仓储管理知识库已更新",
+      "wmsKnowledgeUpdated": "WMS知识已更新"
+    },
+    "charts": {
+      "agentCount": "智能体数量",
+      "agentStatusDistribution": "智能体状态分布",
+      "agents": "智能体",
+      "decrease": "下降",
+      "deploying": "部署中",
+      "deployments": "部署数",
+      "error": "错误",
+      "increase": "增长",
+      "paused": "已暂停",
+      "running": "运行中",
+      "sevenDayActivityTrend": "7天活动趋势",
+      "stable": "稳定",
+      "stopped": "已停止",
+      "tasks": "任务数"
     }
   },
   "marketplace": {
-    "title": "MarketPlace",
+    "title": "应用市场",
     "subtitle": "Agent 发布和交易市场",
     "agentsAvailable": "个可用 Agent",
     "search": {
@@ -93,7 +138,49 @@
       "byRating": "按评分排序",
       "byDownloads": "按下载量排序",
       "byPrice": "按价格排序",
-      "byName": "按名称排序"
+      "byName": "按名称排序",
+      "byNewest": "按最新排序"
+    },
+    "filters": {
+      "advanced": "高级筛选",
+      "allPrices": "所有价格",
+      "clear": "清除",
+      "freeOnly": "仅免费",
+      "paidOnly": "仅付费",
+      "subscriptionOnly": "仅订阅"
+    },
+    "catalog": {
+      "loading": "加载中...",
+      "title": "智能体目录"
+    },
+    "detail": {
+      "author": "作者",
+      "backToCatalog": "返回目录",
+      "billedMonthly": "按月计费",
+      "capabilities": "功能特性",
+      "category": "类别",
+      "created": "创建时间",
+      "deploy": "部署",
+      "description": "描述",
+      "features": {
+        "performance": "高性能",
+        "security": "安全",
+        "support": "24/7支持"
+      },
+      "hire": "雇佣",
+      "noCommitment": "无最低承诺",
+      "parameters": "参数配置",
+      "payPerUsage": "按使用付费",
+      "pricing": "定价",
+      "reviews": "用户评价",
+      "reviewsCount": "条评价",
+      "skills": "技能标签",
+      "stats": "统计数据",
+      "status": {
+        "published": "已发布"
+      },
+      "updated": "更新时间",
+      "versionHistory": "版本历史"
     },
     "agent": {
       "hire": "雇佣",
@@ -106,19 +193,89 @@
     "noResults": "没有找到符合条件的 Agent",
     "tryAdjusting": "尝试调整搜索条件或筛选器"
   },
+  "runtime": {
+    "title": "运行时环境",
+    "subtitle": "运行时环境监控和任务管理",
+    "tabs": {
+      "deployments": "部署管理",
+      "jobs": "任务调度",
+      "messages": "消息队列",
+      "metrics": "性能指标"
+    },
+    "deployments": {
+      "title": "部署实例",
+      "subtitle": "Agent 部署状态监控",
+      "cpu": "CPU使用率",
+      "memory": "内存使用",
+      "heartbeat": "心跳检测",
+      "uptime": "运行时长",
+      "status": {
+        "running": "运行中",
+        "stopped": "已停止",
+        "paused": "已暂停",
+        "error": "错误"
+      }
+    },
+    "jobs": {
+      "title": "任务队列",
+      "subtitle": "任务执行状态管理",
+      "recentJobs": "最近任务",
+      "status": {
+        "running": "执行中",
+        "completed": "已完成",
+        "failed": "执行失败",
+        "queued": "队列等待"
+      },
+      "table": {
+        "jobId": "任务ID",
+        "agent": "智能体",
+        "description": "任务描述",
+        "status": "状态",
+        "timestamp": "时间戳",
+        "duration": "执行时长"
+      }
+    },
+    "messages": {
+      "title": "消息中心",
+      "subtitle": "系统消息和通知管理",
+      "recentMessages": "最近消息",
+      "messagesCount": "条消息",
+      "priority": {
+        "urgent": "紧急",
+        "high": "高",
+        "medium": "中",
+        "low": "低"
+      }
+    },
+    "metrics": {
+      "title": "性能监控",
+      "subtitle": "系统性能指标监控",
+      "totalTasks": "任务总数",
+      "totalTasksSubtitle": "系统累计处理任务数",
+      "activeConnections": "活跃连接",
+      "activeConnectionsSubtitle": "当前并发连接数",
+      "avgResponseTime": "平均响应时间",
+      "avgResponseTimeSubtitle": "API平均响应延迟",
+      "successRate": "成功率",
+      "successRateSubtitle": "任务执行成功比率",
+      "systemHealth": {
+        "title": "系统健康状态",
+        "overallStatus": "整体状态",
+        "healthy": "健康",
+        "cpuUsage": "CPU使用率",
+        "memoryUsage": "内存使用率",
+        "diskUsage": "磁盘使用率"
+      }
+    }
+  },
   "ontology": {
-    "title": "Ontology KB",
+    "title": "知识本体库",
     "subtitle": "企业知识本体库，6大领域知识图谱",
     "comingSoon": "即将推出..."
   },
   "ide": {
     "title": "Agent IDE",
     "subtitle": "Agent 开发集成环境，从创意到部署",
-    "comingSoon": "即将推出..."
-  },
-  "runtime": {
-    "title": "Agent Runtime",
-    "subtitle": "运行时环境监控和任务管理",
     "comingSoon": "即将推出..."
   },
   "common": {

@@ -1,4 +1,6 @@
 {
+  "/": "ルート",
+  "T": "T",
   "navigation": {
     "dashboard": "ダッシュボード",
     "ontology": "オントロジー",
@@ -40,12 +42,55 @@
     },
     "recentActivity": {
       "title": "最近のアクティビティ",
-      "deploySuccess": "デプロイ成功",
-      "updateComplete": "更新完了",
-      "performanceIssue": "パフォーマンス問題を検出",
-      "creationComplete": "作成完了",
       "minutes": "分前",
       "hours": "時間前"
+    },
+    "activity": {
+      "calendarAgentCreated": "カレンダーエージェントが作成されました",
+      "calendarAgentDesc": "新しいスケジュール管理エージェントが正常にデプロイされました",
+      "chatbotAgentDesc": "カスタマーサービスチャットボットエージェントが有効化されました",
+      "chatbotAgentStarted": "チャットボットエージェントが開始されました",
+      "configurationDesc": "システム設定パラメータが更新されました",
+      "configurationUpdated": "設定が更新されました",
+      "dataModelDesc": "データモデル構造のアップロードが完了しました",
+      "dataModelUploaded": "データモデルがアップロードされました",
+      "databaseBackupCompleted": "データベースバックアップが完了しました",
+      "databaseBackupDesc": "定期データベースバックアップタスクが正常に実行されました",
+      "dayAgo": "日前",
+      "daysAgo": "日前",
+      "emailTriageDeployed": "メール振り分けがデプロイされました",
+      "emailTriageDesc": "インテリジェントメール分類システムが稼働開始しました",
+      "last7Days": "過去7日間",
+      "maintenanceDesc": "システムメンテナンス時間が予定されました",
+      "maintenanceScheduled": "メンテナンスが予定されました",
+      "newUserDesc": "新しいユーザーがプラットフォーム登録を完了しました",
+      "newUserOnboarded": "新しいユーザーがオンボードされました",
+      "optimizationApplied": "最適化が適用されました",
+      "optimizationDesc": "パフォーマンス最適化戦略が実装されました",
+      "performanceIssueDesc": "システムパフォーマンスの異常が検出されました",
+      "performanceIssueDetected": "パフォーマンス問題が検出されました",
+      "reportDesc": "システム分析レポートが生成されました",
+      "reportGenerated": "レポートが生成されました",
+      "securityScanCompleted": "セキュリティスキャンが完了しました",
+      "securityScanDesc": "セキュリティ脆弱性スキャンタスクが完了しました",
+      "wmsKnowledgeDesc": "倉庫管理ナレッジベースが更新されました",
+      "wmsKnowledgeUpdated": "WMSナレッジが更新されました"
+    },
+    "charts": {
+      "agentCount": "エージェント数",
+      "agentStatusDistribution": "エージェント状態分布",
+      "agents": "エージェント",
+      "decrease": "減少",
+      "deploying": "デプロイ中",
+      "deployments": "デプロイ数",
+      "error": "エラー",
+      "increase": "増加",
+      "paused": "一時停止",
+      "running": "実行中",
+      "sevenDayActivityTrend": "7日間アクティビティトレンド",
+      "stable": "安定",
+      "stopped": "停止",
+      "tasks": "タスク数"
     }
   },
   "marketplace": {
@@ -93,7 +138,49 @@
       "byRating": "評価順",
       "byDownloads": "ダウンロード数順",
       "byPrice": "価格順",
-      "byName": "名前順"
+      "byName": "名前順",
+      "byNewest": "最新順"
+    },
+    "filters": {
+      "advanced": "高度なフィルター",
+      "allPrices": "すべての価格",
+      "clear": "クリア",
+      "freeOnly": "無料のみ",
+      "paidOnly": "有料のみ",
+      "subscriptionOnly": "サブスクリプションのみ"
+    },
+    "catalog": {
+      "loading": "読み込み中...",
+      "title": "エージェントカタログ"
+    },
+    "detail": {
+      "author": "作者",
+      "backToCatalog": "カタログに戻る",
+      "billedMonthly": "月額請求",
+      "capabilities": "機能",
+      "category": "カテゴリ",
+      "created": "作成日",
+      "deploy": "デプロイ",
+      "description": "説明",
+      "features": {
+        "performance": "高性能",
+        "security": "セキュリティ",
+        "support": "24/7サポート"
+      },
+      "hire": "採用",
+      "noCommitment": "最低利用期間なし",
+      "parameters": "パラメータ",
+      "payPerUsage": "使用量課金",
+      "pricing": "料金",
+      "reviews": "レビュー",
+      "reviewsCount": "件のレビュー",
+      "skills": "スキル",
+      "stats": "統計",
+      "status": {
+        "published": "公開済み"
+      },
+      "updated": "更新日",
+      "versionHistory": "バージョン履歴"
     },
     "agent": {
       "hire": "採用",
@@ -106,6 +193,81 @@
     "noResults": "条件に一致するエージェントが見つかりません",
     "tryAdjusting": "検索条件やフィルターを調整してください"
   },
+  "runtime": {
+    "title": "エージェントランタイム",
+    "subtitle": "ランタイム環境監視とタスク管理",
+    "tabs": {
+      "deployments": "デプロイメント",
+      "jobs": "ジョブ",
+      "messages": "メッセージ",
+      "metrics": "メトリクス"
+    },
+    "deployments": {
+      "title": "デプロイメントリスト",
+      "subtitle": "エージェントのデプロイ状態監視",
+      "cpu": "CPU使用率",
+      "memory": "メモリ使用量",
+      "heartbeat": "ハートビート",
+      "uptime": "稼働時間",
+      "status": {
+        "running": "実行中",
+        "stopped": "停止",
+        "paused": "一時停止",
+        "error": "エラー"
+      }
+    },
+    "jobs": {
+      "title": "ジョブログ",
+      "subtitle": "タスク実行状態管理",
+      "recentJobs": "最近のジョブ",
+      "status": {
+        "running": "実行中",
+        "completed": "完了",
+        "failed": "失敗",
+        "queued": "待機中"
+      },
+      "table": {
+        "jobId": "ジョブID",
+        "agent": "エージェント",
+        "description": "説明",
+        "status": "ステータス",
+        "timestamp": "タイムスタンプ",
+        "duration": "実行時間"
+      }
+    },
+    "messages": {
+      "title": "メッセージボード",
+      "subtitle": "システムメッセージと通知管理",
+      "recentMessages": "最近のメッセージ",
+      "messagesCount": "件のメッセージ",
+      "priority": {
+        "urgent": "緊急",
+        "high": "高",
+        "medium": "中",
+        "low": "低"
+      }
+    },
+    "metrics": {
+      "title": "パフォーマンスメトリクス",
+      "subtitle": "システムパフォーマンス監視",
+      "totalTasks": "総タスク数",
+      "totalTasksSubtitle": "システムで処理された総タスク数",
+      "activeConnections": "アクティブ接続数",
+      "activeConnectionsSubtitle": "現在の並行接続数",
+      "avgResponseTime": "平均応答時間",
+      "avgResponseTimeSubtitle": "API平均応答レイテンシ",
+      "successRate": "成功率",
+      "successRateSubtitle": "タスク実行成功比率",
+      "systemHealth": {
+        "title": "システムヘルス",
+        "overallStatus": "全体ステータス",
+        "healthy": "正常",
+        "cpuUsage": "CPU使用率",
+        "memoryUsage": "メモリ使用率",
+        "diskUsage": "ディスク使用率"
+      }
+    }
+  },
   "ontology": {
     "title": "オントロジーKB",
     "subtitle": "企業ナレッジベース、6領域ナレッジグラフ",
@@ -114,11 +276,6 @@
   "ide": {
     "title": "エージェントIDE",
     "subtitle": "エージェント開発環境、アイデアからデプロイまで",
-    "comingSoon": "近日公開..."
-  },
-  "runtime": {
-    "title": "エージェントランタイム",
-    "subtitle": "ランタイム環境監視とタスク管理",
     "comingSoon": "近日公開..."
   },
   "common": {

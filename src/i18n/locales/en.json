@@ -1,4 +1,6 @@
 {
+  "/": "Root",
+  "T": "T",
   "navigation": {
     "dashboard": "Dashboard",
     "ontology": "Ontology",
@@ -40,12 +42,55 @@
     },
     "recentActivity": {
       "title": "Recent Activity",
-      "deploySuccess": "deployed successfully",
-      "updateComplete": "update completed",
-      "performanceIssue": "performance issue detected",
-      "creationComplete": "creation completed",
       "minutes": "minutes ago",
       "hours": "hours ago"
+    },
+    "activity": {
+      "calendarAgentCreated": "Calendar agent created",
+      "calendarAgentDesc": "New calendar management agent successfully deployed",
+      "chatbotAgentDesc": "Customer service chatbot agent activated",
+      "chatbotAgentStarted": "Chatbot agent started",
+      "configurationDesc": "System configuration parameters updated",
+      "configurationUpdated": "Configuration updated",
+      "dataModelDesc": "Data model structure uploaded successfully",
+      "dataModelUploaded": "Data model uploaded",
+      "databaseBackupCompleted": "Database backup completed",
+      "databaseBackupDesc": "Scheduled database backup task executed successfully",
+      "dayAgo": "day ago",
+      "daysAgo": "days ago",
+      "emailTriageDeployed": "Email triage deployed",
+      "emailTriageDesc": "Intelligent email classification system online",
+      "last7Days": "Last 7 days",
+      "maintenanceDesc": "System maintenance window scheduled",
+      "maintenanceScheduled": "Maintenance scheduled",
+      "newUserDesc": "New user completed platform registration",
+      "newUserOnboarded": "New user onboarded",
+      "optimizationApplied": "Optimization applied",
+      "optimizationDesc": "Performance optimization strategy implemented",
+      "performanceIssueDesc": "System performance anomaly detected",
+      "performanceIssueDetected": "Performance issue detected",
+      "reportDesc": "System analysis report generated",
+      "reportGenerated": "Report generated",
+      "securityScanCompleted": "Security scan completed",
+      "securityScanDesc": "Security vulnerability scan task completed",
+      "wmsKnowledgeDesc": "Warehouse management knowledge base updated",
+      "wmsKnowledgeUpdated": "WMS knowledge updated"
+    },
+    "charts": {
+      "agentCount": "Agent Count",
+      "agentStatusDistribution": "Agent Status Distribution",
+      "agents": "Agents",
+      "decrease": "Decrease",
+      "deploying": "Deploying",
+      "deployments": "Deployments",
+      "error": "Error",
+      "increase": "Increase",
+      "paused": "Paused",
+      "running": "Running",
+      "sevenDayActivityTrend": "7-Day Activity Trend",
+      "stable": "Stable",
+      "stopped": "Stopped",
+      "tasks": "Tasks"
     }
   },
   "marketplace": {
@@ -93,7 +138,49 @@
       "byRating": "Sort by Rating",
       "byDownloads": "Sort by Downloads",
       "byPrice": "Sort by Price",
-      "byName": "Sort by Name"
+      "byName": "Sort by Name",
+      "byNewest": "Sort by Newest"
+    },
+    "filters": {
+      "advanced": "Advanced Filters",
+      "allPrices": "All Prices",
+      "clear": "Clear",
+      "freeOnly": "Free Only",
+      "paidOnly": "Paid Only",
+      "subscriptionOnly": "Subscription Only"
+    },
+    "catalog": {
+      "loading": "Loading...",
+      "title": "Agent Catalog"
+    },
+    "detail": {
+      "author": "Author",
+      "backToCatalog": "Back to Catalog",
+      "billedMonthly": "Billed Monthly",
+      "capabilities": "Capabilities",
+      "category": "Category",
+      "created": "Created",
+      "deploy": "Deploy",
+      "description": "Description",
+      "features": {
+        "performance": "High Performance",
+        "security": "Security",
+        "support": "24/7 Support"
+      },
+      "hire": "Hire",
+      "noCommitment": "No Minimum Commitment",
+      "parameters": "Parameters",
+      "payPerUsage": "Pay Per Usage",
+      "pricing": "Pricing",
+      "reviews": "Reviews",
+      "reviewsCount": "reviews",
+      "skills": "Skills",
+      "stats": "Stats",
+      "status": {
+        "published": "Published"
+      },
+      "updated": "Updated",
+      "versionHistory": "Version History"
     },
     "agent": {
       "hire": "Hire",
@@ -106,6 +193,81 @@
     "noResults": "No agents found matching your criteria",
     "tryAdjusting": "Try adjusting your search terms or filters"
   },
+  "runtime": {
+    "title": "Agent Runtime",
+    "subtitle": "Runtime Environment Monitoring and Task Management",
+    "tabs": {
+      "deployments": "Deployments",
+      "jobs": "Jobs",
+      "messages": "Messages",
+      "metrics": "Metrics"
+    },
+    "deployments": {
+      "title": "Deployment List",
+      "subtitle": "Agent deployment status monitoring",
+      "cpu": "CPU Usage",
+      "memory": "Memory Usage",
+      "heartbeat": "Heartbeat",
+      "uptime": "Uptime",
+      "status": {
+        "running": "Running",
+        "stopped": "Stopped",
+        "paused": "Paused",
+        "error": "Error"
+      }
+    },
+    "jobs": {
+      "title": "Job Log",
+      "subtitle": "Task execution status management",
+      "recentJobs": "Recent Jobs",
+      "status": {
+        "running": "Running",
+        "completed": "Completed",
+        "failed": "Failed",
+        "queued": "Queued"
+      },
+      "table": {
+        "jobId": "Job ID",
+        "agent": "Agent",
+        "description": "Description",
+        "status": "Status",
+        "timestamp": "Timestamp",
+        "duration": "Duration"
+      }
+    },
+    "messages": {
+      "title": "Message Board",
+      "subtitle": "System messages and notification management",
+      "recentMessages": "Recent Messages",
+      "messagesCount": "messages",
+      "priority": {
+        "urgent": "Urgent",
+        "high": "High",
+        "medium": "Medium",
+        "low": "Low"
+      }
+    },
+    "metrics": {
+      "title": "Performance Metrics",
+      "subtitle": "System performance monitoring",
+      "totalTasks": "Total Tasks",
+      "totalTasksSubtitle": "Total tasks processed by the system",
+      "activeConnections": "Active Connections",
+      "activeConnectionsSubtitle": "Current concurrent connections",
+      "avgResponseTime": "Average Response Time",
+      "avgResponseTimeSubtitle": "API average response latency",
+      "successRate": "Success Rate",
+      "successRateSubtitle": "Task execution success ratio",
+      "systemHealth": {
+        "title": "System Health",
+        "overallStatus": "Overall Status",
+        "healthy": "Healthy",
+        "cpuUsage": "CPU Usage",
+        "memoryUsage": "Memory Usage",
+        "diskUsage": "Disk Usage"
+      }
+    }
+  },
   "ontology": {
     "title": "Ontology KB",
     "subtitle": "Enterprise Knowledge Base, 6 Domain Knowledge Graphs",
@@ -114,11 +276,6 @@
   "ide": {
     "title": "Agent IDE",
     "subtitle": "Agent Development Environment, From Idea to Deployment",
-    "comingSoon": "Coming Soon..."
-  },
-  "runtime": {
-    "title": "Agent Runtime",
-    "subtitle": "Runtime Environment Monitoring and Task Management",
     "comingSoon": "Coming Soon..."
   },
   "common": {
