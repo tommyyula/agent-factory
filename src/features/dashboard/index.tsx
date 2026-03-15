@@ -1,9 +1,11 @@
 import React, { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { BarChart3, Bot, Activity, Shield } from 'lucide-react';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Badge } from '@/components/ui/badge';
 import { ontologyDB, agentDB, runtimeDB } from '@/shared/services/database';
+import { StatsCards } from './components/StatsCards';
+import { ArchitectureOverview } from './components/ArchitectureOverview';
+import { AgentStatusChart } from './components/AgentStatusChart';
+import { ActivityTrendChart } from './components/ActivityTrendChart';
+import { ActivityStream } from './components/ActivityStream';
 
 interface DashboardStats {
   totalAgents: number;
@@ -22,17 +24,50 @@ export function Dashboard() {
   });
   const [loading, setLoading] = useState(true);
 
+  // Mock data for charts
+  const [agentStatusData] = useState([
+    { name: t('dashboard.charts.running'), value: 15, color: '#10b981' },
+    { name: t('dashboard.charts.paused'), value: 3, color: '#f59e0b' },
+    { name: t('dashboard.charts.stopped'), value: 5, color: '#6b7280' },
+    { name: t('dashboard.charts.error'), value: 1, color: '#ef4444' },
+    { name: t('dashboard.charts.deploying'), value: 2, color: '#3b82f6' }
+  ]);
+
+  const [activityTrendData] = useState(() => {
+    const data = [];
+    for (let i = 6; i >= 0; i--) {
+      const date = new Date();
+      date.setDate(date.getDate() - i);
+      const baseTaskCount = 45 + Math.floor(Math.random() * 30);
+      const baseAgentCount = 12 + Math.floor(Math.random() * 8);
+      const baseDeploymentCount = 3 + Math.floor(Math.random() * 5);
+
+      data.push({
+        date: date.toISOString().split('T')[0],
+        formattedDate: date.toLocaleDateString('en-US', {
+          weekday: 'short',
+          month: 'short',
+          day: 'numeric'
+        }),
+        tasks: baseTaskCount,
+        agents: baseAgentCount,
+        deployments: baseDeploymentCount
+      });
+    }
+    return data;
+  });
+
   useEffect(() => {
     const loadStats = async () => {
       try {
         // Get agent statistics
         const totalAgents = await agentDB.agents.count();
         const publishedAgents = await agentDB.agents.where('status').equals('published').count();
-        
+
         // Get runtime statistics
         const runningDeployments = await runtimeDB.deployments.where('status').equals('running').count();
         const totalTasks = await runtimeDB.jobs.count();
-        
+
         // Calculate system health (mock calculation)
         const healthyDeployments = await runtimeDB.deployments.where('health.status').equals('healthy').count();
         const totalDeployments = await runtimeDB.deployments.count();
@@ -65,11 +100,7 @@ export function Dashboard() {
         </div>
         <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
           {[...Array(4)].map((_, i) => (
-            <Card key={i}>
-              <CardContent className="p-6">
-                <div className="h-16 bg-muted animate-pulse rounded" />
-              </CardContent>
-            </Card>
+            <div key={i} className="h-32 bg-muted animate-pulse rounded-lg" />
           ))}
         </div>
       </div>
@@ -86,139 +117,18 @@ export function Dashboard() {
       </div>
 
       {/* Stats Cards */}
-      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">
-              {t('dashboard.stats.totalAgents')}
-            </CardTitle>
-            <Bot className="h-4 w-4 text-muted-foreground" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">{stats.totalAgents}</div>
-            <p className="text-xs text-muted-foreground">
-              <span className="text-green-500">+2</span> {t('dashboard.stats.newThisMonth')}
-            </p>
-          </CardContent>
-        </Card>
-        
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">
-              {t('dashboard.stats.activeAgents')}
-            </CardTitle>
-            <Activity className="h-4 w-4 text-muted-foreground" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">{stats.activeAgents}</div>
-            <p className="text-xs text-muted-foreground">
-              {t('dashboard.stats.running')}
-            </p>
-          </CardContent>
-        </Card>
+      <StatsCards stats={stats} />
 
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">
-              {t('dashboard.stats.totalTasks')}
-            </CardTitle>
-            <BarChart3 className="h-4 w-4 text-muted-foreground" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">{stats.totalTasks}</div>
-            <p className="text-xs text-muted-foreground">
-              <span className="text-green-500">+12%</span> {t('dashboard.stats.comparedToYesterday')}
-            </p>
-          </CardContent>
-        </Card>
-
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">
-              {t('dashboard.stats.systemHealth')}
-            </CardTitle>
-            <Shield className="h-4 w-4 text-muted-foreground" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">{stats.systemHealth}%</div>
-            <p className="text-xs">
-              <Badge variant={stats.systemHealth > 90 ? "success" : stats.systemHealth > 70 ? "warning" : "destructive"}>
-                {stats.systemHealth > 90 ? t('dashboard.stats.excellent') : stats.systemHealth > 70 ? t('dashboard.stats.good') : t('dashboard.stats.needsAttention')}
-              </Badge>
-            </p>
-          </CardContent>
-        </Card>
+      {/* Charts Section */}
+      <div className="grid gap-6 lg:grid-cols-2">
+        <AgentStatusChart data={agentStatusData} />
+        <ActivityTrendChart data={activityTrendData} />
       </div>
 
-      {/* Architecture Overview */}
+      {/* Architecture Overview and Activity Stream */}
       <div className="grid gap-6 lg:grid-cols-2">
-        <Card>
-          <CardHeader>
-            <CardTitle>{t('dashboard.architecture.title')}</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="space-y-4">
-              <div className="flex items-center justify-between p-3 bg-accent/50 rounded-lg">
-                <span className="font-medium">{t('dashboard.architecture.layers.aaas')}</span>
-                <Badge variant="success">{t('dashboard.architecture.status.running')}</Badge>
-              </div>
-              <div className="flex items-center justify-between p-3 bg-accent/50 rounded-lg">
-                <span className="font-medium">{t('dashboard.architecture.layers.runtime')}</span>
-                <Badge variant="success">{t('dashboard.architecture.status.healthy')}</Badge>
-              </div>
-              <div className="flex items-center justify-between p-3 bg-accent/50 rounded-lg">
-                <span className="font-medium">{t('dashboard.architecture.layers.factory')}</span>
-                <Badge variant="success">{t('dashboard.architecture.status.active')}</Badge>
-              </div>
-              <div className="flex items-center justify-between p-3 bg-accent/50 rounded-lg">
-                <span className="font-medium">{t('dashboard.architecture.layers.ontology')}</span>
-                <Badge variant="warning">{t('dashboard.architecture.status.syncing')}</Badge>
-              </div>
-              <div className="flex items-center justify-between p-3 bg-accent/50 rounded-lg">
-                <span className="font-medium">{t('dashboard.architecture.layers.dataSources')}</span>
-                <Badge variant="success">{t('dashboard.architecture.status.connected')}</Badge>
-              </div>
-            </div>
-          </CardContent>
-        </Card>
-
-        <Card>
-          <CardHeader>
-            <CardTitle>{t('dashboard.recentActivity.title')}</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="space-y-4">
-              <div className="flex items-start space-x-3">
-                <div className="w-2 h-2 bg-green-500 rounded-full mt-2" />
-                <div>
-                  <p className="text-sm font-medium">Email Triage Agent {t('dashboard.recentActivity.deploySuccess')}</p>
-                  <p className="text-xs text-muted-foreground">2 {t('dashboard.recentActivity.minutes')}</p>
-                </div>
-              </div>
-              <div className="flex items-start space-x-3">
-                <div className="w-2 h-2 bg-blue-500 rounded-full mt-2" />
-                <div>
-                  <p className="text-sm font-medium">WMS 知识域 {t('dashboard.recentActivity.updateComplete')}</p>
-                  <p className="text-xs text-muted-foreground">15 {t('dashboard.recentActivity.minutes')}</p>
-                </div>
-              </div>
-              <div className="flex items-start space-x-3">
-                <div className="w-2 h-2 bg-yellow-500 rounded-full mt-2" />
-                <div>
-                  <p className="text-sm font-medium">Knowledge Base Agent {t('dashboard.recentActivity.performanceIssue')}</p>
-                  <p className="text-xs text-muted-foreground">1 {t('dashboard.recentActivity.hours')}</p>
-                </div>
-              </div>
-              <div className="flex items-start space-x-3">
-                <div className="w-2 h-2 bg-green-500 rounded-full mt-2" />
-                <div>
-                  <p className="text-sm font-medium">Calendar Brief Agent {t('dashboard.recentActivity.creationComplete')}</p>
-                  <p className="text-xs text-muted-foreground">3 {t('dashboard.recentActivity.hours')}</p>
-                </div>
-              </div>
-            </div>
-          </CardContent>
-        </Card>
+        <ArchitectureOverview />
+        <ActivityStream />
       </div>
     </div>
   );
