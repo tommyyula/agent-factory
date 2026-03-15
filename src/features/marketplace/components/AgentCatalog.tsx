@@ -26,6 +26,7 @@ export function AgentCatalog({
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedCategory, setSelectedCategory] = useState<string>('all');
   const [selectedIndustry, setSelectedIndustry] = useState<string>('all');
+  const [selectedDivision, setSelectedDivision] = useState<string>('all');
   const [sortBy, setSortBy] = useState<string>('rating');
   const [viewMode, setViewMode] = useState<'grid' | 'list'>(initialViewMode);
   const [priceFilter, setPriceFilter] = useState<string>('all');
@@ -59,6 +60,12 @@ export function AgentCatalog({
             !agent.metadata.tags.some(tag => tag.toLowerCase().includes(query))) {
           return false;
         }
+      }
+
+      // Division filter (agency-agents divisions)
+      if (selectedDivision !== 'all') {
+        const agentDivision = (agent.category as any).division || (agent.metadata as any).division;
+        if (agentDivision !== selectedDivision) return false;
       }
 
       // Category filter
@@ -231,7 +238,28 @@ export function AgentCatalog({
 
           {/* Advanced Filters */}
           {showAdvancedFilters && (
-            <div className="grid gap-4 md:grid-cols-4 p-4 border rounded-lg bg-muted/30">
+            <div className="grid gap-4 md:grid-cols-5 p-4 border rounded-lg bg-muted/30">
+              <select
+                value={selectedDivision}
+                onChange={(e) => setSelectedDivision(e.target.value)}
+                className="px-3 py-2 border border-input rounded-md bg-background"
+              >
+                <option value="all">全部领域</option>
+                <option value="engineering">💻 工程</option>
+                <option value="design">🎨 设计</option>
+                <option value="marketing">📢 营销</option>
+                <option value="sales">💼 销售</option>
+                <option value="product">📊 产品</option>
+                <option value="project-management">📋 项目管理</option>
+                <option value="testing">🧪 测试</option>
+                <option value="support">🛟 支持</option>
+                <option value="specialized">⚙️ 专业</option>
+                <option value="spatial-computing">🥽 空间计算</option>
+                <option value="paid-media">💰 付费媒体</option>
+                <option value="strategy">🎯 战略</option>
+                <option value="game-development">🎮 游戏开发</option>
+              </select>
+
               <select
                 value={selectedCategory}
                 onChange={(e) => setSelectedCategory(e.target.value)}
@@ -354,7 +382,19 @@ function AgentCard({ agent, viewMode, onClick }: AgentCardProps) {
     }
   };
 
+  const divisionLabels: Record<string, string> = {
+    'engineering': '💻 工程', 'design': '🎨 设计', 'marketing': '📢 营销',
+    'sales': '💼 销售', 'product': '📊 产品', 'project-management': '📋 项目管理',
+    'testing': '🧪 测试', 'support': '🛟 支持', 'specialized': '⚙️ 专业',
+    'spatial-computing': '🥽 空间计算', 'paid-media': '💰 付费媒体',
+    'strategy': '🎯 战略', 'game-development': '🎮 游戏开发',
+  };
+
   const getCategoryDisplay = (category: { industry: string; function: string }) => {
+    const div = (category as any).division;
+    if (div && divisionLabels[div]) {
+      return divisionLabels[div];
+    }
     return `${category.industry} • ${category.function}`;
   };
 

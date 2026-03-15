@@ -45,6 +45,7 @@ export interface AgentDefinition {
   category: {
     industry: 'WMS' | 'TMS' | 'HRM' | 'FMS' | 'YMS' | 'OMS' | 'general' | 'healthcare' | 'ai-tools' | 'development' | 'creative' | 'knowledge' | 'marketing';
     function: 'data-analysis' | 'automation' | 'customer-service' | 'monitoring' | 'productivity' | 'optimization' | 'analytics' | 'self-improvement' | 'code-analysis' | 'generation' | 'integration' | 'visualization' | 'memory-management' | 'lifestyle';
+    division?: 'engineering' | 'design' | 'marketing' | 'sales' | 'product' | 'project-management' | 'testing' | 'support' | 'specialized' | 'spatial-computing' | 'paid-media' | 'strategy' | 'game-development';
   };
   pricing: {
     model: 'subscription' | 'usage' | 'free' | 'pay-per-use';
@@ -64,6 +65,9 @@ export interface AgentDefinition {
     rating: number;
     downloads: number;
     reviews: AgentReview[];
+    source?: string;
+    division?: string;
+    divisionName?: string;
   };
   createdAt: Date;
   updatedAt: Date;
