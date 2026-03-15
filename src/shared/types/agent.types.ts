@@ -1,3 +1,40 @@
+export interface MissionBlock {
+  title: string;
+  description: string;
+  capabilities: string[];
+}
+
+export interface WorkflowStep {
+  step: number;
+  name: string;
+  description: string;
+  commands?: string[];
+  decisionLogic?: string;
+}
+
+export interface SuccessMetric {
+  name: string;
+  target: string;
+  description: string;
+}
+
+export interface AgentSoul {
+  identity: {
+    role: string;
+    personality: string;
+    memory: string;
+    experience: string;
+  };
+  mission: MissionBlock[];
+  criticalRules: string[];
+  workflow: WorkflowStep[];
+  communicationStyle: string[];
+  successMetrics: SuccessMetric[];
+  vibe: string;
+  emoji: string;
+  color: string;
+}
+
 export interface AgentDefinition {
   id: string;
   name: string;
@@ -30,6 +67,7 @@ export interface AgentDefinition {
   };
   createdAt: Date;
   updatedAt: Date;
+  soul?: AgentSoul;
 }
 
 export interface SkillConfiguration {

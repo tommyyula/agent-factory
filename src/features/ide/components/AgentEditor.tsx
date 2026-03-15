@@ -22,10 +22,13 @@ import {
   CheckCircle,
   XCircle,
   Clock,
-  AlertTriangle
+  AlertTriangle,
+  Sparkles,
+  Plus,
+  Trash2
 } from 'lucide-react';
 import { agentDB } from '@/shared/services/database';
-import { AgentDefinition, BuildLog, TestCase } from '@/shared/types/agent.types';
+import { AgentDefinition, AgentSoul, BuildLog, TestCase } from '@/shared/types/agent.types';
 
 interface BuildStep {
   id: string;
@@ -270,6 +273,10 @@ export function AgentEditor() {
           <TabsTrigger value="tests">
             <TestTube className="mr-2 h-4 w-4" />
             {t('ide.tests', 'Tests')}
+          </TabsTrigger>
+          <TabsTrigger value="soul">
+            <Sparkles className="mr-2 h-4 w-4" />
+            {t('ide.soul', 'Soul')}
           </TabsTrigger>
         </TabsList>
 
@@ -584,7 +591,220 @@ Function: ${agent.category.function}
             ))}
           </div>
         </TabsContent>
+        <TabsContent value="soul" className="space-y-6">
+          {/* Identity */}
+          <Card>
+            <CardHeader>
+              <div className="flex items-center justify-between">
+                <CardTitle className="flex items-center gap-2">
+                  <span>{agent.soul?.emoji || '🤖'}</span>
+                  {t('ide.soul.identity', 'Identity & Memory')}
+                </CardTitle>
+                {agent.soul && (
+                  <Badge style={{ backgroundColor: agent.soul.color }} className="text-white">
+                    {agent.soul.vibe}
+                  </Badge>
+                )}
+              </div>
+            </CardHeader>
+            <CardContent className="grid gap-4 md:grid-cols-2">
+              <div className="space-y-2">
+                <Label>{t('ide.soul.role', 'Role')}</Label>
+                <Input
+                  defaultValue={agent.soul?.identity.role || ''}
+                  placeholder="e.g. Senior Frontend Developer"
+                  onChange={(e) => setAgent(prev => prev ? {
+                    ...prev,
+                    soul: { ...(prev.soul || defaultSoul), identity: { ...(prev.soul?.identity || defaultSoul.identity), role: e.target.value } }
+                  } : null)}
+                />
+              </div>
+              <div className="space-y-2">
+                <Label>{t('ide.soul.personality', 'Personality')}</Label>
+                <Input
+                  defaultValue={agent.soul?.identity.personality || ''}
+                  placeholder="e.g. Meticulous, performance-obsessed"
+                  onChange={(e) => setAgent(prev => prev ? {
+                    ...prev,
+                    soul: { ...(prev.soul || defaultSoul), identity: { ...(prev.soul?.identity || defaultSoul.identity), personality: e.target.value } }
+                  } : null)}
+                />
+              </div>
+              <div className="space-y-2">
+                <Label>{t('ide.soul.memory', 'Memory Style')}</Label>
+                <Input
+                  defaultValue={agent.soul?.identity.memory || ''}
+                  placeholder="e.g. Tracks decisions and context"
+                  onChange={(e) => setAgent(prev => prev ? {
+                    ...prev,
+                    soul: { ...(prev.soul || defaultSoul), identity: { ...(prev.soul?.identity || defaultSoul.identity), memory: e.target.value } }
+                  } : null)}
+                />
+              </div>
+              <div className="space-y-2">
+                <Label>{t('ide.soul.experience', 'Experience')}</Label>
+                <Input
+                  defaultValue={agent.soul?.identity.experience || ''}
+                  placeholder="e.g. 10+ years in production systems"
+                  onChange={(e) => setAgent(prev => prev ? {
+                    ...prev,
+                    soul: { ...(prev.soul || defaultSoul), identity: { ...(prev.soul?.identity || defaultSoul.identity), experience: e.target.value } }
+                  } : null)}
+                />
+              </div>
+              <div className="space-y-2">
+                <Label>{t('ide.soul.vibe', 'Vibe')}</Label>
+                <Input
+                  defaultValue={agent.soul?.vibe || ''}
+                  placeholder="e.g. Builds fast, ships clean code"
+                />
+              </div>
+              <div className="space-y-2">
+                <Label>{t('ide.soul.emoji', 'Emoji')} / {t('ide.soul.color', 'Color')}</Label>
+                <div className="flex gap-2">
+                  <Input
+                    defaultValue={agent.soul?.emoji || ''}
+                    placeholder="🤖"
+                    className="w-20"
+                  />
+                  <Input
+                    defaultValue={agent.soul?.color || ''}
+                    placeholder="#6366f1"
+                  />
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+
+          {/* Critical Rules */}
+          <Card>
+            <CardHeader>
+              <CardTitle>{t('ide.soul.criticalRules', 'Critical Rules')}</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="space-y-2">
+                {(agent.soul?.criticalRules || []).map((rule, i) => (
+                  <div key={i} className="flex items-center gap-2">
+                    <Badge variant="destructive" className="shrink-0">Rule {i + 1}</Badge>
+                    <span className="text-sm flex-1">{rule}</span>
+                  </div>
+                ))}
+                {(!agent.soul?.criticalRules || agent.soul.criticalRules.length === 0) && (
+                  <p className="text-sm text-muted-foreground">{t('ide.soul.noRules', 'No critical rules defined yet.')}</p>
+                )}
+              </div>
+            </CardContent>
+          </Card>
+
+          {/* Mission */}
+          <Card>
+            <CardHeader>
+              <CardTitle>{t('ide.soul.mission', 'Core Mission')}</CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              {(agent.soul?.mission || []).map((block, i) => (
+                <div key={i} className="border rounded-lg p-4 space-y-2">
+                  <h4 className="font-medium">{block.title}</h4>
+                  <p className="text-sm text-muted-foreground">{block.description}</p>
+                  <div className="flex flex-wrap gap-1">
+                    {block.capabilities.map((cap, j) => (
+                      <Badge key={j} variant="secondary" className="text-xs">{cap}</Badge>
+                    ))}
+                  </div>
+                </div>
+              ))}
+              {(!agent.soul?.mission || agent.soul.mission.length === 0) && (
+                <p className="text-sm text-muted-foreground">{t('ide.soul.noMission', 'No mission blocks defined yet.')}</p>
+              )}
+            </CardContent>
+          </Card>
+
+          {/* Workflow */}
+          <Card>
+            <CardHeader>
+              <CardTitle>{t('ide.soul.workflow', 'Workflow Process')}</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="space-y-3">
+                {(agent.soul?.workflow || []).map((step) => (
+                  <div key={step.step} className="flex items-start gap-3">
+                    <div className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-primary text-primary-foreground text-xs font-bold">
+                      {step.step}
+                    </div>
+                    <div className="flex-1 space-y-1">
+                      <p className="font-medium text-sm">{step.name}</p>
+                      <p className="text-xs text-muted-foreground">{step.description}</p>
+                      {step.commands && step.commands.length > 0 && (
+                        <div className="bg-muted rounded p-2 font-mono text-xs">
+                          {step.commands.map((cmd, i) => <div key={i}>{cmd}</div>)}
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                ))}
+                {(!agent.soul?.workflow || agent.soul.workflow.length === 0) && (
+                  <p className="text-sm text-muted-foreground">{t('ide.soul.noWorkflow', 'No workflow steps defined yet.')}</p>
+                )}
+              </div>
+            </CardContent>
+          </Card>
+
+          {/* Communication Style */}
+          <Card>
+            <CardHeader>
+              <CardTitle>{t('ide.soul.communicationStyle', 'Communication Style')}</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="space-y-2">
+                {(agent.soul?.communicationStyle || []).map((style, i) => (
+                  <div key={i} className="flex items-center gap-2 text-sm">
+                    <CheckCircle className="h-4 w-4 text-green-500 shrink-0" />
+                    {style}
+                  </div>
+                ))}
+                {(!agent.soul?.communicationStyle || agent.soul.communicationStyle.length === 0) && (
+                  <p className="text-sm text-muted-foreground">{t('ide.soul.noCommStyle', 'No communication style defined yet.')}</p>
+                )}
+              </div>
+            </CardContent>
+          </Card>
+
+          {/* Success Metrics */}
+          <Card>
+            <CardHeader>
+              <CardTitle>{t('ide.soul.successMetrics', 'Success Metrics')}</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="grid gap-3 md:grid-cols-2">
+                {(agent.soul?.successMetrics || []).map((metric, i) => (
+                  <div key={i} className="border rounded-lg p-3 space-y-1">
+                    <div className="flex items-center justify-between">
+                      <span className="font-medium text-sm">{metric.name}</span>
+                      <Badge variant="outline">{metric.target}</Badge>
+                    </div>
+                    <p className="text-xs text-muted-foreground">{metric.description}</p>
+                  </div>
+                ))}
+                {(!agent.soul?.successMetrics || agent.soul.successMetrics.length === 0) && (
+                  <p className="text-sm text-muted-foreground col-span-2">{t('ide.soul.noMetrics', 'No success metrics defined yet.')}</p>
+                )}
+              </div>
+            </CardContent>
+          </Card>
+        </TabsContent>
       </Tabs>
     </div>
   );
 }
+
+const defaultSoul: AgentSoul = {
+  identity: { role: '', personality: '', memory: '', experience: '' },
+  mission: [],
+  criticalRules: [],
+  workflow: [],
+  communicationStyle: [],
+  successMetrics: [],
+  vibe: '',
+  emoji: '🤖',
+  color: '#6366f1',
+};
