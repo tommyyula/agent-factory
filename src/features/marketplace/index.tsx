@@ -621,6 +621,11 @@ function MarketplaceHome() {
     loadAgents();
   }, []);
 
+  const isAPAgent = (agent: AgentDefinition) =>
+    agent.displayName.toLowerCase().includes('accounts payable') ||
+    agent.displayName.toLowerCase().includes('ap agent') ||
+    agent.category.industry === 'FMS';
+
   // Filter and sort logic
   const filteredAndSortedAgents = agents
     .filter(agent => {
@@ -637,6 +642,12 @@ function MarketplaceHome() {
       return true;
     })
     .sort((a, b) => {
+      // AP Agent always sorts to top
+      const aIsAP = isAPAgent(a);
+      const bIsAP = isAPAgent(b);
+      if (aIsAP && !bIsAP) return -1;
+      if (!aIsAP && bIsAP) return 1;
+
       switch (sortBy) {
         case 'rating':
           return b.metadata.rating - a.metadata.rating;
@@ -808,6 +819,7 @@ function MarketplaceHome() {
             key={agent.id}
             agent={agent}
             viewMode={viewMode}
+            featured={isAPAgent(agent)}
             onSelect={() => setSelectedAgent(agent)}
           />
         ))}
@@ -830,10 +842,11 @@ function MarketplaceHome() {
 interface AgentMarketCardProps {
   agent: AgentDefinition;
   viewMode: 'grid' | 'list';
+  featured?: boolean;
   onSelect: () => void;
 }
 
-function AgentMarketCard({ agent, viewMode, onSelect }: AgentMarketCardProps) {
+function AgentMarketCard({ agent, viewMode, featured, onSelect }: AgentMarketCardProps) {
   const { t } = useTranslation();
   const navigate = useNavigate();
 
@@ -899,13 +912,16 @@ function AgentMarketCard({ agent, viewMode, onSelect }: AgentMarketCardProps) {
 
   if (viewMode === 'list') {
     return (
-      <Card className="hover:shadow-lg transition-shadow">
+      <Card className={`hover:shadow-lg transition-shadow${featured ? ' ring-2 ring-primary' : ''}`}>
         <CardContent className="p-6">
           <div className="flex items-start space-x-6">
             <div className="flex-1 space-y-2">
               <div className="flex items-start justify-between">
                 <div>
-                  <h3 className="text-lg font-semibold">{agent.displayName}</h3>
+                  <div className="flex items-center gap-2">
+                    <h3 className="text-lg font-semibold">{agent.displayName}</h3>
+                    {featured && <Badge className="bg-primary text-primary-foreground text-xs">Featured</Badge>}
+                  </div>
                   <p className="text-sm text-muted-foreground">
                     {getCategoryText(agent.category)}
                   </p>
@@ -948,11 +964,14 @@ function AgentMarketCard({ agent, viewMode, onSelect }: AgentMarketCardProps) {
   }
 
   return (
-    <Card className="hover:shadow-lg transition-shadow">
+    <Card className={`hover:shadow-lg transition-shadow${featured ? ' ring-2 ring-primary' : ''}`}>
       <CardHeader>
         <div className="flex items-start justify-between">
           <div className="space-y-1 flex-1">
-            <CardTitle className="text-lg leading-tight">{agent.displayName}</CardTitle>
+            <div className="flex items-center gap-2 flex-wrap">
+              <CardTitle className="text-lg leading-tight">{agent.displayName}</CardTitle>
+              {featured && <Badge className="bg-primary text-primary-foreground text-xs">Featured</Badge>}
+            </div>
             <p className="text-sm text-muted-foreground">
               {getCategoryText(agent.category)}
             </p>

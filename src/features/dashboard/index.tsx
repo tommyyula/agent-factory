@@ -68,9 +68,10 @@ export function Dashboard() {
         const runningDeployments = await runtimeDB.deployments.where('status').equals('running').count();
         const totalTasks = await runtimeDB.jobs.count();
 
-        // Calculate system health (mock calculation)
-        const healthyDeployments = await runtimeDB.deployments.where('health.status').equals('healthy').count();
-        const totalDeployments = await runtimeDB.deployments.count();
+        // Calculate system health (health.status is not an indexed field, so filter in JS)
+        const allDeployments = await runtimeDB.deployments.toArray();
+        const totalDeployments = allDeployments.length;
+        const healthyDeployments = allDeployments.filter(d => d.health?.status === 'healthy').length;
         const systemHealth = totalDeployments > 0 ? Math.round((healthyDeployments / totalDeployments) * 100) : 100;
 
         setStats({
