@@ -54,7 +54,12 @@ function DeploymentDetail() {
             status: 'running',
             environment: 'production',
             version: '2.1.0',
-            configuration: {},
+            configuration: {
+              instanceName: 'DataAnalyzer Pro Instance',
+              parameters: {},
+              resources: { cpu: '2 vCPU', memory: '4GB', storage: '10GB' },
+              environment: 'production'
+            },
             resources: {
               cpu: {
                 usage: 45,
@@ -194,7 +199,7 @@ function DeploymentDetail() {
             <BarChart3 className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">{deployment.metrics.requests.toLocaleString()}</div>
+            <div className="text-2xl font-bold">{deployment.metrics.requestCount.toLocaleString()}</div>
             <p className="text-xs text-muted-foreground">Total processed</p>
           </CardContent>
         </Card>
@@ -205,7 +210,7 @@ function DeploymentDetail() {
             <Activity className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">{deployment.metrics.avgResponseTime}</div>
+            <div className="text-2xl font-bold">{deployment.metrics.averageResponseTime}ms</div>
             <p className="text-xs text-muted-foreground">Response time</p>
           </CardContent>
         </Card>
@@ -217,9 +222,9 @@ function DeploymentDetail() {
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">
-              {((deployment.metrics.errors / deployment.metrics.requests) * 100).toFixed(2)}%
+              {(deployment.metrics.errorRate * 100).toFixed(2)}%
             </div>
-            <p className="text-xs text-muted-foreground">{deployment.metrics.errors} total errors</p>
+            <p className="text-xs text-muted-foreground">{Math.round(deployment.metrics.errorRate * deployment.metrics.requestCount)} total errors</p>
           </CardContent>
         </Card>
       </div>
@@ -261,15 +266,15 @@ function DeploymentDetail() {
             <CardContent className="space-y-4">
               <div className="flex justify-between">
                 <span className="text-sm">CPU</span>
-                <span className="font-medium">{deployment.resources.cpu}</span>
+                <span className="font-medium">{deployment.resources.cpu.usage}%</span>
               </div>
               <div className="flex justify-between">
                 <span className="text-sm">Memory</span>
-                <span className="font-medium">{deployment.resources.memory}</span>
+                <span className="font-medium">{(deployment.resources.memory.usage / 1073741824).toFixed(1)} GB</span>
               </div>
               <div className="flex justify-between">
                 <span className="text-sm">Storage</span>
-                <span className="font-medium">{deployment.resources.storage}</span>
+                <span className="font-medium">{(deployment.resources.storage.usage / 1073741824).toFixed(1)} GB</span>
               </div>
             </CardContent>
           </Card>
