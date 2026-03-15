@@ -38,6 +38,52 @@ interface BuildStep {
   logs: string[];
 }
 
+interface RecommendedSkill {
+  id: string;
+  name: string;
+  description: string;
+  type: 'analytics' | 'integration' | 'optimization' | 'api';
+  compatibility: number;
+}
+
+interface SkillTestState {
+  skillId: string;
+  input: string;
+  running: boolean;
+  result: { passed: boolean; executionTime: number; tokenUsage: number } | null;
+}
+
+const RECOMMENDED_AP_SKILLS: RecommendedSkill[] = [
+  {
+    id: 'rec-invoice-parser',
+    name: 'Invoice Parser',
+    description: 'Automatically extract and validate invoice data from PDFs and images',
+    type: 'analytics',
+    compatibility: 98
+  },
+  {
+    id: 'rec-payment-gateway',
+    name: 'Payment Gateway Connector',
+    description: 'Connect to major payment processors (Stripe, PayPal, SWIFT)',
+    type: 'integration',
+    compatibility: 92
+  },
+  {
+    id: 'rec-fraud-detection',
+    name: 'Fraud Detection',
+    description: 'ML-based anomaly detection for suspicious payment patterns',
+    type: 'optimization',
+    compatibility: 87
+  },
+  {
+    id: 'rec-currency-converter',
+    name: 'Currency Converter',
+    description: 'Real-time FX rates with multi-currency support',
+    type: 'api',
+    compatibility: 95
+  }
+];
+
 function MarkdownSectionBlock({ content, emptyMessage }: { content?: string; emptyMessage: string }) {
   if (!content || !content.trim()) {
     return <p className="text-sm text-muted-foreground">{emptyMessage}</p>;
@@ -58,6 +104,8 @@ export function AgentEditor() {
   const [loading, setLoading] = useState(true);
   const [buildSteps, setBuildSteps] = useState<BuildStep[]>([]);
   const [testResults, setTestResults] = useState<TestCase[]>([]);
+  const [installedSkills, setInstalledSkills] = useState<Set<string>>(new Set());
+  const [skillTest, setSkillTest] = useState<SkillTestState | null>(null);
 
   useEffect(() => {
     const loadAgent = async () => {
@@ -265,6 +313,40 @@ export function AgentEditor() {
     }
   };
 
+  const handleInstallRecommendedSkill = (skill: RecommendedSkill) => {
+    if (!agent || installedSkills.has(skill.id)) return;
+
+    const newSkill = {
+      id: skill.id,
+      name: skill.name,
+      type: 'function' as const,
+      enabled: true,
+      configuration: { source: 'recommended', type: skill.type },
+      parameters: [],
+      description: skill.description
+    };
+
+    setAgent(prev => prev ? { ...prev, skills: [...prev.skills, newSkill] } : null);
+    setInstalledSkills(prev => new Set([...prev, skill.id]));
+  };
+
+  const handleRunSkillTest = (skillId: string) => {
+    setSkillTest(prev => prev ? { ...prev, running: true, result: null } : null);
+    const execTime = Math.floor(Math.random() * 600) + 200;
+    const tokenCount = Math.floor(Math.random() * 250) + 150;
+    setTimeout(() => {
+      setSkillTest(prev => prev ? {
+        ...prev,
+        running: false,
+        result: {
+          passed: Math.random() > 0.2,
+          executionTime: execTime,
+          tokenUsage: tokenCount
+        }
+      } : null);
+    }, execTime);
+  };
+
   if (loading) {
     return (
       <div className="space-y-6">
@@ -354,6 +436,10 @@ export function AgentEditor() {
           <TabsTrigger value="skills">
             <Wrench className="mr-2 h-4 w-4" />
             {t('ide.skills', 'Skills')}
+          </TabsTrigger>
+          <TabsTrigger value="recommended">
+            <Sparkles className="mr-2 h-4 w-4" />
+            {t('ide.recommendedSkills', 'Recommended Skills')}
           </TabsTrigger>
           <TabsTrigger value="prompts">
             <MessageSquare className="mr-2 h-4 w-4" />
@@ -505,6 +591,167 @@ Function: ${agent.category.function}
                 </Card>
               ))}
             </div>
+          </div>
+        </TabsContent>
+
+        <TabsContent value="recommended" className="space-y-6">
+          {/* Recommended Skills */}
+          <div className="space-y-4">
+            <div className="flex items-center justify-between">
+              <h3 className="text-lg font-medium flex items-center gap-2">
+                {t('ide.recommendedSkills', 'Recommended Skills')}
+                <Badge variant="secondary">{RECOMMENDED_AP_SKILLS.length}</Badge>
+              </h3>
+            </div>
+            <div className="grid gap-4 md:grid-cols-2">
+              {RECOMMENDED_AP_SKILLS.map((skill) => {
+                const isInstalled = installedSkills.has(skill.id);
+                const compatColor =
+                  skill.compatibility >= 95 ? 'bg-green-500' :
+                  skill.compatibility >= 88 ? 'bg-blue-500' : 'bg-yellow-500';
+                const typeVariant: 'default' | 'secondary' | 'outline' =
+                  skill.type === 'analytics' ? 'default' :
+                  skill.type === 'integration' ? 'secondary' : 'outline';
+                return (
+                  <Card key={skill.id}>
+                    <CardHeader className="pb-2">
+                      <div className="flex items-start justify-between">
+                        <CardTitle className="text-base">{skill.name}</CardTitle>
+                        <Badge variant={typeVariant} className="text-xs capitalize">{skill.type}</Badge>
+                      </div>
+                    </CardHeader>
+                    <CardContent className="space-y-3">
+                      <p className="text-sm text-muted-foreground">{skill.description}</p>
+                      <div className="space-y-1">
+                        <div className="flex justify-between text-xs">
+                          <span className="text-muted-foreground">{t('ide.skillCompatibility', 'Compatibility')}</span>
+                          <span className="font-medium">{skill.compatibility}%</span>
+                        </div>
+                        <div className="w-full bg-muted rounded-full h-2">
+                          <div
+                            className={`h-2 rounded-full ${compatColor}`}
+                            style={{ width: `${skill.compatibility}%` }}
+                          />
+                        </div>
+                      </div>
+                      <Button
+                        size="sm"
+                        variant={isInstalled ? 'secondary' : 'default'}
+                        disabled={isInstalled}
+                        onClick={() => handleInstallRecommendedSkill(skill)}
+                        className="w-full"
+                      >
+                        {isInstalled
+                          ? `${t('ide.installed', 'Installed')} ✓`
+                          : t('ide.install', 'Install')}
+                      </Button>
+                    </CardContent>
+                  </Card>
+                );
+              })}
+            </div>
+          </div>
+
+          {/* Skill Testing Section */}
+          <div className="space-y-4">
+            <h3 className="text-lg font-medium">{t('ide.testSkill', 'Test Skills')}</h3>
+            {agent.skills.length === 0 ? (
+              <Card>
+                <CardContent className="py-8 text-center">
+                  <p className="text-sm text-muted-foreground">
+                    No skills installed yet. Install a skill above to test it.
+                  </p>
+                </CardContent>
+              </Card>
+            ) : (
+              <div className="grid gap-3">
+                {agent.skills.map((skill) => (
+                  <Card key={skill.id}>
+                    <CardContent className="pt-4 pb-4">
+                      <div className="flex items-center justify-between">
+                        <div>
+                          <span className="font-medium text-sm">{skill.name}</span>
+                          <Badge variant="outline" className="ml-2 text-xs">{skill.type}</Badge>
+                        </div>
+                        <Button
+                          size="sm"
+                          variant="outline"
+                          onClick={() => setSkillTest({
+                            skillId: skill.id,
+                            input: '',
+                            running: false,
+                            result: null
+                          })}
+                        >
+                          <Play className="mr-2 h-3 w-3" />
+                          {t('ide.testSkill', 'Test')}
+                        </Button>
+                      </div>
+
+                      {skillTest?.skillId === skill.id && (
+                        <div className="mt-4 space-y-3 border-t pt-4">
+                          <h4 className="text-sm font-medium">{t('ide.skillTest.title', 'Skill Test')}</h4>
+                          <div className="space-y-2">
+                            <Label className="text-xs">{t('ide.skillTest.input', 'Test Input')}</Label>
+                            <Input
+                              value={skillTest.input}
+                              onChange={(e) => setSkillTest(prev => prev ? { ...prev, input: e.target.value } : null)}
+                              placeholder={`Test input for ${skill.name}...`}
+                              className="text-sm"
+                            />
+                          </div>
+                          <Button
+                            size="sm"
+                            onClick={() => handleRunSkillTest(skill.id)}
+                            disabled={skillTest.running}
+                          >
+                            {skillTest.running ? (
+                              <>
+                                <Clock className="mr-2 h-3 w-3 animate-spin" />
+                                Running...
+                              </>
+                            ) : (
+                              <>
+                                <Play className="mr-2 h-3 w-3" />
+                                {t('ide.skillTest.runTest', 'Run Test')}
+                              </>
+                            )}
+                          </Button>
+
+                          {skillTest.result && (
+                            <div className="bg-muted/50 rounded-lg p-3 space-y-2">
+                              <h5 className="text-xs font-medium">{t('ide.skillTest.results', 'Test Results')}</h5>
+                              <div className="flex items-center gap-2">
+                                {skillTest.result.passed ? (
+                                  <CheckCircle className="h-4 w-4 text-green-500" />
+                                ) : (
+                                  <XCircle className="h-4 w-4 text-red-500" />
+                                )}
+                                <span className={`text-sm font-medium ${skillTest.result.passed ? 'text-green-600' : 'text-red-600'}`}>
+                                  {skillTest.result.passed
+                                    ? t('ide.skillTest.passed', 'Passed')
+                                    : t('ide.skillTest.failed', 'Failed')}
+                                </span>
+                              </div>
+                              <div className="grid grid-cols-2 gap-2 text-xs text-muted-foreground">
+                                <div>
+                                  <span>{t('ide.skillTest.executionTime', 'Execution Time')}: </span>
+                                  <span className="font-medium text-foreground">{skillTest.result.executionTime}ms</span>
+                                </div>
+                                <div>
+                                  <span>{t('ide.skillTest.tokenUsage', 'Token Usage')}: </span>
+                                  <span className="font-medium text-foreground">{skillTest.result.tokenUsage}</span>
+                                </div>
+                              </div>
+                            </div>
+                          )}
+                        </div>
+                      )}
+                    </CardContent>
+                  </Card>
+                ))}
+              </div>
+            )}
           </div>
         </TabsContent>
 

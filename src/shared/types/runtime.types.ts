@@ -14,6 +14,8 @@ export interface AgentDeployment {
   lastActivity: Date;
   createdAt: Date;
   updatedAt: Date;
+  tokenUsage?: TokenUsage;
+  collaboration?: CollaborationConfig;
 }
 
 export interface ResourceUsage {
@@ -142,4 +144,33 @@ export interface ChannelSettings {
     keywords: string[];
     priority: 'all' | 'high-only' | 'mentions-only';
   };
+}
+
+export interface TokenUsage {
+  tokensUsed: number;
+  tokenBudget: number;
+  tokensRemaining: number;
+  costEstimate: number; // USD
+  lastUpdated: Date;
+  history: TokenUsageSnapshot[];
+}
+
+export interface TokenUsageSnapshot {
+  timestamp: Date;
+  tokensUsed: number;
+  requestCount: number;
+}
+
+export interface CollaboratingAgent {
+  id: string;
+  name: string;
+  role: 'upstream' | 'downstream';
+  status: 'running' | 'idle' | 'error';
+  description: string;
+  dataFlow: string;
+}
+
+export interface CollaborationConfig {
+  upstreamAgents: CollaboratingAgent[];
+  downstreamAgents: CollaboratingAgent[];
 }

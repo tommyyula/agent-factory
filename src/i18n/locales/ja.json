@@ -97,6 +97,51 @@
     "title": "マーケットプレイス",
     "subtitle": "エージェント公開・取引市場",
     "agentsAvailable": "個のエージェントが利用可能",
+    "hiring": {
+      "title": "エージェントを採用",
+      "steps": {
+        "configure": "設定",
+        "resources": "リソース",
+        "payment": "支払い"
+      },
+      "step1": {
+        "title": "基本設定",
+        "instanceName": "インスタンス名",
+        "instanceNamePlaceholder": "例: AP-Agent-Production",
+        "environment": "環境",
+        "environments": {
+          "development": "開発",
+          "staging": "ステージング",
+          "production": "本番"
+        },
+        "scheduleType": "スケジュールタイプ",
+        "scheduleTypes": {
+          "continuous": "継続実行",
+          "scheduled": "スケジュール実行",
+          "eventDriven": "イベント駆動"
+        }
+      },
+      "step2": {
+        "title": "リソース設定",
+        "resourceTier": "リソースティア",
+        "autoscaling": "オートスケーリング",
+        "minReplicas": "最小レプリカ数",
+        "maxReplicas": "最大レプリカ数"
+      },
+      "step3": {
+        "title": "支払い確認",
+        "summary": "デプロイサマリー",
+        "monthlyPrice": "月額料金",
+        "confirmDeploy": "確認してデプロイ"
+      },
+      "success": {
+        "title": "デプロイ成功！",
+        "message": "エージェントがランタイム環境にデプロイされました",
+        "deploymentId": "デプロイID",
+        "monitorRuntime": "ランタイムを監視",
+        "backToMarketplace": "マーケットプレイスに戻る"
+      }
+    },
     "search": {
       "placeholder": "エージェントを検索...",
       "filter": "フィルター"
@@ -200,7 +245,46 @@
       "deployments": "デプロイメント",
       "jobs": "ジョブ",
       "messages": "メッセージ",
-      "metrics": "メトリクス"
+      "metrics": "メトリクス",
+      "pipelines": "パイプライン"
+    },
+    "detail": {
+      "tabs": {
+        "overview": "概要",
+        "tokens": "トークン使用量",
+        "collaboration": "コラボレーション",
+        "logs": "APログ"
+      }
+    },
+    "tokenUsage": {
+      "title": "トークン使用量",
+      "tokensUsed": "使用済みトークン",
+      "tokenBudget": "トークン予算",
+      "tokensRemaining": "残りトークン",
+      "costEstimate": "コスト見積もり",
+      "budgetConsumed": "予算消費",
+      "recentActivity": "最近のアクティビティ"
+    },
+    "collaboration": {
+      "title": "コラボレーション",
+      "upstream": "上流エージェント",
+      "downstream": "下流エージェント",
+      "pipeline": "データフローパイプライン",
+      "status": {
+        "running": "実行中",
+        "idle": "アイドル",
+        "error": "エラー"
+      }
+    },
+    "apLogs": {
+      "title": "APログ"
+    },
+    "pipelines": {
+      "title": "エージェントパイプライン",
+      "subtitle": "品質ゲート付きマルチエージェントオーケストレーション",
+      "active": "アクティブ",
+      "phases": "フェーズ",
+      "qualityGates": "品質ゲート"
     },
     "deployments": {
       "title": "デプロイメントリスト",
@@ -276,7 +360,67 @@
   "ide": {
     "title": "エージェントIDE",
     "subtitle": "エージェント開発環境、アイデアからデプロイまで",
-    "comingSoon": "近日公開..."
+    "comingSoon": "近日公開...",
+    "agentNotFound": "エージェントが見つかりません",
+    "skills": "スキル",
+    "recommendedSkills": "推奨スキル",
+    "prompts": "プロンプト",
+    "build": "ビルド",
+    "tests": "テスト",
+    "configuredSkills": "設定済みスキル",
+    "addSkill": "スキルを追加",
+    "configuration": "設定",
+    "systemPrompt": "システムプロンプト",
+    "userTemplate": "ユーザープロンプトテンプレート",
+    "promptVariables": "プロンプト変数",
+    "buildStatus": "ビルド状態",
+    "buildSteps": "ビルドステップ",
+    "testResults": "テスト結果",
+    "runTests": "テストを実行",
+    "passed": "合格",
+    "failed": "失敗",
+    "coverage": "カバレッジ",
+    "testCases": "テストケース",
+    "skillCompatibility": "互換性",
+    "installed": "インストール済み",
+    "install": "インストール",
+    "testSkill": "テスト",
+    "skillTest": {
+      "title": "スキルテスト",
+      "input": "テスト入力",
+      "runTest": "テストを実行",
+      "results": "テスト結果",
+      "passed": "合格",
+      "failed": "失敗",
+      "executionTime": "実行時間",
+      "tokenUsage": "トークン使用量"
+    },
+    "sdd": {
+      "requirements": "要件定義",
+      "design": "システム設計",
+      "domainAnalysis": "ドメイン分析",
+      "tasks": "タスク分解"
+    },
+    "soul": {
+      "identity": "アイデンティティと記憶",
+      "role": "役割",
+      "personality": "性格",
+      "memory": "記憶スタイル",
+      "experience": "経験",
+      "vibe": "雰囲気",
+      "emoji": "絵文字",
+      "color": "カラー",
+      "criticalRules": "重要ルール",
+      "noRules": "重要ルールはまだ定義されていません。",
+      "mission": "コアミッション",
+      "noMission": "ミッションブロックはまだ定義されていません。",
+      "workflow": "ワークフロープロセス",
+      "noWorkflow": "ワークフローステップはまだ定義されていません。",
+      "communicationStyle": "コミュニケーションスタイル",
+      "noCommStyle": "コミュニケーションスタイルはまだ定義されていません。",
+      "successMetrics": "成功指標",
+      "noMetrics": "成功指標はまだ定義されていません。"
+    }
   },
   "common": {
     "language": "言語",
@@ -289,6 +433,13 @@
     "pageNotFound": "ページが見つかりません",
     "checkUrl": "URLアドレスを確認してください",
     "initializing": "Agent Factory Platform を初期化中...",
-    "pleaseWait": "しばらくお待ちください、データとコンポーネントを読み込んでいます"
+    "pleaseWait": "しばらくお待ちください、データとコンポーネントを読み込んでいます",
+    "save": "保存",
+    "back": "戻る",
+    "next": "次へ",
+    "cancel": "キャンセル",
+    "goBack": "戻る",
+    "enabled": "有効",
+    "disabled": "無効"
   }
 }

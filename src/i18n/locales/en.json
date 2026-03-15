@@ -97,6 +97,51 @@
     "title": "MarketPlace",
     "subtitle": "Agent Publishing and Trading Market",
     "agentsAvailable": "agents available",
+    "hiring": {
+      "title": "Hire Agent",
+      "steps": {
+        "configure": "Configure",
+        "resources": "Resources",
+        "payment": "Payment"
+      },
+      "step1": {
+        "title": "Basic Configuration",
+        "instanceName": "Instance Name",
+        "instanceNamePlaceholder": "e.g. AP-Agent-Production",
+        "environment": "Environment",
+        "environments": {
+          "development": "Development",
+          "staging": "Staging",
+          "production": "Production"
+        },
+        "scheduleType": "Schedule Type",
+        "scheduleTypes": {
+          "continuous": "Continuous",
+          "scheduled": "Scheduled",
+          "eventDriven": "Event-Driven"
+        }
+      },
+      "step2": {
+        "title": "Resource Configuration",
+        "resourceTier": "Resource Tier",
+        "autoscaling": "Autoscaling",
+        "minReplicas": "Min Replicas",
+        "maxReplicas": "Max Replicas"
+      },
+      "step3": {
+        "title": "Payment Confirmation",
+        "summary": "Deployment Summary",
+        "monthlyPrice": "Monthly Price",
+        "confirmDeploy": "Confirm & Deploy"
+      },
+      "success": {
+        "title": "Deployment Successful!",
+        "message": "Agent has been deployed to the runtime environment",
+        "deploymentId": "Deployment ID",
+        "monitorRuntime": "Monitor Runtime",
+        "backToMarketplace": "Back to Marketplace"
+      }
+    },
     "search": {
       "placeholder": "Search agents...",
       "filter": "Filter"
@@ -200,7 +245,46 @@
       "deployments": "Deployments",
       "jobs": "Jobs",
       "messages": "Messages",
-      "metrics": "Metrics"
+      "metrics": "Metrics",
+      "pipelines": "Pipelines"
+    },
+    "detail": {
+      "tabs": {
+        "overview": "Overview",
+        "tokens": "Token Usage",
+        "collaboration": "Collaboration",
+        "logs": "AP Logs"
+      }
+    },
+    "tokenUsage": {
+      "title": "Token Usage",
+      "tokensUsed": "Tokens Used",
+      "tokenBudget": "Token Budget",
+      "tokensRemaining": "Tokens Remaining",
+      "costEstimate": "Cost Estimate",
+      "budgetConsumed": "Budget Consumed",
+      "recentActivity": "Recent Activity"
+    },
+    "collaboration": {
+      "title": "Collaboration",
+      "upstream": "Upstream Agents",
+      "downstream": "Downstream Agents",
+      "pipeline": "Data Flow Pipeline",
+      "status": {
+        "running": "Running",
+        "idle": "Idle",
+        "error": "Error"
+      }
+    },
+    "apLogs": {
+      "title": "AP Logs"
+    },
+    "pipelines": {
+      "title": "Agent Pipelines",
+      "subtitle": "Multi-agent orchestration workflows with quality gates",
+      "active": "active",
+      "phases": "PHASES",
+      "qualityGates": "QUALITY GATES"
     },
     "deployments": {
       "title": "Deployment List",
@@ -276,7 +360,67 @@
   "ide": {
     "title": "Agent IDE",
     "subtitle": "Agent Development Environment, From Idea to Deployment",
-    "comingSoon": "Coming Soon..."
+    "comingSoon": "Coming Soon...",
+    "agentNotFound": "Agent not found",
+    "skills": "Skills",
+    "recommendedSkills": "Recommended Skills",
+    "prompts": "Prompts",
+    "build": "Build",
+    "tests": "Tests",
+    "configuredSkills": "Configured Skills",
+    "addSkill": "Add Skill",
+    "configuration": "Configuration",
+    "systemPrompt": "System Prompt",
+    "userTemplate": "User Prompt Template",
+    "promptVariables": "Prompt Variables",
+    "buildStatus": "Build Status",
+    "buildSteps": "Build Steps",
+    "testResults": "Test Results",
+    "runTests": "Run Tests",
+    "passed": "Passed",
+    "failed": "Failed",
+    "coverage": "Coverage",
+    "testCases": "Test Cases",
+    "skillCompatibility": "Compatibility",
+    "installed": "Installed",
+    "install": "Install",
+    "testSkill": "Test",
+    "skillTest": {
+      "title": "Skill Test",
+      "input": "Test Input",
+      "runTest": "Run Test",
+      "results": "Test Results",
+      "passed": "Passed",
+      "failed": "Failed",
+      "executionTime": "Execution Time",
+      "tokenUsage": "Token Usage"
+    },
+    "sdd": {
+      "requirements": "Requirements",
+      "design": "System Design",
+      "domainAnalysis": "Domain Analysis",
+      "tasks": "Task Breakdown"
+    },
+    "soul": {
+      "identity": "Identity & Memory",
+      "role": "Role",
+      "personality": "Personality",
+      "memory": "Memory Style",
+      "experience": "Experience",
+      "vibe": "Vibe",
+      "emoji": "Emoji",
+      "color": "Color",
+      "criticalRules": "Critical Rules",
+      "noRules": "No critical rules defined yet.",
+      "mission": "Core Mission",
+      "noMission": "No mission blocks defined yet.",
+      "workflow": "Workflow Process",
+      "noWorkflow": "No workflow steps defined yet.",
+      "communicationStyle": "Communication Style",
+      "noCommStyle": "No communication style defined yet.",
+      "successMetrics": "Success Metrics",
+      "noMetrics": "No success metrics defined yet."
+    }
   },
   "common": {
     "language": "Language",
@@ -289,6 +433,13 @@
     "pageNotFound": "Page Not Found",
     "checkUrl": "Please check the URL address",
     "initializing": "Initializing Agent Factory Platform...",
-    "pleaseWait": "Please wait, loading data and components"
+    "pleaseWait": "Please wait, loading data and components",
+    "save": "Save",
+    "back": "Back",
+    "next": "Next",
+    "cancel": "Cancel",
+    "goBack": "Go Back",
+    "enabled": "Enabled",
+    "disabled": "Disabled"
   }
 }

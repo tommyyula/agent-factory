@@ -97,6 +97,51 @@
     "title": "应用市场",
     "subtitle": "Agent 发布和交易市场",
     "agentsAvailable": "个可用 Agent",
+    "hiring": {
+      "title": "雇佣 Agent",
+      "steps": {
+        "configure": "基础配置",
+        "resources": "资源配置",
+        "payment": "确认付款"
+      },
+      "step1": {
+        "title": "基础配置",
+        "instanceName": "实例名称",
+        "instanceNamePlaceholder": "例: AP-Agent-Production",
+        "environment": "部署环境",
+        "environments": {
+          "development": "开发环境",
+          "staging": "预发布环境",
+          "production": "生产环境"
+        },
+        "scheduleType": "调度类型",
+        "scheduleTypes": {
+          "continuous": "持续运行",
+          "scheduled": "定时调度",
+          "eventDriven": "事件驱动"
+        }
+      },
+      "step2": {
+        "title": "资源配置",
+        "resourceTier": "资源规格",
+        "autoscaling": "自动扩缩容",
+        "minReplicas": "最小副本数",
+        "maxReplicas": "最大副本数"
+      },
+      "step3": {
+        "title": "确认付款",
+        "summary": "部署摘要",
+        "monthlyPrice": "月付费用",
+        "confirmDeploy": "确认并部署"
+      },
+      "success": {
+        "title": "部署成功！",
+        "message": "Agent 已成功部署至运行时环境",
+        "deploymentId": "部署 ID",
+        "monitorRuntime": "监控运行时",
+        "backToMarketplace": "返回应用市场"
+      }
+    },
     "search": {
       "placeholder": "搜索 Agent...",
       "filter": "筛选"
@@ -200,7 +245,46 @@
       "deployments": "部署管理",
       "jobs": "任务调度",
       "messages": "消息队列",
-      "metrics": "性能指标"
+      "metrics": "性能指标",
+      "pipelines": "流水线"
+    },
+    "pipelines": {
+      "title": "Agent 流水线",
+      "subtitle": "多智能体编排工作流（含质量关卡）",
+      "active": "条激活",
+      "phases": "阶段",
+      "qualityGates": "质量关卡"
+    },
+    "detail": {
+      "tabs": {
+        "overview": "概览",
+        "tokens": "Token 消耗",
+        "collaboration": "协作关系",
+        "logs": "任务日志"
+      }
+    },
+    "tokenUsage": {
+      "title": "Token 消耗",
+      "tokensUsed": "已使用 Token",
+      "tokenBudget": "Token 预算",
+      "tokensRemaining": "剩余 Token",
+      "costEstimate": "预计费用",
+      "budgetConsumed": "预算消耗",
+      "recentActivity": "近期活动"
+    },
+    "collaboration": {
+      "title": "协作关系",
+      "upstream": "上游 Agent",
+      "downstream": "下游 Agent",
+      "pipeline": "数据流管道",
+      "status": {
+        "running": "运行中",
+        "idle": "空闲",
+        "error": "错误"
+      }
+    },
+    "apLogs": {
+      "title": "应付账款任务日志"
     },
     "deployments": {
       "title": "部署实例",
@@ -276,7 +360,67 @@
   "ide": {
     "title": "Agent IDE",
     "subtitle": "Agent 开发集成环境，从创意到部署",
-    "comingSoon": "即将推出..."
+    "comingSoon": "即将推出...",
+    "agentNotFound": "未找到 Agent",
+    "skills": "技能",
+    "recommendedSkills": "推荐技能",
+    "prompts": "提示词",
+    "build": "构建",
+    "tests": "测试",
+    "configuredSkills": "已配置技能",
+    "addSkill": "添加技能",
+    "configuration": "配置",
+    "systemPrompt": "系统提示词",
+    "userTemplate": "用户提示模板",
+    "promptVariables": "提示变量",
+    "buildStatus": "构建状态",
+    "buildSteps": "构建步骤",
+    "testResults": "测试结果",
+    "runTests": "运行测试",
+    "passed": "通过",
+    "failed": "失败",
+    "coverage": "覆盖率",
+    "testCases": "测试用例",
+    "skillCompatibility": "兼容性",
+    "installed": "已安装",
+    "install": "安装",
+    "testSkill": "测试",
+    "skillTest": {
+      "title": "技能测试",
+      "input": "测试输入",
+      "runTest": "运行测试",
+      "results": "测试结果",
+      "passed": "通过",
+      "failed": "失败",
+      "executionTime": "执行时间",
+      "tokenUsage": "Token 用量"
+    },
+    "sdd": {
+      "requirements": "需求文档",
+      "design": "系统设计",
+      "domainAnalysis": "领域分析",
+      "tasks": "任务分解"
+    },
+    "soul": {
+      "identity": "身份与记忆",
+      "role": "角色",
+      "personality": "性格",
+      "memory": "记忆风格",
+      "experience": "经验",
+      "vibe": "气质",
+      "emoji": "表情",
+      "color": "颜色",
+      "criticalRules": "关键规则",
+      "noRules": "尚未定义关键规则。",
+      "mission": "核心使命",
+      "noMission": "尚未定义使命模块。",
+      "workflow": "工作流程",
+      "noWorkflow": "尚未定义工作流步骤。",
+      "communicationStyle": "沟通风格",
+      "noCommStyle": "尚未定义沟通风格。",
+      "successMetrics": "成功指标",
+      "noMetrics": "尚未定义成功指标。"
+    }
   },
   "common": {
     "language": "语言",
@@ -289,6 +433,13 @@
     "pageNotFound": "页面未找到",
     "checkUrl": "请检查 URL 地址",
     "initializing": "正在初始化 Agent Factory Platform...",
-    "pleaseWait": "请稍候，正在加载数据和组件"
+    "pleaseWait": "请稍候，正在加载数据和组件",
+    "save": "保存",
+    "back": "返回",
+    "next": "下一步",
+    "cancel": "取消",
+    "goBack": "返回",
+    "enabled": "已启用",
+    "disabled": "已禁用"
   }
 }
