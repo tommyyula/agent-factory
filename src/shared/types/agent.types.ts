@@ -33,6 +33,8 @@ export interface AgentSoul {
   vibe: string;
   emoji: string;
   color: string;
+  extraSections?: { title: string; content: string }[];
+  collaboration?: string;
 }
 
 export interface AgentDefinition {
