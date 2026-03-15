@@ -38,6 +38,18 @@ interface BuildStep {
   logs: string[];
 }
 
+function MarkdownSectionBlock({ content, emptyMessage }: { content?: string; emptyMessage: string }) {
+  if (!content || !content.trim()) {
+    return <p className="text-sm text-muted-foreground">{emptyMessage}</p>;
+  }
+
+  return (
+    <pre className="whitespace-pre-wrap break-words rounded-lg border bg-muted/30 p-4 text-sm leading-6">
+      {content}
+    </pre>
+  );
+}
+
 export function AgentEditor() {
   const { t } = useTranslation();
   const { agentId } = useParams();
@@ -682,17 +694,10 @@ Function: ${agent.category.function}
               <CardTitle>{t('ide.soul.criticalRules', 'Critical Rules')}</CardTitle>
             </CardHeader>
             <CardContent>
-              <div className="space-y-2">
-                {(agent.soul?.criticalRules || []).map((rule, i) => (
-                  <div key={i} className="flex items-center gap-2">
-                    <Badge variant="destructive" className="shrink-0">Rule {i + 1}</Badge>
-                    <span className="text-sm flex-1">{rule}</span>
-                  </div>
-                ))}
-                {(!agent.soul?.criticalRules || agent.soul.criticalRules.length === 0) && (
-                  <p className="text-sm text-muted-foreground">{t('ide.soul.noRules', 'No critical rules defined yet.')}</p>
-                )}
-              </div>
+              <MarkdownSectionBlock
+                content={agent.soul?.rawSections?.criticalRules}
+                emptyMessage={t('ide.soul.noRules', 'No critical rules defined yet.')}
+              />
             </CardContent>
           </Card>
 
@@ -702,20 +707,10 @@ Function: ${agent.category.function}
               <CardTitle>{t('ide.soul.mission', 'Core Mission')}</CardTitle>
             </CardHeader>
             <CardContent className="space-y-4">
-              {(agent.soul?.mission || []).map((block, i) => (
-                <div key={i} className="border rounded-lg p-4 space-y-2">
-                  <h4 className="font-medium">{block.title}</h4>
-                  <p className="text-sm text-muted-foreground">{block.description}</p>
-                  <div className="flex flex-wrap gap-1">
-                    {block.capabilities.map((cap, j) => (
-                      <Badge key={j} variant="secondary" className="text-xs">{cap}</Badge>
-                    ))}
-                  </div>
-                </div>
-              ))}
-              {(!agent.soul?.mission || agent.soul.mission.length === 0) && (
-                <p className="text-sm text-muted-foreground">{t('ide.soul.noMission', 'No mission blocks defined yet.')}</p>
-              )}
+              <MarkdownSectionBlock
+                content={agent.soul?.rawSections?.mission}
+                emptyMessage={t('ide.soul.noMission', 'No mission blocks defined yet.')}
+              />
             </CardContent>
           </Card>
 
@@ -725,27 +720,10 @@ Function: ${agent.category.function}
               <CardTitle>{t('ide.soul.workflow', 'Workflow Process')}</CardTitle>
             </CardHeader>
             <CardContent>
-              <div className="space-y-3">
-                {(agent.soul?.workflow || []).map((step) => (
-                  <div key={step.step} className="flex items-start gap-3">
-                    <div className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-primary text-primary-foreground text-xs font-bold">
-                      {step.step}
-                    </div>
-                    <div className="flex-1 space-y-1">
-                      <p className="font-medium text-sm">{step.name}</p>
-                      <p className="text-xs text-muted-foreground">{step.description}</p>
-                      {step.commands && step.commands.length > 0 && (
-                        <div className="bg-muted rounded p-2 font-mono text-xs">
-                          {step.commands.map((cmd, i) => <div key={i}>{cmd}</div>)}
-                        </div>
-                      )}
-                    </div>
-                  </div>
-                ))}
-                {(!agent.soul?.workflow || agent.soul.workflow.length === 0) && (
-                  <p className="text-sm text-muted-foreground">{t('ide.soul.noWorkflow', 'No workflow steps defined yet.')}</p>
-                )}
-              </div>
+              <MarkdownSectionBlock
+                content={agent.soul?.rawSections?.workflow}
+                emptyMessage={t('ide.soul.noWorkflow', 'No workflow steps defined yet.')}
+              />
             </CardContent>
           </Card>
 
@@ -755,17 +733,10 @@ Function: ${agent.category.function}
               <CardTitle>{t('ide.soul.communicationStyle', 'Communication Style')}</CardTitle>
             </CardHeader>
             <CardContent>
-              <div className="space-y-2">
-                {(agent.soul?.communicationStyle || []).map((style, i) => (
-                  <div key={i} className="flex items-center gap-2 text-sm">
-                    <CheckCircle className="h-4 w-4 text-green-500 shrink-0" />
-                    {style}
-                  </div>
-                ))}
-                {(!agent.soul?.communicationStyle || agent.soul.communicationStyle.length === 0) && (
-                  <p className="text-sm text-muted-foreground">{t('ide.soul.noCommStyle', 'No communication style defined yet.')}</p>
-                )}
-              </div>
+              <MarkdownSectionBlock
+                content={agent.soul?.rawSections?.communicationStyle}
+                emptyMessage={t('ide.soul.noCommStyle', 'No communication style defined yet.')}
+              />
             </CardContent>
           </Card>
 
@@ -775,20 +746,10 @@ Function: ${agent.category.function}
               <CardTitle>{t('ide.soul.successMetrics', 'Success Metrics')}</CardTitle>
             </CardHeader>
             <CardContent>
-              <div className="grid gap-3 md:grid-cols-2">
-                {(agent.soul?.successMetrics || []).map((metric, i) => (
-                  <div key={i} className="border rounded-lg p-3 space-y-1">
-                    <div className="flex items-center justify-between">
-                      <span className="font-medium text-sm">{metric.name}</span>
-                      <Badge variant="outline">{metric.target}</Badge>
-                    </div>
-                    <p className="text-xs text-muted-foreground">{metric.description}</p>
-                  </div>
-                ))}
-                {(!agent.soul?.successMetrics || agent.soul.successMetrics.length === 0) && (
-                  <p className="text-sm text-muted-foreground col-span-2">{t('ide.soul.noMetrics', 'No success metrics defined yet.')}</p>
-                )}
-              </div>
+              <MarkdownSectionBlock
+                content={agent.soul?.rawSections?.successMetrics}
+                emptyMessage={t('ide.soul.noMetrics', 'No success metrics defined yet.')}
+              />
             </CardContent>
           </Card>
         </TabsContent>

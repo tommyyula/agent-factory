@@ -1,4 +1,5 @@
 import { AgentDefinition } from '../shared/types/agent.types';
+import { agencyAgents } from './agencyAgents.generated';
 
 export const mockAgents: AgentDefinition[] = [
   {
@@ -1604,5 +1605,6 @@ export const mockAgents: AgentDefinition[] = [
     },
     createdAt: new Date('2024-01-15'),
     updatedAt: new Date('2024-03-10')
-  }
+  },
+  ...agencyAgents
 ];

@@ -35,6 +35,21 @@ export interface AgentSoul {
   color: string;
   extraSections?: { title: string; content: string }[];
   collaboration?: string;
+  rawSections?: {
+    identity?: string;
+    mission?: string;
+    criticalRules?: string;
+    workflow?: string;
+    communicationStyle?: string;
+    successMetrics?: string;
+  };
+}
+
+export interface AgentSourceMetadata {
+  provider: string;
+  relativePath: string;
+  importedAt: Date;
+  checksum: string;
 }
 
 export interface AgentDefinition {
@@ -71,6 +86,7 @@ export interface AgentDefinition {
     division?: string;
     divisionName?: string;
   };
+  source?: AgentSourceMetadata;
   createdAt: Date;
   updatedAt: Date;
   soul?: AgentSoul;
