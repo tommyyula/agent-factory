@@ -803,29 +803,6 @@ function RuntimeHome() {
         </p>
       </div>
 
-      {/* AP Showcase banner if any AP deployments exist */}
-      {deployments.filter(d => d.collaboration?.upstreamAgents?.length).length > 0 && (
-        <Card className="border-primary/30 bg-primary/5">
-          <CardContent className="p-4">
-            <div className="flex items-center justify-between">
-              <div>
-                <h3 className="font-semibold text-sm">AP Showcase Deployments</h3>
-                <p className="text-xs text-muted-foreground mt-0.5">
-                  {deployments.filter(d => d.collaboration?.upstreamAgents?.length).length} deployment(s) with collaboration config
-                </p>
-              </div>
-              <div className="flex gap-2">
-                {deployments.filter(d => d.collaboration?.upstreamAgents?.length).slice(0, 3).map(d => (
-                  <Button key={d.id} size="sm" variant="outline" onClick={() => window.location.href = `/runtime/agent/${d.id}`}>
-                    {d.instanceName}
-                  </Button>
-                ))}
-              </div>
-            </div>
-          </CardContent>
-        </Card>
-      )}
-
       <Tabs defaultValue="deployments" className="space-y-4">
         <TabsList className="grid w-full grid-cols-5">
           <TabsTrigger value="deployments">{t('runtime.tabs.deployments')}</TabsTrigger>

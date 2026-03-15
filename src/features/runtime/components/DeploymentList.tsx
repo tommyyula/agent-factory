@@ -1,10 +1,12 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import { useNavigate } from 'react-router-dom';
 import { Activity, AlertTriangle, CheckCircle, Pause, Play, Square, RotateCcw, Clock, Cpu, MemoryStick } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { useRuntimeStore } from '@/stores/runtimeStore';
+import { runtimeDB } from '@/shared/services/database';
 
 interface AgentInstance {
   id: string;
@@ -16,6 +18,7 @@ interface AgentInstance {
   lastHeartbeat: string;
   version: string;
   environment: string;
+  isDexie?: boolean;
 }
 
 // Mock data for 3 running agent instances
@@ -55,9 +58,46 @@ const mockInstances: AgentInstance[] = [
   }
 ];
 
+function formatUptime(createdAt: Date): string {
+  const ms = Date.now() - new Date(createdAt).getTime();
+  const days = Math.floor(ms / 86400000);
+  const hours = Math.floor((ms % 86400000) / 3600000);
+  const minutes = Math.floor((ms % 3600000) / 60000);
+  if (days > 0) return `${days}d ${hours}h ${minutes}m`;
+  if (hours > 0) return `${hours}h ${minutes}m`;
+  return `${minutes}m`;
+}
+
 export function DeploymentList() {
   const { t } = useTranslation();
+  const navigate = useNavigate();
   const { startAgent, stopAgent, pauseAgent, restartAgent } = useRuntimeStore();
+  const [allInstances, setAllInstances] = useState<AgentInstance[]>(mockInstances);
+
+  useEffect(() => {
+    const loadDexieDeployments = async () => {
+      try {
+        const dexieDeployments = await runtimeDB.deployments.toArray();
+        const dexieInstances: AgentInstance[] = dexieDeployments.map(d => ({
+          id: d.id,
+          name: d.instanceName,
+          status: d.status === 'deploying' ? 'running' : d.status === 'error' ? 'error' : d.status === 'paused' ? 'paused' : d.status === 'stopped' ? 'stopped' : 'running',
+          uptime: formatUptime(d.createdAt),
+          memoryUsage: Math.round(d.resources.memory.usage / 1048576),
+          cpuUsage: d.resources.cpu.usage,
+          lastHeartbeat: '1s ago',
+          version: d.version,
+          environment: d.environment,
+          isDexie: true
+        }));
+        // Merge: Dexie deployments first, then mock
+        setAllInstances([...dexieInstances, ...mockInstances]);
+      } catch {
+        setAllInstances(mockInstances);
+      }
+    };
+    loadDexieDeployments();
+  }, []);
 
   const getStatusIcon = (status: string) => {
     switch (status) {
@@ -99,8 +139,8 @@ export function DeploymentList() {
       </div>
 
       <div className="grid gap-4 md:grid-cols-1 lg:grid-cols-1">
-        {mockInstances.map((instance) => (
-          <Card key={instance.id} className="hover:shadow-md transition-shadow">
+        {allInstances.map((instance) => (
+          <Card key={instance.id} className={`hover:shadow-md transition-shadow ${instance.isDexie ? 'cursor-pointer border-primary/30' : ''}`} onClick={() => instance.isDexie && navigate(`/runtime/agent/${instance.id}`)}>
             <CardContent className="p-6">
               <div className="flex items-center justify-between">
                 <div className="flex items-center space-x-4">
