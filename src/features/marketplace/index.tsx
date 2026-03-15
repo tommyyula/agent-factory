@@ -7,6 +7,7 @@ import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { agentDB } from '@/shared/services/database';
 import { AgentDefinition } from '@/shared/types/agent.types';
+import { AgentDetail } from './components/AgentDetail';
 
 export function AgentCatalog() {
   return (
@@ -27,6 +28,7 @@ function MarketplaceHome() {
   const [selectedIndustry, setSelectedIndustry] = useState<string>('all');
   const [sortBy, setSortBy] = useState<string>('rating');
   const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid');
+  const [selectedAgent, setSelectedAgent] = useState<AgentDefinition | null>(null);
 
   useEffect(() => {
     const loadAgents = async () => {
@@ -109,6 +111,11 @@ function MarketplaceHome() {
     { value: 'knowledge', label: t('marketplace.industries.knowledge') },
     { value: 'marketing', label: t('marketplace.industries.marketing') }
   ];
+
+  // Show agent detail view if an agent is selected
+  if (selectedAgent) {
+    return <AgentDetail agent={selectedAgent} onBack={() => setSelectedAgent(null)} />;
+  }
 
   if (loading) {
     return (
@@ -221,7 +228,12 @@ function MarketplaceHome() {
         : "space-y-4"
       }>
         {filteredAndSortedAgents.map((agent) => (
-          <AgentMarketCard key={agent.id} agent={agent} viewMode={viewMode} />
+          <AgentMarketCard
+            key={agent.id}
+            agent={agent}
+            viewMode={viewMode}
+            onSelect={() => setSelectedAgent(agent)}
+          />
         ))}
       </div>
 
@@ -242,9 +254,10 @@ function MarketplaceHome() {
 interface AgentMarketCardProps {
   agent: AgentDefinition;
   viewMode: 'grid' | 'list';
+  onSelect: () => void;
 }
 
-function AgentMarketCard({ agent, viewMode }: AgentMarketCardProps) {
+function AgentMarketCard({ agent, viewMode, onSelect }: AgentMarketCardProps) {
   const { t } = useTranslation();
 
   const getCategoryText = (category: { industry: string; function: string }) => {
@@ -343,7 +356,9 @@ function AgentMarketCard({ agent, viewMode }: AgentMarketCardProps) {
             
             <div className="flex flex-col space-y-2">
               <Button className="w-32">{t('marketplace.agent.hire')}</Button>
-              <Button variant="outline" className="w-32">{t('marketplace.agent.details')}</Button>
+              <Button variant="outline" className="w-32" onClick={onSelect}>
+                {t('marketplace.agent.details')}
+              </Button>
             </div>
           </div>
         </CardContent>
@@ -395,7 +410,7 @@ function AgentMarketCard({ agent, viewMode }: AgentMarketCardProps) {
           <Button size="sm" className="flex-1">
             {t('marketplace.agent.hire')}
           </Button>
-          <Button size="sm" variant="outline">
+          <Button size="sm" variant="outline" onClick={onSelect}>
             {t('marketplace.agent.details')}
           </Button>
         </div>
