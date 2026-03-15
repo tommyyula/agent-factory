@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
-import { Routes, Route } from 'react-router-dom';
+import { Routes, Route, useParams, useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { Activity, AlertTriangle, CheckCircle, Pause, Play, Square, RotateCcw, GitBranch } from 'lucide-react';
+import { Activity, AlertTriangle, CheckCircle, Pause, Play, Square, RotateCcw, GitBranch, ArrowLeft, Cpu, BarChart3 } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -20,10 +20,304 @@ export function RuntimeOverview() {
     <Routes>
       <Route index element={<RuntimeHome />} />
       <Route path="agents" element={<DeploymentList />} />
-      <Route path="agent/:deploymentId" element={<div>Agent Monitor (Coming Soon)</div>} />
+      <Route path="agent/:deploymentId" element={<DeploymentDetail />} />
       <Route path="jobs" element={<JobLog />} />
-      <Route path="messages" element={<div>Message Board (Coming Soon)</div>} />
+      <Route path="messages" element={<MessageBoard />} />
     </Routes>
+  );
+}
+
+function DeploymentDetail() {
+  const { t } = useTranslation();
+  const { deploymentId } = useParams();
+  const navigate = useNavigate();
+  const [deployment, setDeployment] = useState<AgentDeployment | null>(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const loadDeployment = async () => {
+      if (!deploymentId) {
+        navigate('/runtime');
+        return;
+      }
+
+      try {
+        const deploymentData = await runtimeDB.deployments.get(deploymentId);
+        if (deploymentData) {
+          setDeployment(deploymentData);
+        } else {
+          // Create mock deployment data for demonstration
+          const mockDeployment: AgentDeployment = {
+            id: deploymentId,
+            agentId: 'agent-001',
+            instanceName: 'DataAnalyzer Pro Instance',
+            status: 'running',
+            environment: 'production',
+            version: '2.1.0',
+            configuration: {},
+            resources: {
+              cpu: {
+                usage: 45,
+                limit: 2000,
+                requests: 500
+              },
+              memory: {
+                usage: 2147483648, // 2GB in bytes
+                limit: 4294967296, // 4GB in bytes
+                requests: 1073741824 // 1GB in bytes
+              },
+              storage: {
+                usage: 21474836480, // 20GB in bytes
+                limit: 53687091200 // 50GB in bytes
+              },
+              network: {
+                inbound: 1048576, // 1MB/s
+                outbound: 524288 // 0.5MB/s
+              }
+            },
+            health: {
+              status: 'healthy',
+              checks: [
+                {
+                  name: 'API Health',
+                  status: 'pass',
+                  message: 'All endpoints responding',
+                  duration: 120
+                }
+              ],
+              lastChecked: new Date()
+            },
+            metrics: {
+              requestCount: 15420,
+              averageResponseTime: 245,
+              errorRate: 0.02,
+              throughput: 12.5,
+              uptime: 99.98,
+              timestamps: [],
+              values: []
+            },
+            lastActivity: new Date(),
+            createdAt: new Date('2026-03-10'),
+            updatedAt: new Date()
+          };
+          setDeployment(mockDeployment);
+        }
+      } catch (error) {
+        console.error('Failed to load deployment:', error);
+        navigate('/runtime');
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    loadDeployment();
+  }, [deploymentId, navigate]);
+
+  if (loading) {
+    return (
+      <div className="space-y-6">
+        <div className="h-8 bg-muted animate-pulse rounded" />
+        <div className="h-64 bg-muted animate-pulse rounded" />
+      </div>
+    );
+  }
+
+  if (!deployment) {
+    return null;
+  }
+
+  const getStatusColor = (status: string) => {
+    switch (status) {
+      case 'running': return 'bg-green-500';
+      case 'stopped': return 'bg-red-500';
+      case 'pending': return 'bg-yellow-500';
+      default: return 'bg-gray-500';
+    }
+  };
+
+  const getStatusVariant = (status: string) => {
+    switch (status) {
+      case 'running': return 'default';
+      case 'stopped': return 'destructive';
+      case 'pending': return 'secondary';
+      default: return 'outline';
+    }
+  };
+
+  // Mock logs data
+  const mockLogs = [
+    { timestamp: '2026-03-15 10:35:42', level: 'INFO', message: 'Agent deployment started successfully' },
+    { timestamp: '2026-03-15 10:35:45', level: 'INFO', message: 'Loading skill configurations...' },
+    { timestamp: '2026-03-15 10:35:48', level: 'INFO', message: 'All skills loaded successfully' },
+    { timestamp: '2026-03-15 10:35:50', level: 'INFO', message: 'Agent ready to accept requests' },
+    { timestamp: '2026-03-15 10:36:12', level: 'DEBUG', message: 'Processing data analysis request...' },
+    { timestamp: '2026-03-15 10:36:15', level: 'INFO', message: 'Data analysis completed in 245ms' }
+  ];
+
+  return (
+    <div className="space-y-6">
+      {/* Header */}
+      <div className="flex items-center space-x-4">
+        <Button variant="ghost" size="icon" onClick={() => navigate('/runtime')}>
+          <ArrowLeft className="h-4 w-4" />
+        </Button>
+        <div>
+          <h1 className="text-3xl font-bold tracking-tight">{deployment.instanceName}</h1>
+          <p className="text-muted-foreground flex items-center space-x-2">
+            <Badge variant={getStatusVariant(deployment.status)}>
+              {deployment.status}
+            </Badge>
+            <span>•</span>
+            <span>{deployment.environment}</span>
+            <span>•</span>
+            <span>v{deployment.version}</span>
+          </p>
+        </div>
+      </div>
+
+      {/* Stats Overview */}
+      <div className="grid gap-4 md:grid-cols-4">
+        <Card>
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+            <CardTitle className="text-sm font-medium">Uptime</CardTitle>
+            <Activity className="h-4 w-4 text-muted-foreground" />
+          </CardHeader>
+          <CardContent>
+            <div className="text-2xl font-bold">{deployment.metrics.uptime}%</div>
+            <p className="text-xs text-muted-foreground">Last 30 days</p>
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+            <CardTitle className="text-sm font-medium">Requests</CardTitle>
+            <BarChart3 className="h-4 w-4 text-muted-foreground" />
+          </CardHeader>
+          <CardContent>
+            <div className="text-2xl font-bold">{deployment.metrics.requests.toLocaleString()}</div>
+            <p className="text-xs text-muted-foreground">Total processed</p>
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+            <CardTitle className="text-sm font-medium">Avg Response</CardTitle>
+            <Activity className="h-4 w-4 text-muted-foreground" />
+          </CardHeader>
+          <CardContent>
+            <div className="text-2xl font-bold">{deployment.metrics.avgResponseTime}</div>
+            <p className="text-xs text-muted-foreground">Response time</p>
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+            <CardTitle className="text-sm font-medium">Error Rate</CardTitle>
+            <AlertTriangle className="h-4 w-4 text-muted-foreground" />
+          </CardHeader>
+          <CardContent>
+            <div className="text-2xl font-bold">
+              {((deployment.metrics.errors / deployment.metrics.requests) * 100).toFixed(2)}%
+            </div>
+            <p className="text-xs text-muted-foreground">{deployment.metrics.errors} total errors</p>
+          </CardContent>
+        </Card>
+      </div>
+
+      <div className="grid gap-6 lg:grid-cols-3">
+        {/* Main Content */}
+        <div className="lg:col-span-2 space-y-6">
+          {/* Logs */}
+          <Card>
+            <CardHeader>
+              <CardTitle>Recent Logs</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="space-y-2">
+                {mockLogs.map((log, index) => (
+                  <div key={index} className="flex items-center space-x-3 text-sm font-mono">
+                    <span className="text-muted-foreground">{log.timestamp}</span>
+                    <Badge variant={log.level === 'ERROR' ? 'destructive' : log.level === 'WARN' ? 'secondary' : 'outline'}>
+                      {log.level}
+                    </Badge>
+                    <span>{log.message}</span>
+                  </div>
+                ))}
+              </div>
+            </CardContent>
+          </Card>
+        </div>
+
+        {/* Sidebar */}
+        <div className="space-y-6">
+          {/* Resource Usage */}
+          <Card>
+            <CardHeader>
+              <CardTitle className="flex items-center space-x-2">
+                <Cpu className="h-4 w-4" />
+                <span>Resources</span>
+              </CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              <div className="flex justify-between">
+                <span className="text-sm">CPU</span>
+                <span className="font-medium">{deployment.resources.cpu}</span>
+              </div>
+              <div className="flex justify-between">
+                <span className="text-sm">Memory</span>
+                <span className="font-medium">{deployment.resources.memory}</span>
+              </div>
+              <div className="flex justify-between">
+                <span className="text-sm">Storage</span>
+                <span className="font-medium">{deployment.resources.storage}</span>
+              </div>
+            </CardContent>
+          </Card>
+
+          {/* Actions */}
+          <Card>
+            <CardHeader>
+              <CardTitle>Actions</CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-2">
+              <Button className="w-full" variant="outline">
+                <Pause className="mr-2 h-4 w-4" />
+                Stop Deployment
+              </Button>
+              <Button className="w-full" variant="outline">
+                <RotateCcw className="mr-2 h-4 w-4" />
+                Restart
+              </Button>
+              <Button className="w-full" variant="outline">
+                <Square className="mr-2 h-4 w-4" />
+                View Config
+              </Button>
+            </CardContent>
+          </Card>
+
+          {/* Deployment Info */}
+          <Card>
+            <CardHeader>
+              <CardTitle>Deployment Info</CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-3">
+              <div className="flex justify-between text-sm">
+                <span className="text-muted-foreground">Created</span>
+                <span>{deployment.createdAt.toLocaleDateString()}</span>
+              </div>
+              <div className="flex justify-between text-sm">
+                <span className="text-muted-foreground">Last Updated</span>
+                <span>{deployment.updatedAt.toLocaleDateString()}</span>
+              </div>
+              <div className="flex justify-between text-sm">
+                <span className="text-muted-foreground">Agent ID</span>
+                <span className="font-mono">{deployment.agentId}</span>
+              </div>
+            </CardContent>
+          </Card>
+        </div>
+      </div>
+    </div>
   );
 }
 

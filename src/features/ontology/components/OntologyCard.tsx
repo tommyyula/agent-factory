@@ -61,7 +61,7 @@ export function OntologyCard({ domain, onViewGraph, onViewVersions }: OntologyCa
               <span className="text-sm text-muted-foreground">v{domain.version}</span>
             </div>
           </div>
-          <Button variant="ghost" size="icon">
+          <Button variant="ghost" size="icon" onClick={() => onViewGraph?.(domain.id)}>
             <Brain className="h-4 w-4" />
           </Button>
         </div>

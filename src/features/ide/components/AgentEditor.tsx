@@ -184,6 +184,87 @@ export function AgentEditor() {
     }
   };
 
+  const handleAddSkill = () => {
+    if (!agent) return;
+
+    const newSkill = {
+      id: `skill-${Date.now()}`,
+      name: 'New Skill',
+      type: 'function' as const,
+      enabled: true,
+      configuration: {},
+      parameters: [],
+      description: 'A new skill configuration'
+    };
+
+    setAgent(prev => prev ? {
+      ...prev,
+      skills: [...prev.skills, newSkill]
+    } : null);
+  };
+
+  const handleRunTests = async () => {
+    if (!agent) return;
+
+    // Set agent status to testing
+    setAgent(prev => prev ? { ...prev, status: 'testing' } : null);
+
+    // Update test results to show running state
+    setTestResults(prev => prev.map(test => ({
+      ...test,
+      status: 'running' as const
+    })));
+
+    try {
+      await agentDB.agents.update(agent.id, {
+        status: 'testing',
+        updatedAt: new Date()
+      });
+
+      // Simulate test execution with setTimeout
+      setTimeout(() => {
+        setTestResults([
+          {
+            id: 'test-1',
+            name: 'Basic Response Test',
+            description: 'Agent should respond to basic queries',
+            status: 'passed',
+            input: 'Test query',
+            expectedOutput: 'Valid response',
+            duration: 450,
+            errorMessage: undefined
+          },
+          {
+            id: 'test-2',
+            name: 'Skill Integration Test',
+            description: 'All skills should be accessible',
+            status: 'passed',
+            input: 'Test skill',
+            expectedOutput: 'Skill executed',
+            duration: 1200,
+            errorMessage: undefined
+          },
+          {
+            id: 'test-3',
+            name: 'Error Handling Test',
+            description: 'Agent should handle invalid inputs gracefully',
+            status: 'failed',
+            input: 'Invalid input',
+            expectedOutput: 'Graceful error',
+            duration: 800,
+            errorMessage: 'Expected graceful error message, got uncaught exception'
+          }
+        ]);
+
+        // Update agent status to tested
+        setAgent(prev => prev ? { ...prev, status: 'published' } : null);
+      }, 3000);
+
+    } catch (error) {
+      console.error('Failed to run tests:', error);
+    }
+  };
+
   if (loading) {
     return (
       <div className="space-y-6">
@@ -390,7 +471,7 @@ Function: ${agent.category.function}
           <div className="grid gap-6">
             <div className="flex items-center justify-between">
               <h3 className="text-lg font-medium">{t('ide.configuredSkills', 'Configured Skills')}</h3>
-              <Button size="sm">
+              <Button size="sm" onClick={handleAddSkill}>
                 <Settings className="mr-2 h-4 w-4" />
                 {t('ide.addSkill', 'Add Skill')}
               </Button>
@@ -537,7 +618,7 @@ Function: ${agent.category.function}
             <CardHeader>
               <div className="flex items-center justify-between">
                 <CardTitle>{t('ide.testResults', 'Test Results')}</CardTitle>
-                <Button size="sm">
+                <Button size="sm" onClick={handleRunTests}>
                   <Play className="mr-2 h-4 w-4" />
                   {t('ide.runTests', 'Run Tests')}
                 </Button>

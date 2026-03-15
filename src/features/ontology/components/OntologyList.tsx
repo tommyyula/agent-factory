@@ -89,9 +89,9 @@ export function OntologyList() {
             className="w-full pl-10 pr-4 py-2 border border-input rounded-md bg-background"
           />
         </div>
-        <Button variant="outline" onClick={() => navigate('/ontology/versions')}>
+        <Button variant="outline" onClick={() => navigate('/ontology/graph')}>
           <GitBranch className="mr-2 h-4 w-4" />
-          {t('ontology.versionHistory', '版本历史')}
+          {t('ontology.viewAllGraphs', '查看全部图谱')}
         </Button>
       </div>
 
