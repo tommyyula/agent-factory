@@ -435,7 +435,7 @@ export function AgentEditor() {
           </TabsTrigger>
           <TabsTrigger value="skills">
             <Wrench className="mr-2 h-4 w-4" />
-            {t('ide.skills', 'Skills')}
+            {t('ide.tabs.skills', 'Skills')}
           </TabsTrigger>
           <TabsTrigger value="recommended">
             <Sparkles className="mr-2 h-4 w-4" />
@@ -443,19 +443,19 @@ export function AgentEditor() {
           </TabsTrigger>
           <TabsTrigger value="prompts">
             <MessageSquare className="mr-2 h-4 w-4" />
-            {t('ide.prompts', 'Prompts')}
+            {t('ide.tabs.prompts', 'Prompts')}
           </TabsTrigger>
           <TabsTrigger value="build">
             <Hammer className="mr-2 h-4 w-4" />
-            {t('ide.build', 'Build')}
+            {t('ide.tabs.build', 'Build')}
           </TabsTrigger>
           <TabsTrigger value="tests">
             <TestTube className="mr-2 h-4 w-4" />
-            {t('ide.tests', 'Tests')}
+            {t('ide.tabs.tests', 'Tests')}
           </TabsTrigger>
           <TabsTrigger value="soul">
             <Sparkles className="mr-2 h-4 w-4" />
-            {t('ide.soul', 'Soul')}
+            {t('ide.tabs.soul', 'Soul')}
           </TabsTrigger>
         </TabsList>
 

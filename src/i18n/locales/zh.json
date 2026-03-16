@@ -401,6 +401,13 @@
       "domainAnalysis": "领域分析",
       "tasks": "任务分解"
     },
+    "tabs": {
+      "skills": "技能",
+      "prompts": "提示词",
+      "build": "构建",
+      "tests": "测试",
+      "soul": "灵魂"
+    },
     "soul": {
       "identity": "身份与记忆",
       "role": "角色",
@@ -411,14 +418,14 @@
       "emoji": "表情",
       "color": "颜色",
       "criticalRules": "关键规则",
-      "noRules": "尚未定义关键规则。",
       "mission": "核心使命",
-      "noMission": "尚未定义使命模块。",
       "workflow": "工作流程",
-      "noWorkflow": "尚未定义工作流步骤。",
       "communicationStyle": "沟通风格",
-      "noCommStyle": "尚未定义沟通风格。",
       "successMetrics": "成功指标",
+      "noRules": "尚未定义关键规则。",
+      "noMission": "尚未定义使命内容。",
+      "noWorkflow": "尚未定义流程内容。",
+      "noCommStyle": "尚未定义沟通风格。",
       "noMetrics": "尚未定义成功指标。"
     }
   },

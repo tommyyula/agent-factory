@@ -122,6 +122,7 @@ function createAgentDefinition(filePath) {
       relativePath,
       importedAt: new Date('2026-03-15T00:00:00.000Z'),
       checksum,
+      rawContent: raw,
     },
     soul: {
       identity: {
@@ -163,6 +164,7 @@ function generate() {
     displayName: agent.displayName,
     relativePath: agent.source.relativePath,
     checksum: agent.source.checksum,
+    rawContent: agent.source.rawContent,
     rawSections: agent.soul.rawSections,
   }));
 

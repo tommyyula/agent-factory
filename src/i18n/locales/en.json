@@ -401,6 +401,13 @@
       "domainAnalysis": "Domain Analysis",
       "tasks": "Task Breakdown"
     },
+    "tabs": {
+      "skills": "Skills",
+      "prompts": "Prompts",
+      "build": "Build",
+      "tests": "Tests",
+      "soul": "Soul"
+    },
     "soul": {
       "identity": "Identity & Memory",
       "role": "Role",
@@ -411,14 +418,14 @@
       "emoji": "Emoji",
       "color": "Color",
       "criticalRules": "Critical Rules",
-      "noRules": "No critical rules defined yet.",
       "mission": "Core Mission",
-      "noMission": "No mission blocks defined yet.",
       "workflow": "Workflow Process",
-      "noWorkflow": "No workflow steps defined yet.",
       "communicationStyle": "Communication Style",
-      "noCommStyle": "No communication style defined yet.",
       "successMetrics": "Success Metrics",
+      "noRules": "No critical rules defined yet.",
+      "noMission": "No mission blocks defined yet.",
+      "noWorkflow": "No workflow steps defined yet.",
+      "noCommStyle": "No communication style defined yet.",
       "noMetrics": "No success metrics defined yet."
     }
   },

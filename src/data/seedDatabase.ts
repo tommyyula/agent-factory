@@ -1,7 +1,6 @@
 import { ontologyDB, agentDB, runtimeDB, userDB } from '../shared/services/database';
 import { mockOntologies, wmsConcepts, wmsRelations } from './mockOntologies';
 import { mockAgents } from './mockAgents';
-import { importedAgents } from './importedAgents';
 import { mockDeployments, mockTasks, mockChannels, mockMessages } from './mockRuntimeData';
 import { User } from '../shared/types/common.types';
 
@@ -99,13 +98,10 @@ export async function seedDatabase(): Promise<boolean> {
     await ontologyDB.concepts.bulkAdd(wmsConcepts);
     await ontologyDB.relations.bulkAdd(wmsRelations);
 
-    // 种子 Agent 数据 — deduplicate by displayName, preferring mockAgents (richer data)
-    const agentMap = new Map<string, typeof mockAgents[0]>();
-    for (const agent of [...importedAgents, ...mockAgents]) {
-      agentMap.set(agent.displayName, agent);
-    }
-    const allAgents = Array.from(agentMap.values());
-    console.log(`种子 Agent 数据... (${mockAgents.length} mock + ${importedAgents.length} imported → ${allAgents.length} unique)`);
+    // `mockAgents` already includes the regenerated agency-agents import.
+    // Keep a single source of truth so stale imports cannot leak into the UI.
+    const allAgents = [...mockAgents];
+    console.log('种子 Agent 数据...');
     await agentDB.agents.bulkAdd(allAgents);
 
     // 种子 Runtime 数据
@@ -122,7 +118,7 @@ export async function seedDatabase(): Promise<boolean> {
     console.log(`- Ontologies: ${mockOntologies.length}`);
     console.log(`- Concepts: ${wmsConcepts.length}`);
     console.log(`- Relations: ${wmsRelations.length}`);
-    console.log(`- Agents: ${allAgents.length} unique (deduplicated from ${mockAgents.length} custom + ${importedAgents.length} imported)`);
+    console.log(`- Agents: ${allAgents.length}`);
     console.log(`- Deployments: ${mockDeployments.length}`);
     console.log(`- Tasks: ${mockTasks.length}`);
     console.log(`- Messages: ${mockMessages.length}`);

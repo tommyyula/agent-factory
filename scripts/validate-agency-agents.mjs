@@ -15,6 +15,10 @@ const sourceRoot = path.join(repoRoot, 'data', 'agency-agents');
 const manifestFile = path.join(repoRoot, 'data', 'agency-agents-manifest.json');
 const reportFile = path.join(repoRoot, 'data', 'agency-agents-validation-report.json');
 
+function normalizeRawContent(value) {
+  return (value || '').replace(/\r\n/g, '\n').trim();
+}
+
 function validate() {
   if (!fs.existsSync(manifestFile)) {
     throw new Error(`Validation manifest not found: ${manifestFile}`);
@@ -50,6 +54,18 @@ function validate() {
       continue;
     }
 
+    const sourceContent = normalizeRawContent(raw);
+    const importedContent = normalizeRawContent(manifestEntry.rawContent);
+    if (sourceContent !== importedContent) {
+      failures.push({
+        relativePath,
+        reason: 'raw_content_mismatch',
+        sourcePreview: sourceContent.slice(0, 200),
+        importedPreview: importedContent.slice(0, 200),
+      });
+      continue;
+    }
+
     for (const key of SECTION_KEYS) {
       const sourceText = normalizeSectionText(sourceSections[key]);
       const importedText = normalizeSectionText(manifestEntry.rawSections?.[key]);
@@ -69,6 +85,7 @@ function validate() {
     checkedAgents,
     manifestEntries: manifest.length,
     sourceFiles: sourceFiles.length,
+    fullContentValidated: true,
     failures,
     passed: failures.length === 0,
   };

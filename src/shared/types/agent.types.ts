@@ -50,6 +50,7 @@ export interface AgentSourceMetadata {
   relativePath: string;
   importedAt: Date;
   checksum: string;
+  rawContent?: string;
 }
 
 export interface AgentDefinition {

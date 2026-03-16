@@ -401,6 +401,13 @@
       "domainAnalysis": "ドメイン分析",
       "tasks": "タスク分解"
     },
+    "tabs": {
+      "skills": "スキル",
+      "prompts": "プロンプト",
+      "build": "ビルド",
+      "tests": "テスト",
+      "soul": "ソウル"
+    },
     "soul": {
       "identity": "アイデンティティと記憶",
       "role": "役割",
@@ -411,14 +418,14 @@
       "emoji": "絵文字",
       "color": "カラー",
       "criticalRules": "重要ルール",
-      "noRules": "重要ルールはまだ定義されていません。",
       "mission": "コアミッション",
-      "noMission": "ミッションブロックはまだ定義されていません。",
       "workflow": "ワークフロープロセス",
-      "noWorkflow": "ワークフローステップはまだ定義されていません。",
       "communicationStyle": "コミュニケーションスタイル",
-      "noCommStyle": "コミュニケーションスタイルはまだ定義されていません。",
       "successMetrics": "成功指標",
+      "noRules": "重要ルールはまだ定義されていません。",
+      "noMission": "ミッションブロックはまだ定義されていません。",
+      "noWorkflow": "ワークフローステップはまだ定義されていません。",
+      "noCommStyle": "コミュニケーションスタイルはまだ定義されていません。",
       "noMetrics": "成功指標はまだ定義されていません。"
     }
   },
