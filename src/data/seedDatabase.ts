@@ -80,6 +80,11 @@ export async function seedDatabase(): Promise<boolean> {
     console.log(`发现现有数据: ${existingOntologies} 个本体, ${existingAgents} 个代理`);
     console.log('强制重新种子数据以确保一致性...');
 
+    // Preserve user-created deployments (non-mock) across re-seeds
+    const existingDeployments = await runtimeDB.deployments.toArray();
+    const userDeployments = existingDeployments.filter(d => !d.id.startsWith('deploy-'));
+    console.log(`保留 ${userDeployments.length} 个用户创建的部署实例`);
+
     // 清空所有表
     await Promise.all([
       ontologyDB.ontologies.clear(),
@@ -104,9 +109,9 @@ export async function seedDatabase(): Promise<boolean> {
     console.log('种子 Agent 数据...');
     await agentDB.agents.bulkAdd(allAgents);
 
-    // 种子 Runtime 数据
+    // 种子 Runtime 数据 + restore user deployments
     console.log('种子 Runtime 数据...');
-    await runtimeDB.deployments.bulkAdd(mockDeployments);
+    await runtimeDB.deployments.bulkAdd([...mockDeployments, ...userDeployments]);
     await runtimeDB.jobs.bulkAdd(mockTasks);
     await runtimeDB.messages.bulkAdd(mockMessages);
 
