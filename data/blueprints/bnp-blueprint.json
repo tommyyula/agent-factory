@@ -1,0 +1,19 @@
+{
+  "$schema": "https://schemas.agent-factory.com/obr/v1.0.0",
+  "metadata": {
+    "id": "bnp-domain-v1",
+    "name": "Billing and Payment System Ontology",
+    "version": "1.0.0",
+    "domain": "BNP",
+    "description": "计费与支付系统完整业务域本体模型，包含发票生成、费率计算、支付处理、债务管理等核心业务流程",
+    "author": "Unis Agency Agents",
+    "createdAt": "2026-03-22T15:12:50.727Z",
+    "updatedAt": "2026-03-22T15:12:50.727Z",
+    "checksum": "bnp-v1-checksum"
+  },
+  "objects": [],
+  "behaviors": [],
+  "rules": [],
+  "scenarios": [],
+  "links": []
+}

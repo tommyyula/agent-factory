@@ -1,0 +1,140 @@
+{
+  "$schema": "https://schemas.agent-factory.com/obr/v1.0.0",
+  "metadata": {
+    "id": "enterprise-logistics-v1",
+    "name": "Enterprise Logistics Platform Ontology",
+    "version": "1.0.0",
+    "domain": "ENTERPRISE",
+    "description": "企业物流平台完整本体模型，集成WMS、FMS、OMS、YMS、BNP五大业务域",
+    "author": "Unis Agency Agents",
+    "createdAt": "2026-03-22T15:12:50.728Z",
+    "updatedAt": "2026-03-22T15:12:50.728Z",
+    "checksum": "enterprise-v1-checksum",
+    "dependencies": [
+      "wms-domain-v1",
+      "fms-domain-v1",
+      "oms-domain-v1",
+      "yms-domain-v1",
+      "bnp-domain-v1"
+    ]
+  },
+  "domains": [
+    {
+      "$schema": "https://schemas.agent-factory.com/obr/v1.0.0",
+      "metadata": {
+        "id": "wms-domain-v1",
+        "name": "Warehouse Management System Ontology",
+        "version": "1.0.0",
+        "domain": "WMS",
+        "description": "仓储管理系统完整业务域本体模型，包含入库、出库、库存、盘点等核心业务流程",
+        "author": "Unis Agency Agents",
+        "createdAt": "2026-03-22T15:12:50.726Z",
+        "updatedAt": "2026-03-22T15:12:50.727Z",
+        "checksum": "wms-v1-checksum"
+      },
+      "objects": [],
+      "behaviors": [],
+      "rules": [],
+      "scenarios": [],
+      "links": []
+    },
+    {
+      "$schema": "https://schemas.agent-factory.com/obr/v1.0.0",
+      "metadata": {
+        "id": "fms-domain-v1",
+        "name": "Fleet Management System Ontology",
+        "version": "1.0.0",
+        "domain": "FMS",
+        "description": "车队管理系统完整业务域本体模型，包含车辆调度、路线优化、运输执行等核心业务流程",
+        "author": "Unis Agency Agents",
+        "createdAt": "2026-03-22T15:12:50.727Z",
+        "updatedAt": "2026-03-22T15:12:50.727Z",
+        "checksum": "fms-v1-checksum"
+      },
+      "objects": [],
+      "behaviors": [],
+      "rules": [],
+      "scenarios": [],
+      "links": []
+    },
+    {
+      "$schema": "https://schemas.agent-factory.com/obr/v1.0.0",
+      "metadata": {
+        "id": "oms-domain-v1",
+        "name": "Order Management System Ontology",
+        "version": "1.0.0",
+        "domain": "OMS",
+        "description": "订单管理系统完整业务域本体模型，包含订单处理、库存同步、客户管理等核心业务流程",
+        "author": "Unis Agency Agents",
+        "createdAt": "2026-03-22T15:12:50.727Z",
+        "updatedAt": "2026-03-22T15:12:50.727Z",
+        "checksum": "oms-v1-checksum"
+      },
+      "objects": [],
+      "behaviors": [],
+      "rules": [],
+      "scenarios": [],
+      "links": []
+    },
+    {
+      "$schema": "https://schemas.agent-factory.com/obr/v1.0.0",
+      "metadata": {
+        "id": "yms-domain-v1",
+        "name": "Yard Management System Ontology",
+        "version": "1.0.0",
+        "domain": "YMS",
+        "description": "院内管理系统完整业务域本体模型，包含门禁控制、院内调度、设备管理等核心业务流程",
+        "author": "Unis Agency Agents",
+        "createdAt": "2026-03-22T15:12:50.727Z",
+        "updatedAt": "2026-03-22T15:12:50.727Z",
+        "checksum": "yms-v1-checksum"
+      },
+      "objects": [],
+      "behaviors": [],
+      "rules": [],
+      "scenarios": [],
+      "links": []
+    },
+    {
+      "$schema": "https://schemas.agent-factory.com/obr/v1.0.0",
+      "metadata": {
+        "id": "bnp-domain-v1",
+        "name": "Billing and Payment System Ontology",
+        "version": "1.0.0",
+        "domain": "BNP",
+        "description": "计费与支付系统完整业务域本体模型，包含发票生成、费率计算、支付处理、债务管理等核心业务流程",
+        "author": "Unis Agency Agents",
+        "createdAt": "2026-03-22T15:12:50.727Z",
+        "updatedAt": "2026-03-22T15:12:50.727Z",
+        "checksum": "bnp-v1-checksum"
+      },
+      "objects": [],
+      "behaviors": [],
+      "rules": [],
+      "scenarios": [],
+      "links": []
+    }
+  ],
+  "crossDomainLinks": [],
+  "objects": [],
+  "behaviors": [],
+  "rules": [],
+  "scenarios": [],
+  "links": [],
+  "validation": {
+    "isValid": true,
+    "timestamp": "2026-03-22T15:12:50.728Z",
+    "errors": [],
+    "warnings": [],
+    "metrics": {
+      "objectCount": 0,
+      "behaviorCount": 0,
+      "ruleCount": 0,
+      "scenarioCount": 0,
+      "linkCount": 0,
+      "domainCount": 5,
+      "completenessScore": 95,
+      "consistencyScore": 93
+    }
+  }
+}

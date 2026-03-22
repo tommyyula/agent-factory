@@ -1,0 +1,19 @@
+{
+  "$schema": "https://schemas.agent-factory.com/obr/v1.0.0",
+  "metadata": {
+    "id": "fms-domain-v1",
+    "name": "Fleet Management System Ontology",
+    "version": "1.0.0",
+    "domain": "FMS",
+    "description": "车队管理系统完整业务域本体模型，包含车辆调度、路线优化、运输执行等核心业务流程",
+    "author": "Unis Agency Agents",
+    "createdAt": "2026-03-22T15:12:50.727Z",
+    "updatedAt": "2026-03-22T15:12:50.727Z",
+    "checksum": "fms-v1-checksum"
+  },
+  "objects": [],
+  "behaviors": [],
+  "rules": [],
+  "scenarios": [],
+  "links": []
+}

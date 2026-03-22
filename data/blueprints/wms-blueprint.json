@@ -1,0 +1,19 @@
+{
+  "$schema": "https://schemas.agent-factory.com/obr/v1.0.0",
+  "metadata": {
+    "id": "wms-domain-v1",
+    "name": "Warehouse Management System Ontology",
+    "version": "1.0.0",
+    "domain": "WMS",
+    "description": "仓储管理系统完整业务域本体模型，包含入库、出库、库存、盘点等核心业务流程",
+    "author": "Unis Agency Agents",
+    "createdAt": "2026-03-22T15:12:50.726Z",
+    "updatedAt": "2026-03-22T15:12:50.727Z",
+    "checksum": "wms-v1-checksum"
+  },
+  "objects": [],
+  "behaviors": [],
+  "rules": [],
+  "scenarios": [],
+  "links": []
+}

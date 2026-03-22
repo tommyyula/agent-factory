@@ -1,0 +1,19 @@
+{
+  "$schema": "https://schemas.agent-factory.com/obr/v1.0.0",
+  "metadata": {
+    "id": "yms-domain-v1",
+    "name": "Yard Management System Ontology",
+    "version": "1.0.0",
+    "domain": "YMS",
+    "description": "院内管理系统完整业务域本体模型，包含门禁控制、院内调度、设备管理等核心业务流程",
+    "author": "Unis Agency Agents",
+    "createdAt": "2026-03-22T15:12:50.727Z",
+    "updatedAt": "2026-03-22T15:12:50.727Z",
+    "checksum": "yms-v1-checksum"
+  },
+  "objects": [],
+  "behaviors": [],
+  "rules": [],
+  "scenarios": [],
+  "links": []
+}
