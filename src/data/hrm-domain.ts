@@ -1,0 +1,1589 @@
+// HRM Domain Model Implementation
+// Complete OBR model for Human Resource Management domain
+// Based on OBR System Design Document
+
+import { 
+  OntologyBlueprint,
+  OBRObject,
+  OBRBehavior,
+  OBRRule,
+  OBRScenario,
+  OBRLink
+} from '@/shared/types/obr.types';
+
+// HRM Domain Blueprint
+export const HRM_DOMAIN_BLUEPRINT: OntologyBlueprint = {
+  $schema: 'https://schemas.agent-factory.com/obr/v1.0.0',
+  metadata: {
+    id: 'hrm-domain-v1',
+    name: 'Human Resource Management Ontology',
+    version: '1.0.0',
+    domain: 'HRM',
+    description: '人力资源管理完整业务域本体模型',
+    author: 'Agent Factory Team',
+    createdAt: new Date().toISOString(),
+    updatedAt: new Date().toISOString(),
+    checksum: 'will-be-calculated'
+  },
+  
+  // 8 Core Objects
+  objects: [
+    {
+      id: 'employee',
+      name: 'Employee',
+      displayName: '员工',
+      description: '组织中的员工实体，包含个人信息、技能和状态',
+      category: 'entity',
+      attributes: {
+        id: { type: 'string', required: true, description: '员工唯一标识' },
+        name: { type: 'string', required: true, description: '员工姓名' },
+        email: { 
+          type: 'string', 
+          required: true, 
+          constraints: { pattern: '^[\\w-\\.]+@([\\w-]+\\.)+[\\w-]{2,4}$' },
+          description: '员工邮箱'
+        },
+        phone: { type: 'string', required: false, description: '员工电话' },
+        department: { type: 'reference', references: 'organization', required: true, description: '所属部门' },
+        position: { type: 'string', required: true, description: '职位' },
+        skills: { type: 'reference', references: 'skill', required: false, description: '员工技能' },
+        supervisor: { type: 'reference', references: 'supervisor', required: false, description: '直属主管' },
+        startDate: { type: 'date', required: true, description: '入职日期' },
+        endDate: { type: 'date', required: false, description: '离职日期' },
+        emergencyContact: { type: 'string', required: true, description: '紧急联系人' }
+      },
+      stateMachine: {
+        initialState: 'active',
+        states: {
+          'active': { displayName: '在职', description: '正常工作状态' },
+          'on_leave': { displayName: '请假', description: '临时离开' },
+          'suspended': { displayName: '停职', description: '暂时停止工作' },
+          'terminated': { displayName: '离职', description: '结束雇佣关系', isTerminal: true }
+        },
+        transitions: [
+          { from: 'active', to: 'on_leave', trigger: 'requestLeave' },
+          { from: 'on_leave', to: 'active', trigger: 'returnFromLeave' },
+          { from: 'active', to: 'suspended', trigger: 'suspend' },
+          { from: 'suspended', to: 'active', trigger: 'reinstate' },
+          { from: 'active', to: 'terminated', trigger: 'terminate' },
+          { from: 'suspended', to: 'terminated', trigger: 'terminate' }
+        ]
+      },
+      constraints: [
+        {
+          id: 'valid_employment_period',
+          type: 'invariant',
+          expression: 'endDate == null || endDate > startDate',
+          description: '离职日期必须晚于入职日期',
+          severity: 'error'
+        },
+        {
+          id: 'valid_email_format',
+          type: 'invariant',
+          expression: 'email.match(/^[\\w-\\.]+@([\\w-]+\\.)+[\\w-]{2,4}$/)',
+          description: '邮箱格式必须正确',
+          severity: 'error'
+        }
+      ],
+      visual: { color: '#3b82f6', icon: 'user', position: { x: 100, y: 100 } }
+    },
+    
+    {
+      id: 'shift',
+      name: 'Shift',
+      displayName: '班次',
+      description: '工作班次，定义工作时间段和要求',
+      category: 'entity',
+      attributes: {
+        id: { type: 'string', required: true, description: '班次唯一标识' },
+        name: { type: 'string', required: true, description: '班次名称' },
+        startTime: { type: 'date', required: true, description: '开始时间' },
+        endTime: { type: 'date', required: true, description: '结束时间' },
+        shiftType: { 
+          type: 'enum', 
+          required: true, 
+          constraints: { enum: ['morning', 'afternoon', 'night', 'overtime'] },
+          description: '班次类型'
+        },
+        requiredSkills: { type: 'reference', references: 'skill', required: false, description: '所需技能' },
+        maxEmployees: { type: 'number', required: true, constraints: { min: 1 }, description: '最大员工数' },
+        department: { type: 'reference', references: 'organization', required: true, description: '所属部门' },
+        createdBy: { type: 'reference', references: 'supervisor', required: true, description: '创建者' }
+      },
+      stateMachine: {
+        initialState: 'created',
+        states: {
+          'created': { displayName: '已创建', description: '班次已创建待分配' },
+          'assigned': { displayName: '已分配', description: '员工已分配' },
+          'in_progress': { displayName: '进行中', description: '班次正在进行' },
+          'completed': { displayName: '已完成', description: '班次已结束', isTerminal: true },
+          'cancelled': { displayName: '已取消', description: '班次被取消', isTerminal: true }
+        },
+        transitions: [
+          { from: 'created', to: 'assigned', trigger: 'assignEmployee' },
+          { from: 'assigned', to: 'in_progress', trigger: 'startShift' },
+          { from: 'in_progress', to: 'completed', trigger: 'endShift' },
+          { from: 'created', to: 'cancelled', trigger: 'cancelShift' },
+          { from: 'assigned', to: 'cancelled', trigger: 'cancelShift' }
+        ]
+      },
+      constraints: [
+        {
+          id: 'valid_time_range',
+          type: 'invariant',
+          expression: 'endTime > startTime',
+          description: '结束时间必须晚于开始时间',
+          severity: 'error'
+        },
+        {
+          id: 'reasonable_duration',
+          type: 'invariant',
+          expression: '(endTime - startTime) <= 12 * 3600000',
+          description: '班次时长不得超过12小时',
+          severity: 'warning'
+        }
+      ],
+      visual: { color: '#10b981', icon: 'clock', position: { x: 300, y: 100 } }
+    },
+    
+    {
+      id: 'schedule',
+      name: 'Schedule',
+      displayName: '排班表',
+      description: '员工工作时间安排表',
+      category: 'aggregate',
+      attributes: {
+        id: { type: 'string', required: true, description: '排班表唯一标识' },
+        name: { type: 'string', required: true, description: '排班表名称' },
+        startDate: { type: 'date', required: true, description: '开始日期' },
+        endDate: { type: 'date', required: true, description: '结束日期' },
+        department: { type: 'reference', references: 'organization', required: true, description: '所属部门' },
+        shifts: { type: 'reference', references: 'shift', required: false, description: '包含的班次' },
+        assignments: { type: 'string', required: false, description: '员工分配信息JSON' },
+        createdBy: { type: 'reference', references: 'supervisor', required: true, description: '创建者' },
+        approvedBy: { type: 'reference', references: 'supervisor', required: false, description: '审批者' }
+      },
+      stateMachine: {
+        initialState: 'draft',
+        states: {
+          'draft': { displayName: '草稿', description: '排班表草稿状态' },
+          'pending_approval': { displayName: '待审批', description: '等待主管审批' },
+          'approved': { displayName: '已审批', description: '排班表已审批' },
+          'active': { displayName: '执行中', description: '排班表正在执行' },
+          'completed': { displayName: '已完成', description: '排班周期结束', isTerminal: true },
+          'cancelled': { displayName: '已取消', description: '排班表被取消', isTerminal: true }
+        },
+        transitions: [
+          { from: 'draft', to: 'pending_approval', trigger: 'submitForApproval' },
+          { from: 'pending_approval', to: 'approved', trigger: 'approve' },
+          { from: 'pending_approval', to: 'draft', trigger: 'reject' },
+          { from: 'approved', to: 'active', trigger: 'activate' },
+          { from: 'active', to: 'completed', trigger: 'complete' },
+          { from: 'draft', to: 'cancelled', trigger: 'cancel' },
+          { from: 'pending_approval', to: 'cancelled', trigger: 'cancel' }
+        ]
+      },
+      constraints: [
+        {
+          id: 'valid_period',
+          type: 'invariant',
+          expression: 'endDate > startDate',
+          description: '结束日期必须晚于开始日期',
+          severity: 'error'
+        }
+      ],
+      visual: { color: '#f59e0b', icon: 'calendar', position: { x: 500, y: 100 } }
+    },
+    
+    {
+      id: 'attendance',
+      name: 'Attendance',
+      displayName: '考勤记录',
+      description: '员工出勤打卡记录',
+      category: 'entity',
+      attributes: {
+        id: { type: 'string', required: true, description: '考勤记录唯一标识' },
+        employee: { type: 'reference', references: 'employee', required: true, description: '员工' },
+        shift: { type: 'reference', references: 'shift', required: true, description: '对应班次' },
+        punchInTime: { type: 'date', required: false, description: '打卡上班时间' },
+        punchOutTime: { type: 'date', required: false, description: '打卡下班时间' },
+        location: { type: 'string', required: false, description: '打卡位置' },
+        device: { type: 'string', required: false, description: '打卡设备' },
+        notes: { type: 'string', required: false, description: '备注' }
+      },
+      stateMachine: {
+        initialState: 'not_started',
+        states: {
+          'not_started': { displayName: '未开始', description: '班次未开始' },
+          'punched_in': { displayName: '已上班', description: '已打卡上班' },
+          'on_break': { displayName: '休息中', description: '休息时间' },
+          'punched_out': { displayName: '已下班', description: '已打卡下班', isTerminal: true },
+          'absent': { displayName: '缺勤', description: '未按时出勤', isTerminal: true }
+        },
+        transitions: [
+          { from: 'not_started', to: 'punched_in', trigger: 'punchIn' },
+          { from: 'not_started', to: 'absent', trigger: 'markAbsent' },
+          { from: 'punched_in', to: 'on_break', trigger: 'startBreak' },
+          { from: 'on_break', to: 'punched_in', trigger: 'endBreak' },
+          { from: 'punched_in', to: 'punched_out', trigger: 'punchOut' }
+        ]
+      },
+      constraints: [
+        {
+          id: 'valid_punch_sequence',
+          type: 'invariant',
+          expression: 'punchOutTime == null || punchOutTime > punchInTime',
+          description: '下班时间必须晚于上班时间',
+          severity: 'error'
+        }
+      ],
+      visual: { color: '#8b5cf6', icon: 'check-circle', position: { x: 700, y: 100 } }
+    },
+    
+    {
+      id: 'organization',
+      name: 'Organization',
+      displayName: '组织架构',
+      description: '公司组织架构和部门信息',
+      category: 'aggregate',
+      attributes: {
+        id: { type: 'string', required: true, description: '组织唯一标识' },
+        name: { type: 'string', required: true, description: '部门名称' },
+        code: { type: 'string', required: true, description: '部门代码' },
+        type: { 
+          type: 'enum', 
+          required: true, 
+          constraints: { enum: ['department', 'team', 'division', 'subsidiary'] },
+          description: '组织类型'
+        },
+        parentId: { type: 'reference', references: 'organization', required: false, description: '上级部门' },
+        manager: { type: 'reference', references: 'supervisor', required: false, description: '部门负责人' },
+        location: { type: 'string', required: false, description: '办公地点' },
+        budget: { type: 'number', required: false, constraints: { min: 0 }, description: '部门预算' }
+      },
+      stateMachine: {
+        initialState: 'active',
+        states: {
+          'active': { displayName: '激活', description: '部门正常运营' },
+          'inactive': { displayName: '停用', description: '部门暂停运营' },
+          'dissolved': { displayName: '解散', description: '部门已解散', isTerminal: true }
+        },
+        transitions: [
+          { from: 'active', to: 'inactive', trigger: 'deactivate' },
+          { from: 'inactive', to: 'active', trigger: 'activate' },
+          { from: 'inactive', to: 'dissolved', trigger: 'dissolve' }
+        ]
+      },
+      constraints: [
+        {
+          id: 'unique_department_code',
+          type: 'invariant',
+          expression: 'isUnique(code)',
+          description: '部门代码必须唯一',
+          severity: 'error'
+        }
+      ],
+      visual: { color: '#ef4444', icon: 'building', position: { x: 100, y: 300 } }
+    },
+    
+    {
+      id: 'supervisor',
+      name: 'Supervisor',
+      displayName: '主管',
+      description: '管理岗位和权限信息',
+      category: 'entity',
+      attributes: {
+        id: { type: 'string', required: true, description: '主管唯一标识' },
+        employee: { type: 'reference', references: 'employee', required: true, description: '对应员工' },
+        level: { 
+          type: 'enum', 
+          required: true, 
+          constraints: { enum: ['team_lead', 'manager', 'director', 'vp'] },
+          description: '管理级别'
+        },
+        departments: { type: 'reference', references: 'organization', required: true, description: '管理部门' },
+        permissions: { type: 'string', required: true, description: '权限列表JSON' },
+        maxApprovalAmount: { type: 'number', required: false, constraints: { min: 0 }, description: '最大审批额度' },
+        startDate: { type: 'date', required: true, description: '任职开始日期' },
+        endDate: { type: 'date', required: false, description: '任职结束日期' }
+      },
+      stateMachine: {
+        initialState: 'active',
+        states: {
+          'active': { displayName: '在职', description: '主管正常履职' },
+          'delegated': { displayName: '委托', description: '权限已委托他人' },
+          'suspended': { displayName: '停职', description: '暂停履职' },
+          'resigned': { displayName: '离任', description: '不再担任主管', isTerminal: true }
+        },
+        transitions: [
+          { from: 'active', to: 'delegated', trigger: 'delegate' },
+          { from: 'delegated', to: 'active', trigger: 'resumeAuthority' },
+          { from: 'active', to: 'suspended', trigger: 'suspend' },
+          { from: 'suspended', to: 'active', trigger: 'reinstate' },
+          { from: 'active', to: 'resigned', trigger: 'resign' },
+          { from: 'suspended', to: 'resigned', trigger: 'resign' }
+        ]
+      },
+      constraints: [
+        {
+          id: 'valid_tenure_period',
+          type: 'invariant',
+          expression: 'endDate == null || endDate > startDate',
+          description: '离任日期必须晚于任职日期',
+          severity: 'error'
+        }
+      ],
+      visual: { color: '#f97316', icon: 'user-check', position: { x: 300, y: 300 } }
+    },
+    
+    {
+      id: 'skill',
+      name: 'Skill',
+      displayName: '技能',
+      description: '员工技能和能力定义',
+      category: 'value_object',
+      attributes: {
+        id: { type: 'string', required: true, description: '技能唯一标识' },
+        name: { type: 'string', required: true, description: '技能名称' },
+        category: { 
+          type: 'enum', 
+          required: true, 
+          constraints: { enum: ['technical', 'language', 'management', 'certification'] },
+          description: '技能分类'
+        },
+        level: { 
+          type: 'enum', 
+          required: true, 
+          constraints: { enum: ['beginner', 'intermediate', 'advanced', 'expert'] },
+          description: '技能等级'
+        },
+        description: { type: 'string', required: false, description: '技能描述' },
+        certificationRequired: { type: 'boolean', required: false, defaultValue: false, description: '是否需要认证' },
+        validityPeriod: { type: 'number', required: false, description: '有效期（月）' }
+      },
+      stateMachine: {
+        initialState: 'active',
+        states: {
+          'active': { displayName: '有效', description: '技能有效可用' },
+          'expired': { displayName: '过期', description: '技能认证过期' },
+          'deprecated': { displayName: '废弃', description: '技能不再使用', isTerminal: true }
+        },
+        transitions: [
+          { from: 'active', to: 'expired', trigger: 'expire' },
+          { from: 'expired', to: 'active', trigger: 'renew' },
+          { from: 'active', to: 'deprecated', trigger: 'deprecate' }
+        ]
+      },
+      constraints: [
+        {
+          id: 'unique_skill_name',
+          type: 'invariant',
+          expression: 'isUnique(name)',
+          description: '技能名称必须唯一',
+          severity: 'error'
+        }
+      ],
+      visual: { color: '#06b6d4', icon: 'award', position: { x: 500, y: 300 } }
+    },
+    
+    {
+      id: 'agency',
+      name: 'Agency',
+      displayName: '外包机构',
+      description: '外包服务机构信息',
+      category: 'entity',
+      attributes: {
+        id: { type: 'string', required: true, description: '机构唯一标识' },
+        name: { type: 'string', required: true, description: '机构名称' },
+        type: { 
+          type: 'enum', 
+          required: true, 
+          constraints: { enum: ['staffing', 'consulting', 'outsourcing', 'temporary'] },
+          description: '机构类型'
+        },
+        contactInfo: { type: 'string', required: true, description: '联系信息JSON' },
+        contractStart: { type: 'date', required: true, description: '合同开始日期' },
+        contractEnd: { type: 'date', required: true, description: '合同结束日期' },
+        services: { type: 'string', required: true, description: '提供服务列表JSON' },
+        rating: { type: 'number', required: false, constraints: { min: 1, max: 5 }, description: '服务评级' }
+      },
+      stateMachine: {
+        initialState: 'contracted',
+        states: {
+          'contracted': { displayName: '签约', description: '已签订合作协议' },
+          'active': { displayName: '合作中', description: '正在提供服务' },
+          'suspended': { displayName: '暂停', description: '暂停合作' },
+          'terminated': { displayName: '终止', description: '合作终止', isTerminal: true }
+        },
+        transitions: [
+          { from: 'contracted', to: 'active', trigger: 'startService' },
+          { from: 'active', to: 'suspended', trigger: 'suspend' },
+          { from: 'suspended', to: 'active', trigger: 'resume' },
+          { from: 'active', to: 'terminated', trigger: 'terminate' },
+          { from: 'suspended', to: 'terminated', trigger: 'terminate' }
+        ]
+      },
+      constraints: [
+        {
+          id: 'valid_contract_period',
+          type: 'invariant',
+          expression: 'contractEnd > contractStart',
+          description: '合同结束日期必须晚于开始日期',
+          severity: 'error'
+        }
+      ],
+      visual: { color: '#84cc16', icon: 'briefcase', position: { x: 700, y: 300 } }
+    }
+  ],
+  
+  // 5 Core Behaviors
+  behaviors: [
+    {
+      id: 'createShift',
+      name: 'createShift',
+      displayName: '创建班次',
+      description: '创建新的工作班次，包括时间验证和资源检查',
+      category: 'command',
+      preconditions: {
+        objectStates: [
+          { objectId: 'organization', requiredState: 'active' }
+        ],
+        ruleChecks: ['no_time_conflict'],
+        customConditions: ['hasPermission(actor, "schedule_management")']
+      },
+      inputs: {
+        startTime: { type: 'date', required: true, description: '班次开始时间' },
+        endTime: { type: 'date', required: true, description: '班次结束时间' },
+        shiftType: { 
+          type: 'enum', 
+          required: true, 
+          validation: 'in:["morning","afternoon","night","overtime"]',
+          description: '班次类型'
+        },
+        requiredSkills: { type: 'string[]', required: false, description: '所需技能列表' },
+        maxEmployees: { type: 'number', required: true, description: '最大员工数' },
+        department: { type: 'string', required: true, description: '所属部门' }
+      },
+      outputs: {
+        shiftId: { type: 'string', description: '创建的班次ID' },
+        success: { type: 'boolean', description: '创建是否成功' },
+        conflicts: { type: 'string[]', description: '检测到的冲突列表' }
+      },
+      stateChanges: [
+        { objectId: 'shift', newState: 'created' }
+      ],
+      linkedRules: [
+        { ruleId: 'min_rest_8h', phase: 'before', required: true },
+        { ruleId: 'max_consecutive_12h', phase: 'during', required: true }
+      ],
+      sideEffects: [
+        { type: 'notify', target: 'supervisor', data: { event: 'shift_created' } }
+      ],
+      visual: { color: '#22c55e', icon: 'calendar-plus', position: { x: 100, y: 500 } }
+    },
+    
+    {
+      id: 'assignEmployee',
+      name: 'assignEmployee',
+      displayName: '分配员工',
+      description: '将员工分配到特定班次，包括技能匹配和可用性验证',
+      category: 'command',
+      preconditions: {
+        objectStates: [
+          { objectId: 'employee', requiredState: 'active' },
+          { objectId: 'shift', requiredState: 'created' }
+        ],
+        ruleChecks: ['skill_match_80', 'min_rest_8h'],
+        customConditions: ['employee.isAvailable(shift.startTime, shift.endTime)']
+      },
+      inputs: {
+        employeeId: { type: 'string', required: true, description: '员工ID' },
+        shiftId: { type: 'string', required: true, description: '班次ID' },
+        role: { type: 'string', required: false, description: '在班次中的角色' },
+        priority: { type: 'number', required: false, description: '优先级' }
+      },
+      outputs: {
+        assignmentId: { type: 'string', description: '分配记录ID' },
+        success: { type: 'boolean', description: '分配是否成功' },
+        matchScore: { type: 'number', description: '技能匹配分数' }
+      },
+      stateChanges: [
+        { objectId: 'shift', newState: 'assigned' },
+        { objectId: 'employee', newState: 'active', condition: 'assignment successful' }
+      ],
+      linkedRules: [
+        { ruleId: 'skill_match_80', phase: 'before', required: true },
+        { ruleId: 'max_consecutive_12h', phase: 'before', required: true }
+      ],
+      sideEffects: [
+        { type: 'notify', target: 'employee', data: { event: 'shift_assigned' } },
+        { type: 'update', target: 'schedule', data: { assignment: 'updated' } }
+      ],
+      visual: { color: '#3b82f6', icon: 'user-plus', position: { x: 300, y: 500 } }
+    },
+    
+    {
+      id: 'punchIn',
+      name: 'punchIn',
+      displayName: '上班打卡',
+      description: '员工上班打卡，记录出勤时间和位置',
+      category: 'event',
+      preconditions: {
+        objectStates: [
+          { objectId: 'employee', requiredState: 'active' },
+          { objectId: 'attendance', requiredState: 'not_started' }
+        ],
+        ruleChecks: [],
+        customConditions: ['isWithinShiftTime(current_time, shift.startTime)']
+      },
+      inputs: {
+        employeeId: { type: 'string', required: true, description: '员工ID' },
+        shiftId: { type: 'string', required: true, description: '班次ID' },
+        location: { type: 'string', required: false, description: '打卡位置' },
+        device: { type: 'string', required: false, description: '打卡设备' }
+      },
+      outputs: {
+        attendanceId: { type: 'string', description: '考勤记录ID' },
+        punchTime: { type: 'date', description: '打卡时间' },
+        status: { type: 'string', description: '打卡状态' }
+      },
+      stateChanges: [
+        { objectId: 'attendance', newState: 'punched_in' },
+        { objectId: 'shift', newState: 'in_progress', condition: 'first employee punch in' }
+      ],
+      linkedRules: [],
+      sideEffects: [
+        { type: 'create', target: 'attendance_log', data: { action: 'punch_in' } }
+      ],
+      visual: { color: '#10b981', icon: 'clock-in', position: { x: 500, y: 500 } }
+    },
+    
+    {
+      id: 'punchOut',
+      name: 'punchOut',
+      displayName: '下班打卡',
+      description: '员工下班打卡，结束工作时间记录',
+      category: 'event',
+      preconditions: {
+        objectStates: [
+          { objectId: 'attendance', requiredState: 'punched_in' }
+        ],
+        ruleChecks: [],
+        customConditions: ['hasWorkedMinimumTime(punch_in_time, current_time)']
+      },
+      inputs: {
+        employeeId: { type: 'string', required: true, description: '员工ID' },
+        attendanceId: { type: 'string', required: true, description: '考勤记录ID' },
+        location: { type: 'string', required: false, description: '打卡位置' },
+        device: { type: 'string', required: false, description: '打卡设备' }
+      },
+      outputs: {
+        punchTime: { type: 'date', description: '打卡时间' },
+        workingHours: { type: 'number', description: '工作时长' },
+        overtime: { type: 'number', description: '加班时长' }
+      },
+      stateChanges: [
+        { objectId: 'attendance', newState: 'punched_out' }
+      ],
+      linkedRules: [
+        { ruleId: 'overtime_approval', phase: 'after', required: false }
+      ],
+      sideEffects: [
+        { type: 'create', target: 'attendance_log', data: { action: 'punch_out' } },
+        { type: 'update', target: 'employee_stats', data: { working_hours: 'updated' } }
+      ],
+      visual: { color: '#f59e0b', icon: 'clock-out', position: { x: 700, y: 500 } }
+    },
+    
+    {
+      id: 'approveOvertime',
+      name: 'approveOvertime',
+      displayName: '审批加班',
+      description: '主管审批员工加班申请',
+      category: 'workflow',
+      preconditions: {
+        objectStates: [
+          { objectId: 'supervisor', requiredState: 'active' }
+        ],
+        ruleChecks: ['overtime_approval'],
+        customConditions: ['hasSupervisorPermission(actor, employee.department)']
+      },
+      inputs: {
+        employeeId: { type: 'string', required: true, description: '员工ID' },
+        overtimeHours: { type: 'number', required: true, description: '加班时长' },
+        reason: { type: 'string', required: true, description: '加班原因' },
+        supervisorId: { type: 'string', required: true, description: '审批主管ID' },
+        urgency: { 
+          type: 'enum', 
+          required: false, 
+          validation: 'in:["low","medium","high","urgent"]',
+          description: '紧急程度'
+        }
+      },
+      outputs: {
+        approvalId: { type: 'string', description: '审批记录ID' },
+        approved: { type: 'boolean', description: '是否审批通过' },
+        approvalTime: { type: 'date', description: '审批时间' }
+      },
+      stateChanges: [],
+      linkedRules: [
+        { ruleId: 'max_consecutive_12h', phase: 'before', required: true },
+        { ruleId: 'overtime_approval', phase: 'during', required: true }
+      ],
+      sideEffects: [
+        { type: 'notify', target: 'employee', data: { event: 'overtime_approved' } },
+        { type: 'create', target: 'approval_log', data: { type: 'overtime' } }
+      ],
+      visual: { color: '#8b5cf6', icon: 'check-badge', position: { x: 900, y: 500 } }
+    }
+  ],
+  
+  // 4 Core Rules
+  rules: [
+    {
+      id: 'min_rest_8h',
+      name: 'minimumRest8Hours',
+      displayName: '最少休息8小时',
+      description: '员工连续班次之间必须有至少8小时的休息时间',
+      category: 'invariant',
+      priority: 9,
+      condition: {
+        expression: 'timeDiff(previousShift.endTime, currentShift.startTime) >= 8 * 3600000',
+        naturalLanguage: '当前班次开始时间与上个班次结束时间之间至少相隔8小时',
+        variables: {
+          'previousShift.endTime': 'Date',
+          'currentShift.startTime': 'Date'
+        }
+      },
+      actions: [
+        {
+          type: 'block',
+          message: '违反最少休息时间规定，员工需要至少8小时休息',
+          severity: 'error'
+        }
+      ],
+      scope: {
+        objects: ['employee', 'shift', 'schedule'],
+        behaviors: ['createShift', 'assignEmployee'],
+        scenarios: ['normal_scheduling', 'emergency_absence_substitution']
+      },
+      testCases: [
+        {
+          id: 'test_valid_rest',
+          description: '正常8小时休息',
+          input: { previousEnd: '2024-03-22T22:00:00Z', currentStart: '2024-03-23T08:00:00Z' },
+          expectedResult: 'pass'
+        },
+        {
+          id: 'test_insufficient_rest',
+          description: '休息不足8小时',
+          input: { previousEnd: '2024-03-22T22:00:00Z', currentStart: '2024-03-23T04:00:00Z' },
+          expectedResult: 'fail'
+        }
+      ]
+    },
+    
+    {
+      id: 'max_consecutive_12h',
+      name: 'maximumConsecutive12Hours',
+      displayName: '最大连续工作12小时',
+      description: '员工连续工作时间不得超过12小时',
+      category: 'constraint',
+      priority: 10,
+      condition: {
+        expression: 'consecutiveWorkingHours <= 12',
+        naturalLanguage: '员工连续工作时间不超过12小时',
+        variables: {
+          'consecutiveWorkingHours': 'number'
+        }
+      },
+      actions: [
+        {
+          type: 'block',
+          message: '超出最大连续工作时间限制',
+          severity: 'error'
+        },
+        {
+          type: 'warn',
+          message: '接近最大工作时间限制，请安排休息',
+          severity: 'warning'
+        }
+      ],
+      scope: {
+        objects: ['employee', 'shift', 'attendance'],
+        behaviors: ['createShift', 'assignEmployee', 'approveOvertime'],
+        scenarios: ['normal_scheduling', 'emergency_absence_substitution']
+      },
+      testCases: [
+        {
+          id: 'test_normal_hours',
+          description: '正常8小时工作',
+          input: { workingHours: 8 },
+          expectedResult: 'pass'
+        },
+        {
+          id: 'test_overtime_valid',
+          description: '合理的10小时工作',
+          input: { workingHours: 10 },
+          expectedResult: 'pass'
+        },
+        {
+          id: 'test_excessive_hours',
+          description: '超出限制的14小时工作',
+          input: { workingHours: 14 },
+          expectedResult: 'fail'
+        }
+      ]
+    },
+    
+    {
+      id: 'skill_match_80',
+      name: 'skillMatch80Percent',
+      displayName: '技能匹配度80%',
+      description: '员工分配到班次时技能匹配度必须达到80%以上',
+      category: 'validation',
+      priority: 7,
+      condition: {
+        expression: 'calculateSkillMatch(employee.skills, shift.requiredSkills) >= 0.8',
+        naturalLanguage: '员工技能与班次要求的匹配度至少为80%',
+        variables: {
+          'employee.skills': 'string[]',
+          'shift.requiredSkills': 'string[]'
+        }
+      },
+      actions: [
+        {
+          type: 'warn',
+          message: '员工技能匹配度低于80%，建议选择其他员工或提供培训',
+          severity: 'warning'
+        },
+        {
+          type: 'validate',
+          message: '技能匹配度检查完成',
+          severity: 'info'
+        }
+      ],
+      scope: {
+        objects: ['employee', 'shift', 'skill'],
+        behaviors: ['assignEmployee'],
+        scenarios: ['normal_scheduling']
+      },
+      testCases: [
+        {
+          id: 'test_perfect_match',
+          description: '100%技能匹配',
+          input: { 
+            employeeSkills: ['javascript', 'react', 'nodejs'], 
+            requiredSkills: ['javascript', 'react'] 
+          },
+          expectedResult: 'pass'
+        },
+        {
+          id: 'test_adequate_match',
+          description: '80%技能匹配',
+          input: { 
+            employeeSkills: ['javascript', 'react'], 
+            requiredSkills: ['javascript', 'react', 'nodejs'] 
+          },
+          expectedResult: 'pass'
+        },
+        {
+          id: 'test_insufficient_match',
+          description: '低于80%技能匹配',
+          input: { 
+            employeeSkills: ['python'], 
+            requiredSkills: ['javascript', 'react', 'nodejs'] 
+          },
+          expectedResult: 'fail'
+        }
+      ]
+    },
+    
+    {
+      id: 'overtime_approval',
+      name: 'overtimeApproval',
+      displayName: '加班需主管审批',
+      description: '所有加班都必须获得直属主管的事先审批',
+      category: 'trigger',
+      priority: 8,
+      condition: {
+        expression: 'workingHours > normalShiftHours && hasApproval(supervisor)',
+        naturalLanguage: '工作时间超出正常班次时长且获得主管审批',
+        variables: {
+          'workingHours': 'number',
+          'normalShiftHours': 'number',
+          'supervisor': 'Supervisor'
+        }
+      },
+      actions: [
+        {
+          type: 'block',
+          message: '加班必须获得主管事先审批',
+          severity: 'error'
+        },
+        {
+          type: 'execute',
+          target: 'sendApprovalRequest',
+          message: '自动发送加班审批申请',
+          severity: 'info'
+        }
+      ],
+      scope: {
+        objects: ['employee', 'supervisor', 'attendance'],
+        behaviors: ['approveOvertime', 'punchOut'],
+        scenarios: ['normal_scheduling']
+      },
+      testCases: [
+        {
+          id: 'test_normal_hours_no_approval',
+          description: '正常工时无需审批',
+          input: { workingHours: 8, normalHours: 8, hasApproval: false },
+          expectedResult: 'pass'
+        },
+        {
+          id: 'test_overtime_with_approval',
+          description: '加班且有审批',
+          input: { workingHours: 10, normalHours: 8, hasApproval: true },
+          expectedResult: 'pass'
+        },
+        {
+          id: 'test_overtime_without_approval',
+          description: '加班但无审批',
+          input: { workingHours: 10, normalHours: 8, hasApproval: false },
+          expectedResult: 'fail'
+        }
+      ]
+    }
+  ],
+  
+  // 3 Core Scenarios
+  scenarios: [
+    {
+      id: 'normal_scheduling',
+      name: 'normalScheduling',
+      displayName: '正常排班流程',
+      description: '标准的员工排班业务流程',
+      category: 'process',
+      actors: [
+        { id: 'scheduler', name: '排班员', role: 'operator', permissions: ['schedule_read', 'schedule_write'] },
+        { id: 'supervisor', name: '主管', role: 'approver', permissions: ['schedule_approve'] },
+        { id: 'employee', name: '员工', role: 'participant', permissions: ['schedule_read'] }
+      ],
+      steps: [
+        {
+          id: 'start',
+          name: '开始排班',
+          type: 'start',
+          next: 'analyze_demand',
+          visual: { position: { x: 100, y: 100 }, type: 'bpmn' }
+        },
+        {
+          id: 'analyze_demand',
+          name: '分析需求',
+          type: 'task',
+          task: {
+            behaviorId: 'analyzeDemand',
+            actorId: 'scheduler',
+            inputs: { period: 'next_week', department: 'all' },
+            timeout: 300000
+          },
+          next: 'match_skills',
+          visual: { position: { x: 200, y: 100 }, type: 'bpmn' }
+        },
+        {
+          id: 'match_skills',
+          name: '技能匹配',
+          type: 'task',
+          task: {
+            behaviorId: 'assignEmployee',
+            actorId: 'scheduler',
+            inputs: {}
+          },
+          next: 'create_shifts',
+          visual: { position: { x: 300, y: 100 }, type: 'bpmn' }
+        },
+        {
+          id: 'create_shifts',
+          name: '创建班次',
+          type: 'task',
+          task: {
+            behaviorId: 'createShift',
+            actorId: 'scheduler',
+            inputs: {}
+          },
+          next: 'validate_schedule',
+          visual: { position: { x: 400, y: 100 }, type: 'bpmn' }
+        },
+        {
+          id: 'validate_schedule',
+          name: '验证排班',
+          type: 'decision',
+          decision: {
+            condition: 'isScheduleValid',
+            branches: [
+              { condition: 'valid', nextStepId: 'submit_approval' },
+              { condition: 'invalid', nextStepId: 'fix_conflicts' }
+            ]
+          },
+          next: ['submit_approval', 'fix_conflicts'],
+          visual: { position: { x: 500, y: 100 }, type: 'bpmn' }
+        },
+        {
+          id: 'fix_conflicts',
+          name: '解决冲突',
+          type: 'task',
+          task: {
+            behaviorId: 'resolveConflicts',
+            actorId: 'scheduler',
+            inputs: {}
+          },
+          next: 'validate_schedule',
+          visual: { position: { x: 500, y: 200 }, type: 'bpmn' }
+        },
+        {
+          id: 'submit_approval',
+          name: '提交审批',
+          type: 'task',
+          task: {
+            behaviorId: 'submitForApproval',
+            actorId: 'scheduler',
+            inputs: {}
+          },
+          next: 'supervisor_review',
+          visual: { position: { x: 600, y: 100 }, type: 'bpmn' }
+        },
+        {
+          id: 'supervisor_review',
+          name: '主管审核',
+          type: 'decision',
+          decision: {
+            condition: 'isApproved',
+            branches: [
+              { condition: 'approved', nextStepId: 'publish_schedule' },
+              { condition: 'rejected', nextStepId: 'revise_schedule' }
+            ]
+          },
+          next: ['publish_schedule', 'revise_schedule'],
+          visual: { position: { x: 700, y: 100 }, type: 'bpmn' }
+        },
+        {
+          id: 'revise_schedule',
+          name: '修订排班',
+          type: 'task',
+          task: {
+            behaviorId: 'reviseSchedule',
+            actorId: 'scheduler',
+            inputs: {}
+          },
+          next: 'submit_approval',
+          visual: { position: { x: 700, y: 200 }, type: 'bpmn' }
+        },
+        {
+          id: 'publish_schedule',
+          name: '发布排班',
+          type: 'task',
+          task: {
+            behaviorId: 'publishSchedule',
+            actorId: 'supervisor',
+            inputs: {}
+          },
+          next: 'notify_employees',
+          visual: { position: { x: 800, y: 100 }, type: 'bpmn' }
+        },
+        {
+          id: 'notify_employees',
+          name: '通知员工',
+          type: 'task',
+          task: {
+            behaviorId: 'notifyEmployees',
+            actorId: 'scheduler',
+            inputs: {}
+          },
+          next: 'end',
+          visual: { position: { x: 900, y: 100 }, type: 'bpmn' }
+        },
+        {
+          id: 'end',
+          name: '结束',
+          type: 'end',
+          next: [],
+          visual: { position: { x: 1000, y: 100 }, type: 'bpmn' }
+        }
+      ],
+      triggers: [
+        { type: 'schedule', schedule: '0 9 * * 1' }, // 每周一上午9点
+        { type: 'manual' }
+      ],
+      constraints: {
+        timeLimit: 7200000, // 2小时
+        businessRules: ['min_rest_8h', 'max_consecutive_12h', 'skill_match_80', 'overtime_approval']
+      },
+      metrics: {
+        averageDuration: 3600000, // 1小时
+        successRate: 0.95,
+        errorPatterns: ['skill_mismatch', 'time_conflict']
+      }
+    },
+    
+    {
+      id: 'resignation_triggered_rescheduling',
+      name: 'resignationTriggeredRescheduling',
+      displayName: '离职触发重排',
+      description: '员工离职时触发的紧急重新排班流程',
+      category: 'event_handling',
+      actors: [
+        { id: 'hr', name: 'HR', role: 'coordinator', permissions: ['employee_management', 'schedule_management'] },
+        { id: 'supervisor', name: '主管', role: 'approver', permissions: ['schedule_approve', 'emergency_override'] },
+        { id: 'scheduler', name: '排班员', role: 'operator', permissions: ['schedule_write'] }
+      ],
+      steps: [
+        {
+          id: 'start',
+          name: '检测到离职',
+          type: 'start',
+          next: 'assess_impact',
+          visual: { position: { x: 100, y: 100 }, type: 'bpmn' }
+        },
+        {
+          id: 'assess_impact',
+          name: '评估影响',
+          type: 'task',
+          task: {
+            behaviorId: 'assessImpact',
+            actorId: 'hr',
+            inputs: { resignedEmployee: '${employee.id}' }
+          },
+          next: 'find_replacements',
+          visual: { position: { x: 200, y: 100 }, type: 'bpmn' }
+        },
+        {
+          id: 'find_replacements',
+          name: '寻找替代',
+          type: 'parallel',
+          parallel: {
+            branches: [
+              ['check_internal_staff'],
+              ['check_temp_staff'],
+              ['check_agencies']
+            ],
+            syncType: 'first'
+          },
+          next: ['emergency_assign'],
+          visual: { position: { x: 300, y: 100 }, type: 'bpmn' }
+        },
+        {
+          id: 'check_internal_staff',
+          name: '检查内部员工',
+          type: 'task',
+          task: {
+            behaviorId: 'findInternalReplacements',
+            actorId: 'scheduler',
+            inputs: {}
+          },
+          next: 'emergency_assign',
+          visual: { position: { x: 250, y: 50 }, type: 'bpmn' }
+        },
+        {
+          id: 'check_temp_staff',
+          name: '检查临时工',
+          type: 'task',
+          task: {
+            behaviorId: 'findTempReplacements',
+            actorId: 'hr',
+            inputs: {}
+          },
+          next: 'emergency_assign',
+          visual: { position: { x: 300, y: 50 }, type: 'bpmn' }
+        },
+        {
+          id: 'check_agencies',
+          name: '联系外包',
+          type: 'task',
+          task: {
+            behaviorId: 'contactAgencies',
+            actorId: 'hr',
+            inputs: {}
+          },
+          next: 'emergency_assign',
+          visual: { position: { x: 350, y: 50 }, type: 'bpmn' }
+        },
+        {
+          id: 'emergency_assign',
+          name: '紧急分配',
+          type: 'task',
+          task: {
+            behaviorId: 'assignEmployee',
+            actorId: 'supervisor',
+            inputs: { emergency: true }
+          },
+          next: 'notify_all',
+          visual: { position: { x: 400, y: 100 }, type: 'bpmn' }
+        },
+        {
+          id: 'notify_all',
+          name: '通知各方',
+          type: 'task',
+          task: {
+            behaviorId: 'notifyEmergencyChange',
+            actorId: 'hr',
+            inputs: {}
+          },
+          next: 'end',
+          visual: { position: { x: 500, y: 100 }, type: 'bpmn' }
+        },
+        {
+          id: 'end',
+          name: '结束',
+          type: 'end',
+          next: [],
+          visual: { position: { x: 600, y: 100 }, type: 'bpmn' }
+        }
+      ],
+      triggers: [
+        { type: 'event', event: 'employee.state_changed.terminated' },
+        { type: 'manual' }
+      ],
+      constraints: {
+        timeLimit: 1800000, // 30分钟紧急处理
+        businessRules: ['skill_match_80'] // 紧急情况下放宽部分规则
+      },
+      metrics: {
+        averageDuration: 1200000, // 20分钟
+        successRate: 0.85,
+        errorPatterns: ['no_replacement_found', 'skill_gap']
+      }
+    },
+    
+    {
+      id: 'emergency_absence_substitution',
+      name: 'emergencyAbsenceSubstitution',
+      displayName: '紧急缺勤替代',
+      description: '员工紧急缺勤时的临时替代安排流程',
+      category: 'decision_flow',
+      actors: [
+        { id: 'supervisor', name: '当班主管', role: 'decision_maker', permissions: ['emergency_override', 'schedule_modify'] },
+        { id: 'scheduler', name: '值班排班员', role: 'executor', permissions: ['schedule_read', 'schedule_write'] },
+        { id: 'available_staff', name: '候补员工', role: 'resource', permissions: [] }
+      ],
+      steps: [
+        {
+          id: 'start',
+          name: '收到缺勤通知',
+          type: 'start',
+          next: 'assess_urgency',
+          visual: { position: { x: 100, y: 100 }, type: 'flowchart' }
+        },
+        {
+          id: 'assess_urgency',
+          name: '评估紧急程度',
+          type: 'decision',
+          decision: {
+            condition: 'urgencyLevel',
+            branches: [
+              { condition: 'critical', nextStepId: 'emergency_protocol' },
+              { condition: 'high', nextStepId: 'urgent_search' },
+              { condition: 'medium', nextStepId: 'normal_search' },
+              { condition: 'low', nextStepId: 'reschedule_tasks' }
+            ]
+          },
+          next: ['emergency_protocol', 'urgent_search', 'normal_search', 'reschedule_tasks'],
+          visual: { position: { x: 200, y: 100 }, type: 'flowchart' }
+        },
+        {
+          id: 'emergency_protocol',
+          name: '启动紧急预案',
+          type: 'task',
+          task: {
+            behaviorId: 'activateEmergencyProtocol',
+            actorId: 'supervisor',
+            inputs: { level: 'critical' },
+            timeout: 300000 // 5分钟内必须响应
+          },
+          next: 'immediate_coverage',
+          visual: { position: { x: 150, y: 200 }, type: 'flowchart' }
+        },
+        {
+          id: 'urgent_search',
+          name: '紧急搜寻',
+          type: 'task',
+          task: {
+            behaviorId: 'findUrgentReplacement',
+            actorId: 'scheduler',
+            inputs: { timeLimit: 600000 } // 10分钟
+          },
+          next: 'validate_replacement',
+          visual: { position: { x: 200, y: 200 }, type: 'flowchart' }
+        },
+        {
+          id: 'normal_search',
+          name: '常规搜寻',
+          type: 'task',
+          task: {
+            behaviorId: 'findReplacement',
+            actorId: 'scheduler',
+            inputs: { timeLimit: 1800000 } // 30分钟
+          },
+          next: 'validate_replacement',
+          visual: { position: { x: 250, y: 200 }, type: 'flowchart' }
+        },
+        {
+          id: 'reschedule_tasks',
+          name: '重排任务',
+          type: 'task',
+          task: {
+            behaviorId: 'redistributeTasks',
+            actorId: 'supervisor',
+            inputs: {}
+          },
+          next: 'update_schedule',
+          visual: { position: { x: 300, y: 200 }, type: 'flowchart' }
+        },
+        {
+          id: 'immediate_coverage',
+          name: '立即覆盖',
+          type: 'task',
+          task: {
+            behaviorId: 'assignSupervisorCoverage',
+            actorId: 'supervisor',
+            inputs: { temporary: true }
+          },
+          next: 'search_permanent',
+          visual: { position: { x: 150, y: 300 }, type: 'flowchart' }
+        },
+        {
+          id: 'search_permanent',
+          name: '寻找永久替代',
+          type: 'task',
+          task: {
+            behaviorId: 'findPermanentReplacement',
+            actorId: 'scheduler',
+            inputs: {}
+          },
+          next: 'validate_replacement',
+          visual: { position: { x: 150, y: 400 }, type: 'flowchart' }
+        },
+        {
+          id: 'validate_replacement',
+          name: '验证替代',
+          type: 'decision',
+          decision: {
+            condition: 'isReplacementValid',
+            branches: [
+              { condition: 'valid', nextStepId: 'assign_replacement' },
+              { condition: 'invalid', nextStepId: 'escalate_issue' }
+            ]
+          },
+          next: ['assign_replacement', 'escalate_issue'],
+          visual: { position: { x: 200, y: 350 }, type: 'flowchart' }
+        },
+        {
+          id: 'assign_replacement',
+          name: '分配替代',
+          type: 'task',
+          task: {
+            behaviorId: 'assignEmployee',
+            actorId: 'supervisor',
+            inputs: { replacement: true }
+          },
+          next: 'update_schedule',
+          visual: { position: { x: 150, y: 450 }, type: 'flowchart' }
+        },
+        {
+          id: 'escalate_issue',
+          name: '上报问题',
+          type: 'task',
+          task: {
+            behaviorId: 'escalateToManager',
+            actorId: 'supervisor',
+            inputs: {}
+          },
+          next: 'await_decision',
+          visual: { position: { x: 250, y: 450 }, type: 'flowchart' }
+        },
+        {
+          id: 'await_decision',
+          name: '等待决策',
+          type: 'task',
+          task: {
+            behaviorId: 'awaitManagerDecision',
+            actorId: 'supervisor',
+            inputs: {},
+            timeout: 900000 // 15分钟
+          },
+          next: 'update_schedule',
+          visual: { position: { x: 250, y: 550 }, type: 'flowchart' }
+        },
+        {
+          id: 'update_schedule',
+          name: '更新排班表',
+          type: 'task',
+          task: {
+            behaviorId: 'updateSchedule',
+            actorId: 'scheduler',
+            inputs: {}
+          },
+          next: 'notify_affected',
+          visual: { position: { x: 200, y: 600 }, type: 'flowchart' }
+        },
+        {
+          id: 'notify_affected',
+          name: '通知相关人员',
+          type: 'task',
+          task: {
+            behaviorId: 'notifyAffectedParties',
+            actorId: 'scheduler',
+            inputs: {}
+          },
+          next: 'end',
+          visual: { position: { x: 200, y: 700 }, type: 'flowchart' }
+        },
+        {
+          id: 'end',
+          name: '完成处理',
+          type: 'end',
+          next: [],
+          visual: { position: { x: 200, y: 800 }, type: 'flowchart' }
+        }
+      ],
+      triggers: [
+        { type: 'event', event: 'absence_notification_received' },
+        { type: 'condition', condition: 'employee.state == "absent" && shift.status == "in_progress"' }
+      ],
+      constraints: {
+        timeLimit: 3600000, // 1小时内完成
+        resourceLimits: { 'emergency_budget': 1000 },
+        businessRules: ['min_rest_8h'] // 放宽技能匹配要求但保持基本安全规则
+      },
+      metrics: {
+        averageDuration: 1800000, // 平均30分钟
+        successRate: 0.92,
+        errorPatterns: ['no_available_staff', 'skill_mismatch', 'budget_exceeded']
+      }
+    }
+  ],
+  
+  // Semantic Links
+  links: [
+    // Employee relationships
+    {
+      id: 'employee_has_skills',
+      sourceId: 'employee',
+      targetId: 'skill',
+      sourceType: 'object',
+      targetType: 'object',
+      relationshipType: 'uses',
+      properties: { multiplicity: '1:N', direction: 'unidirectional', weight: 0.8 },
+      description: '员工具备多种技能',
+      visual: { style: 'solid', color: '#6b7280', width: 2, label: 'has skills' }
+    },
+    {
+      id: 'employee_belongs_to_org',
+      sourceId: 'employee',
+      targetId: 'organization',
+      sourceType: 'object',
+      targetType: 'object',
+      relationshipType: 'part_of',
+      properties: { multiplicity: 'N:1', direction: 'unidirectional', weight: 1.0 },
+      description: '员工隶属于组织部门',
+      visual: { style: 'solid', color: '#ef4444', width: 3, label: 'belongs to' }
+    },
+    {
+      id: 'supervisor_manages_employee',
+      sourceId: 'supervisor',
+      targetId: 'employee',
+      sourceType: 'object',
+      targetType: 'object',
+      relationshipType: 'aggregates',
+      properties: { multiplicity: '1:N', direction: 'unidirectional', weight: 0.9 },
+      description: '主管管理多个员工',
+      visual: { style: 'dashed', color: '#f97316', width: 2, label: 'manages' }
+    },
+    
+    // Shift and Schedule relationships
+    {
+      id: 'schedule_contains_shifts',
+      sourceId: 'schedule',
+      targetId: 'shift',
+      sourceType: 'object',
+      targetType: 'object',
+      relationshipType: 'aggregates',
+      properties: { multiplicity: '1:N', direction: 'unidirectional', weight: 1.0 },
+      description: '排班表包含多个班次',
+      visual: { style: 'solid', color: '#f59e0b', width: 3, label: 'contains' }
+    },
+    {
+      id: 'shift_requires_skills',
+      sourceId: 'shift',
+      targetId: 'skill',
+      sourceType: 'object',
+      targetType: 'object',
+      relationshipType: 'depends_on',
+      properties: { multiplicity: 'N:N', direction: 'unidirectional', weight: 0.7 },
+      description: '班次需要特定技能',
+      visual: { style: 'dotted', color: '#06b6d4', width: 1, label: 'requires' }
+    },
+    {
+      id: 'attendance_tracks_shift',
+      sourceId: 'attendance',
+      targetId: 'shift',
+      sourceType: 'object',
+      targetType: 'object',
+      relationshipType: 'validates',
+      properties: { multiplicity: '1:1', direction: 'unidirectional', weight: 1.0 },
+      description: '考勤记录对应班次',
+      visual: { style: 'solid', color: '#8b5cf6', width: 2, label: 'tracks' }
+    },
+    
+    // Behavior relationships
+    {
+      id: 'createshift_produces_shift',
+      sourceId: 'createShift',
+      targetId: 'shift',
+      sourceType: 'behavior',
+      targetType: 'object',
+      relationshipType: 'produces',
+      properties: { multiplicity: '1:1', direction: 'unidirectional', weight: 1.0 },
+      description: '创建班次行为产生班次对象',
+      visual: { style: 'solid', color: '#22c55e', width: 2, label: 'produces' }
+    },
+    {
+      id: 'assign_employee_modifies_shift',
+      sourceId: 'assignEmployee',
+      targetId: 'shift',
+      sourceType: 'behavior',
+      targetType: 'object',
+      relationshipType: 'consumes',
+      properties: { multiplicity: '1:1', direction: 'unidirectional', weight: 0.9 },
+      description: '分配员工行为修改班次状态',
+      visual: { style: 'dashed', color: '#3b82f6', width: 2, label: 'modifies' }
+    },
+    {
+      id: 'punchin_creates_attendance',
+      sourceId: 'punchIn',
+      targetId: 'attendance',
+      sourceType: 'behavior',
+      targetType: 'object',
+      relationshipType: 'produces',
+      properties: { multiplicity: '1:1', direction: 'unidirectional', weight: 1.0 },
+      description: '上班打卡创建考勤记录',
+      visual: { style: 'solid', color: '#10b981', width: 2, label: 'creates' }
+    },
+    
+    // Rule relationships
+    {
+      id: 'min_rest_validates_shift',
+      sourceId: 'min_rest_8h',
+      targetId: 'shift',
+      sourceType: 'rule',
+      targetType: 'object',
+      relationshipType: 'validates',
+      properties: { multiplicity: '1:N', direction: 'unidirectional', weight: 0.9 },
+      description: '最少休息规则验证班次安排',
+      visual: { style: 'dotted', color: '#dc2626', width: 1, label: 'validates' }
+    },
+    {
+      id: 'skill_match_validates_assignment',
+      sourceId: 'skill_match_80',
+      targetId: 'assignEmployee',
+      sourceType: 'rule',
+      targetType: 'behavior',
+      relationshipType: 'validates',
+      properties: { multiplicity: '1:1', direction: 'unidirectional', weight: 1.0 },
+      description: '技能匹配规则验证员工分配',
+      visual: { style: 'dashed', color: '#7c3aed', width: 2, label: 'validates' }
+    },
+    {
+      id: 'overtime_approval_triggers_approval',
+      sourceId: 'overtime_approval',
+      targetId: 'approveOvertime',
+      sourceType: 'rule',
+      targetType: 'behavior',
+      relationshipType: 'triggers',
+      properties: { multiplicity: '1:1', direction: 'unidirectional', weight: 1.0 },
+      description: '加班审批规则触发审批流程',
+      visual: { style: 'solid', color: '#059669', width: 3, label: 'triggers' }
+    },
+    
+    // Scenario relationships
+    {
+      id: 'normal_scheduling_uses_createshift',
+      sourceId: 'normal_scheduling',
+      targetId: 'createShift',
+      sourceType: 'scenario',
+      targetType: 'behavior',
+      relationshipType: 'uses',
+      properties: { multiplicity: '1:1', direction: 'unidirectional', weight: 0.8 },
+      description: '正常排班场景使用创建班次行为',
+      visual: { style: 'solid', color: '#0ea5e9', width: 2, label: 'uses' }
+    },
+    {
+      id: 'emergency_substitution_implements_rules',
+      sourceId: 'emergency_absence_substitution',
+      targetId: 'min_rest_8h',
+      sourceType: 'scenario',
+      targetType: 'rule',
+      relationshipType: 'implements',
+      properties: { multiplicity: '1:1', direction: 'unidirectional', weight: 0.7 },
+      description: '紧急替代场景实现休息时间规则',
+      visual: { style: 'dashed', color: '#be123c', width: 1, label: 'implements' }
+    },
+    {
+      id: 'resignation_conflicts_with_normal',
+      sourceId: 'resignation_triggered_rescheduling',
+      targetId: 'normal_scheduling',
+      sourceType: 'scenario',
+      targetType: 'scenario',
+      relationshipType: 'conflicts_with',
+      properties: { multiplicity: '1:1', direction: 'bidirectional', weight: 0.6 },
+      description: '离职重排与正常排班存在冲突',
+      visual: { style: 'dotted', color: '#dc2626', width: 1, label: 'conflicts with' }
+    },
+    
+    // Cross-cutting relationships
+    {
+      id: 'agency_provides_temp_staff',
+      sourceId: 'agency',
+      targetId: 'employee',
+      sourceType: 'object',
+      targetType: 'object',
+      relationshipType: 'produces',
+      properties: { multiplicity: '1:N', direction: 'unidirectional', weight: 0.5 },
+      description: '外包机构提供临时员工',
+      visual: { style: 'dashed', color: '#84cc16', width: 1, label: 'provides' }
+    },
+    {
+      id: 'organization_depends_on_supervisor',
+      sourceId: 'organization',
+      targetId: 'supervisor',
+      sourceType: 'object',
+      targetType: 'object',
+      relationshipType: 'depends_on',
+      properties: { multiplicity: '1:1', direction: 'unidirectional', weight: 0.8 },
+      description: '组织部门依赖主管管理',
+      visual: { style: 'solid', color: '#f97316', width: 2, label: 'managed by' }
+    }
+  ],
+  
+  validation: {
+    isValid: true,
+    timestamp: new Date().toISOString(),
+    errors: [],
+    warnings: [],
+    metrics: {
+      objectCount: 8,
+      behaviorCount: 5,
+      ruleCount: 4,
+      scenarioCount: 3,
+      linkCount: 20,
+      completenessScore: 95,
+      consistencyScore: 98
+    }
+  }
+};
+
+// Export individual components for testing and development
+export const HRM_OBJECTS = HRM_DOMAIN_BLUEPRINT.objects;
+export const HRM_BEHAVIORS = HRM_DOMAIN_BLUEPRINT.behaviors;
+export const HRM_RULES = HRM_DOMAIN_BLUEPRINT.rules;
+export const HRM_SCENARIOS = HRM_DOMAIN_BLUEPRINT.scenarios;
+export const HRM_LINKS = HRM_DOMAIN_BLUEPRINT.links;
