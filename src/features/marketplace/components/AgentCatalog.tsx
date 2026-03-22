@@ -1,12 +1,13 @@
 import React, { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
-import { Search, Star, Download, Filter, Grid, List, SlidersHorizontal } from 'lucide-react';
+import { Search, Star, Download, Filter, Grid, List, SlidersHorizontal, Package } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { agentDB } from '@/shared/services/database';
 import { AgentDefinition } from '@/shared/types/agent.types';
+import { AGENCY_DOMAINS } from '@/data/agency-agents-simple';
 
 interface AgentCatalogProps {
   onAgentSelect?: (agentId: string) => void;
@@ -27,10 +28,12 @@ export function AgentCatalog({
   const [selectedCategory, setSelectedCategory] = useState<string>('all');
   const [selectedIndustry, setSelectedIndustry] = useState<string>('all');
   const [selectedDivision, setSelectedDivision] = useState<string>('all');
+  const [selectedDomain, setSelectedDomain] = useState<string>('all'); // Agency domain filter
   const [sortBy, setSortBy] = useState<string>('rating');
   const [viewMode, setViewMode] = useState<'grid' | 'list'>(initialViewMode);
   const [priceFilter, setPriceFilter] = useState<string>('all');
   const [showAdvancedFilters, setShowAdvancedFilters] = useState(false);
+  const [showAgencyFilter, setShowAgencyFilter] = useState(false);
 
   useEffect(() => {
     const loadAgents = async () => {
@@ -66,6 +69,14 @@ export function AgentCatalog({
       if (selectedDivision !== 'all') {
         const agentDivision = (agent.category as any).division || (agent.metadata as any).division;
         if (agentDivision !== selectedDivision) return false;
+      }
+
+      // Agency domain filter
+      if (selectedDomain !== 'all') {
+        const agencyData = (agent as any).agencyData;
+        if (!agencyData || agencyData.domain !== selectedDomain) {
+          return false;
+        }
       }
 
       // Category filter
@@ -146,6 +157,16 @@ export function AgentCatalog({
     { value: 'subscription', label: t('marketplace.filters.subscriptionOnly') }
   ];
 
+  const agencyDomains = [
+    { value: 'all', label: '所有域' },
+    { value: 'wms', label: `WMS (${AGENCY_DOMAINS.wms.count})`, color: AGENCY_DOMAINS.wms.color },
+    { value: 'oms', label: `OMS (${AGENCY_DOMAINS.oms.count})`, color: AGENCY_DOMAINS.oms.color },
+    { value: 'fms', label: `FMS (${AGENCY_DOMAINS.fms.count})`, color: AGENCY_DOMAINS.fms.color },
+    { value: 'bnp', label: `BNP (${AGENCY_DOMAINS.bnp.count})`, color: AGENCY_DOMAINS.bnp.color },
+    { value: 'yms', label: `YMS (${AGENCY_DOMAINS.yms.count})`, color: AGENCY_DOMAINS.yms.color },
+    { value: 'enterprise', label: `Enterprise (${AGENCY_DOMAINS.enterprise.count})`, color: AGENCY_DOMAINS.enterprise.color }
+  ];
+
   const sortOptions = [
     { value: 'rating', label: t('marketplace.sorting.byRating') },
     { value: 'downloads', label: t('marketplace.sorting.byDownloads') },
@@ -166,6 +187,7 @@ export function AgentCatalog({
     setSearchQuery('');
     setSelectedCategory('all');
     setSelectedIndustry('all');
+    setSelectedDomain('all');
     setPriceFilter('all');
     setSortBy('rating');
   };
@@ -235,6 +257,43 @@ export function AgentCatalog({
               {t('marketplace.filters.clear')}
             </Button>
           </div>
+
+          {/* Agency Domain Toggle */}
+          <div className="flex items-center space-x-4">
+            <Button
+              variant={showAgencyFilter ? 'default' : 'outline'}
+              size="sm"
+              onClick={() => setShowAgencyFilter(!showAgencyFilter)}
+            >
+              <Package className="mr-2 h-4 w-4" />
+              Agency 智能体 ({Object.values(AGENCY_DOMAINS).reduce((sum, domain) => sum + domain.count, 0)})
+            </Button>
+          </div>
+
+          {/* Agency Domain Filters */}
+          {showAgencyFilter && (
+            <div className="grid gap-2 md:grid-cols-6 p-4 border rounded-lg bg-blue-50/50 dark:bg-blue-950/20">
+              <h3 className="col-span-full text-sm font-medium text-blue-900 dark:text-blue-100 mb-2">
+                🏢 Agency 域选择
+              </h3>
+              {agencyDomains.map((domain) => (
+                <button
+                  key={domain.value}
+                  onClick={() => setSelectedDomain(domain.value)}
+                  className={`px-3 py-2 text-sm rounded-md border transition-all ${
+                    selectedDomain === domain.value
+                      ? 'bg-blue-100 border-blue-300 text-blue-900 dark:bg-blue-900 dark:border-blue-600 dark:text-blue-100'
+                      : 'bg-white border-gray-200 text-gray-700 hover:bg-gray-50 dark:bg-gray-800 dark:border-gray-600 dark:text-gray-200'
+                  }`}
+                  style={{
+                    borderColor: domain.value !== 'all' && selectedDomain === domain.value ? domain.color : undefined
+                  }}
+                >
+                  {domain.label}
+                </button>
+              ))}
+            </div>
+          )}
 
           {/* Advanced Filters */}
           {showAdvancedFilters && (
@@ -398,6 +457,23 @@ function AgentCard({ agent, viewMode, onClick }: AgentCardProps) {
     return `${category.industry} • ${category.function}`;
   };
 
+  // Check if this is an agency agent
+  const agencyData = (agent as any).agencyData;
+  const isAgencyAgent = !!agencyData;
+  
+  const getAgencyDisplay = () => {
+    if (!isAgencyAgent) return null;
+    
+    const domainInfo = AGENCY_DOMAINS[agencyData.domain as keyof typeof AGENCY_DOMAINS];
+    return {
+      domain: agencyData.domain.toUpperCase(),
+      department: agencyData.department,
+      color: domainInfo?.color || '#6B7280'
+    };
+  };
+
+  const agencyInfo = getAgencyDisplay();
+
   if (viewMode === 'list') {
     return (
       <Card className="hover:shadow-lg transition-shadow cursor-pointer" onClick={onClick}>
@@ -406,9 +482,20 @@ function AgentCard({ agent, viewMode, onClick }: AgentCardProps) {
             <div className="flex-1 space-y-2">
               <div className="flex items-start justify-between">
                 <div>
-                  <h3 className="text-lg font-semibold">{agent.displayName}</h3>
+                  <div className="flex items-center space-x-2 mb-1">
+                    <h3 className="text-lg font-semibold">{agent.displayName}</h3>
+                    {agencyInfo && (
+                      <Badge 
+                        variant="outline" 
+                        className="text-xs"
+                        style={{ borderColor: agencyInfo.color, color: agencyInfo.color }}
+                      >
+                        {agencyInfo.domain}
+                      </Badge>
+                    )}
+                  </div>
                   <p className="text-sm text-muted-foreground">
-                    {getCategoryDisplay(agent.category)}
+                    {isAgencyAgent ? `${agencyInfo?.department} • ${agencyInfo?.domain}` : getCategoryDisplay(agent.category)}
                   </p>
                 </div>
                 <div className="text-right">
@@ -451,9 +538,20 @@ function AgentCard({ agent, viewMode, onClick }: AgentCardProps) {
       <CardHeader>
         <div className="flex items-start justify-between">
           <div className="space-y-1 flex-1">
-            <CardTitle className="text-lg leading-tight">{agent.displayName}</CardTitle>
+            <div className="flex items-center space-x-2">
+              <CardTitle className="text-lg leading-tight">{agent.displayName}</CardTitle>
+              {agencyInfo && (
+                <Badge 
+                  variant="outline" 
+                  className="text-xs"
+                  style={{ borderColor: agencyInfo.color, color: agencyInfo.color }}
+                >
+                  {agencyInfo.domain}
+                </Badge>
+              )}
+            </div>
             <p className="text-sm text-muted-foreground">
-              {getCategoryDisplay(agent.category)}
+              {isAgencyAgent ? `${agencyInfo?.department} • ${agencyInfo?.domain}` : getCategoryDisplay(agent.category)}
             </p>
           </div>
           <div className="text-right">

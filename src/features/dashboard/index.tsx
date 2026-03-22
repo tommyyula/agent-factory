@@ -1,17 +1,67 @@
 import React, { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import { Package } from 'lucide-react';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Badge } from '@/components/ui/badge';
 import { ontologyDB, agentDB, runtimeDB } from '@/shared/services/database';
 import { StatsCards } from './components/StatsCards';
 import { ArchitectureOverview } from './components/ArchitectureOverview';
 import { AgentStatusChart } from './components/AgentStatusChart';
 import { ActivityTrendChart } from './components/ActivityTrendChart';
 import { ActivityStream } from './components/ActivityStream';
+import { AGENCY_DOMAINS, agencyStats } from '@/data/agency-agents-simple';
 
 interface DashboardStats {
   totalAgents: number;
   activeAgents: number;
   totalTasks: number;
   systemHealth: number;
+}
+
+function AgencyStatsCards() {
+  const { t } = useTranslation();
+  
+  return (
+    <div className="space-y-3">
+      <div className="flex items-center gap-2">
+        <h3 className="text-lg font-semibold">🏢 Agency 智能体统计</h3>
+        <Badge variant="outline">UNIS 企业级</Badge>
+      </div>
+      
+      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-5">
+        {/* Total Agency Agents */}
+        <Card className="hover:shadow-md transition-shadow">
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+            <CardTitle className="text-sm font-medium">Agency 智能体</CardTitle>
+            <Package className="h-4 w-4 text-muted-foreground" />
+          </CardHeader>
+          <CardContent>
+            <div className="text-2xl font-bold">{agencyStats.total}</div>
+            <p className="text-xs text-muted-foreground">跨五大业务域</p>
+          </CardContent>
+        </Card>
+
+        {/* Domain-specific cards */}
+        {Object.entries(AGENCY_DOMAINS).map(([domain, info]) => (
+          <Card key={domain} className="hover:shadow-md transition-shadow">
+            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+              <CardTitle className="text-sm font-medium">{info.name}</CardTitle>
+              <div 
+                className="h-4 w-4 rounded-full"
+                style={{ backgroundColor: info.color }}
+              />
+            </CardHeader>
+            <CardContent>
+              <div className="text-2xl font-bold">{info.count}</div>
+              <p className="text-xs text-muted-foreground">
+                {Math.round((info.count / agencyStats.total) * 100)}% 占比
+              </p>
+            </CardContent>
+          </Card>
+        ))}
+      </div>
+    </div>
+  );
 }
 
 export function Dashboard() {
@@ -119,6 +169,9 @@ export function Dashboard() {
 
       {/* Stats Cards */}
       <StatsCards stats={stats} />
+
+      {/* Agency Stats Cards */}
+      <AgencyStatsCards />
 
       {/* Charts Section */}
       <div className="grid gap-6 lg:grid-cols-2">

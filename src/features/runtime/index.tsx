@@ -3,7 +3,7 @@ import { Routes, Route, useParams, useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import {
   Activity, AlertTriangle, CheckCircle, Pause, Play, Square, RotateCcw,
-  GitBranch, ArrowLeft, Cpu, BarChart3, Coins, Users, ScrollText, ArrowRight
+  GitBranch, ArrowLeft, Cpu, BarChart3, Coins, Users, ScrollText, ArrowRight, Package
 } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -17,6 +17,7 @@ import { DeploymentList } from './components/DeploymentList';
 import { JobLog } from './components/JobLog';
 import { MessageBoard } from './components/MessageBoard';
 import { PerformanceMetrics } from './components/PerformanceMetrics';
+import { AGENCY_DOMAINS } from '@/data/agency-agents-simple';
 
 export function RuntimeOverview() {
   return (
@@ -804,11 +805,15 @@ function RuntimeHome() {
       </div>
 
       <Tabs defaultValue="deployments" className="space-y-4">
-        <TabsList className="grid w-full grid-cols-5">
+        <TabsList className="grid w-full grid-cols-6">
           <TabsTrigger value="deployments">{t('runtime.tabs.deployments')}</TabsTrigger>
           <TabsTrigger value="jobs">{t('runtime.tabs.jobs')}</TabsTrigger>
           <TabsTrigger value="messages">{t('runtime.tabs.messages')}</TabsTrigger>
           <TabsTrigger value="metrics">{t('runtime.tabs.metrics')}</TabsTrigger>
+          <TabsTrigger value="agency">
+            <Package className="mr-2 h-4 w-4" />
+            Agency (100)
+          </TabsTrigger>
           <TabsTrigger value="pipelines">
             <GitBranch className="mr-2 h-4 w-4" />
             {t('runtime.tabs.pipelines', 'Pipelines')}
@@ -829,6 +834,10 @@ function RuntimeHome() {
 
         <TabsContent value="metrics" className="space-y-4">
           <PerformanceMetrics />
+        </TabsContent>
+
+        <TabsContent value="agency" className="space-y-4">
+          <AgencyPanel />
         </TabsContent>
 
         <TabsContent value="pipelines" className="space-y-4">
@@ -972,6 +981,192 @@ function PipelinesPanel() {
                   </div>
                 </div>
               )}
+            </CardContent>
+          </Card>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+function AgencyPanel() {
+  const { t } = useTranslation();
+
+  const agencyWorkflows = {
+    'wms': [
+      { name: '入库链 (Inbound Chain)', color: '#3B82F6', agents: 6, status: 'running' },
+      { name: '出库链 (Outbound Chain)', color: '#3B82F6', agents: 7, status: 'running' },
+      { name: '盘点链 (Cycle Count Chain)', color: '#3B82F6', agents: 3, status: 'idle' },
+      { name: '补货链 (Replenishment Chain)', color: '#3B82F6', agents: 4, status: 'running' }
+    ],
+    'oms': [
+      { name: '订单处理链 (Order Processing Chain)', color: '#10B981', agents: 5, status: 'running' },
+      { name: '履约链 (Fulfillment Chain)', color: '#10B981', agents: 4, status: 'running' },
+      { name: '库存同步链 (Inventory Sync Chain)', color: '#10B981', agents: 3, status: 'running' }
+    ],
+    'fms': [
+      { name: '运输计划链 (Transport Planning Chain)', color: '#F59E0B', agents: 6, status: 'running' },
+      { name: '派车链 (Dispatch Chain)', color: '#F59E0B', agents: 5, status: 'running' },
+      { name: '计费链 (Rating Chain)', color: '#F59E0B', agents: 4, status: 'running' }
+    ],
+    'bnp': [
+      { name: '计费到发票链 (Billing-to-Invoice Chain)', color: '#F59E0B', agents: 7, status: 'running' },
+      { name: '收款到对账链 (Payment-to-Reconciliation Chain)', color: '#F59E0B', agents: 4, status: 'running' },
+      { name: '催收链 (Collection Chain)', color: '#F59E0B', agents: 3, status: 'idle' }
+    ],
+    'yms': [
+      { name: '预约链 (Appointment Chain)', color: '#8B5CF6', agents: 3, status: 'running' },
+      { name: '进门链 (Check-in Chain)', color: '#8B5CF6', agents: 2, status: 'running' }
+    ]
+  };
+
+  const getStatusColor = (status: string) => {
+    switch (status) {
+      case 'running': return 'text-green-500';
+      case 'idle': return 'text-yellow-500';
+      case 'error': return 'text-red-500';
+      default: return 'text-gray-500';
+    }
+  };
+
+  const getStatusDot = (status: string) => {
+    switch (status) {
+      case 'running': return 'bg-green-500';
+      case 'idle': return 'bg-yellow-500';
+      case 'error': return 'bg-red-500';
+      default: return 'bg-gray-500';
+    }
+  };
+
+  return (
+    <div className="space-y-6">
+      {/* Header */}
+      <div>
+        <h3 className="text-lg font-medium">🏢 Agency 智能体运行状态</h3>
+        <p className="text-sm text-muted-foreground">
+          100个Claude Code代理横跨WMS/FMS/OMS/BNP/YMS五大域的层级化编排
+        </p>
+      </div>
+
+      {/* Domain Overview */}
+      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+        {Object.entries(AGENCY_DOMAINS).map(([domain, info]) => (
+          <Card key={domain}>
+            <CardHeader className="pb-3">
+              <div className="flex items-center justify-between">
+                <CardTitle className="text-base flex items-center gap-2">
+                  <div 
+                    className="w-3 h-3 rounded-full"
+                    style={{ backgroundColor: info.color }}
+                  />
+                  {info.name}
+                </CardTitle>
+                <Badge variant="outline">{info.count} agents</Badge>
+              </div>
+            </CardHeader>
+            <CardContent className="space-y-3">
+              <div className="flex items-center justify-between text-sm">
+                <span className="text-muted-foreground">状态</span>
+                <div className="flex items-center gap-2">
+                  <span className="w-2 h-2 rounded-full bg-green-500" />
+                  <span className="text-green-600">运行中</span>
+                </div>
+              </div>
+              <div className="flex items-center justify-between text-sm">
+                <span className="text-muted-foreground">工作流链</span>
+                <span>{agencyWorkflows[domain as keyof typeof agencyWorkflows]?.length || 0}</span>
+              </div>
+            </CardContent>
+          </Card>
+        ))}
+      </div>
+
+      {/* Hierarchical Structure */}
+      <Card>
+        <CardHeader>
+          <CardTitle className="flex items-center gap-2">
+            <GitBranch className="h-5 w-5" />
+            层级化编排结构
+          </CardTitle>
+          <p className="text-sm text-muted-foreground">
+            前台接待 → 企业编排器 → 域编排器 → 专业智能体
+          </p>
+        </CardHeader>
+        <CardContent>
+          <div className="space-y-4">
+            {/* Front Desk */}
+            <div className="flex items-center gap-4 p-3 border rounded-lg bg-blue-50 dark:bg-blue-950/20">
+              <div className="text-2xl">🎯</div>
+              <div>
+                <div className="font-medium">前台接待 (Front Desk)</div>
+                <div className="text-sm text-muted-foreground">初始请求分流和路由</div>
+              </div>
+            </div>
+
+            {/* Arrow */}
+            <div className="flex justify-center">
+              <ArrowRight className="h-6 w-6 text-muted-foreground" />
+            </div>
+
+            {/* Enterprise Orchestrator */}
+            <div className="flex items-center gap-4 p-3 border rounded-lg bg-red-50 dark:bg-red-950/20">
+              <div className="text-2xl">🏢</div>
+              <div>
+                <div className="font-medium">企业编排器 (Enterprise Orchestrator)</div>
+                <div className="text-sm text-muted-foreground">全局流程协调和调度</div>
+              </div>
+            </div>
+
+            {/* Arrow */}
+            <div className="flex justify-center">
+              <ArrowRight className="h-6 w-6 text-muted-foreground" />
+            </div>
+
+            {/* Domain Orchestrators */}
+            <div className="grid gap-3 md:grid-cols-5">
+              {Object.entries(AGENCY_DOMAINS).map(([domain, info]) => (
+                <div 
+                  key={domain}
+                  className="p-3 border rounded-lg text-center"
+                  style={{ borderColor: info.color, backgroundColor: `${info.color}15` }}
+                >
+                  <div className="font-medium text-sm">{info.name} 编排器</div>
+                  <div className="text-xs text-muted-foreground mt-1">{info.count} 专业智能体</div>
+                </div>
+              ))}
+            </div>
+          </div>
+        </CardContent>
+      </Card>
+
+      {/* Workflow Chains */}
+      <div className="grid gap-4 md:grid-cols-2">
+        {Object.entries(agencyWorkflows).map(([domain, workflows]) => (
+          <Card key={domain}>
+            <CardHeader>
+              <CardTitle className="text-base flex items-center gap-2">
+                <div 
+                  className="w-3 h-3 rounded-full"
+                  style={{ backgroundColor: AGENCY_DOMAINS[domain as keyof typeof AGENCY_DOMAINS]?.color }}
+                />
+                {AGENCY_DOMAINS[domain as keyof typeof AGENCY_DOMAINS]?.name} 工作流链
+              </CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-3">
+              {workflows.map((workflow) => (
+                <div key={workflow.name} className="flex items-center justify-between p-2 border rounded">
+                  <div className="flex items-center gap-3">
+                    <span className={`w-2 h-2 rounded-full ${getStatusDot(workflow.status)}`} />
+                    <span className="text-sm font-medium">{workflow.name}</span>
+                  </div>
+                  <div className="flex items-center gap-2 text-xs text-muted-foreground">
+                    <span>{workflow.agents} agents</span>
+                    <span className={getStatusColor(workflow.status)}>
+                      {workflow.status === 'running' ? '运行中' : workflow.status === 'idle' ? '空闲' : '错误'}
+                    </span>
+                  </div>
+                </div>
+              ))}
             </CardContent>
           </Card>
         ))}

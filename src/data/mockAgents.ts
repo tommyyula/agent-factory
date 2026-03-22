@@ -1,5 +1,5 @@
 import { AgentDefinition } from '../shared/types/agent.types';
-import { agencyAgents } from './agencyAgents.generated';
+import { simpleAgencyAgents } from './agency-agents-simple';
 
 export const mockAgents: AgentDefinition[] = [
   {
@@ -1606,5 +1606,100 @@ export const mockAgents: AgentDefinition[] = [
     createdAt: new Date('2024-01-15'),
     updatedAt: new Date('2024-03-10')
   },
-  ...agencyAgents
+  // Convert simple agency agents to full format
+  ...simpleAgencyAgents.map(agent => ({
+    id: agent.id,
+    name: agent.name,
+    displayName: agent.name,
+    description: agent.description,
+    version: '1.0.0',
+    status: 'published' as const,
+    category: {
+      industry: agent.domain === 'enterprise' ? 'general' : 'logistics',
+      function: 'automation' as const
+    },
+    pricing: {
+      model: 'free' as const,
+      price: 0,
+      currency: 'USD' as const
+    },
+    capabilities: agent.capabilities,
+    skills: [],
+    prompts: {
+      system: `You are a ${agent.name} specializing in ${agent.description}`,
+      user: 'Execute tasks according to your role and capabilities.',
+      variables: []
+    },
+    ontologySubset: [],
+    sdd: { 
+      requirements: '',
+      design: '',
+      domainAnalysis: '',
+      tasks: ''
+    },
+    build: { 
+      status: 'success' as const,
+      steps: [],
+      artifacts: [],
+      logs: [{ level: 'info', message: 'Agency agent - no build required', timestamp: new Date() }]
+    },
+    test: {
+      status: 'passed' as const,
+      coverage: 100,
+      suites: [],
+      timestamp: new Date()
+    },
+    metadata: {
+      author: 'UNIS Agency',
+      tags: [agent.domain, agent.department, 'agency'],
+      rating: 5,
+      downloads: 0,
+      reviews: []
+    },
+    source: {
+      provider: 'unis-agency-agents',
+      relativePath: `agents/${agent.id}.md`,
+      importedAt: new Date(),
+      checksum: 'simple'
+    },
+    createdAt: new Date(),
+    updatedAt: new Date(),
+    soul: {
+      identity: {
+        role: agent.role,
+        personality: 'Professional and efficient',
+        memory: 'Maintains context relevant to role',
+        experience: `Expert in ${agent.domain} domain`
+      },
+      mission: [{
+        title: 'Core Mission',
+        description: agent.description,
+        capabilities: agent.capabilities
+      }],
+      criticalRules: ['Follow domain best practices', 'Maintain data integrity'],
+      workflow: [{
+        step: 1,
+        name: 'Execute Task',
+        description: 'Execute assigned task according to role capabilities',
+        commands: ['Analyze request', 'Apply domain knowledge', 'Deliver results']
+      }],
+      communicationStyle: ['Professional', 'Clear and concise', 'Domain-focused'],
+      successMetrics: [{
+        name: 'Task completion rate',
+        target: '100%',
+        description: 'Successfully complete assigned tasks'
+      }],
+      vibe: 'Professional, efficient, domain-focused',
+      emoji: agent.domain === 'wms' ? '📦' : agent.domain === 'oms' ? '📋' : agent.domain === 'fms' ? '🚛' : agent.domain === 'bnp' ? '💰' : agent.domain === 'yms' ? '🚛' : '⚙️',
+      color: agent.domain === 'wms' ? '#3B82F6' : agent.domain === 'oms' ? '#10B981' : agent.domain === 'fms' ? '#F59E0B' : agent.domain === 'bnp' ? '#F59E0B' : agent.domain === 'yms' ? '#8B5CF6' : '#EF4444',
+      rawSections: {
+        identity: agent.description,
+        mission: agent.description,
+        criticalRules: 'Follow best practices',
+        workflow: 'Execute tasks efficiently',
+        communicationStyle: 'Professional',
+        successMetrics: 'High completion rate'
+      }
+    }
+  } as unknown as AgentDefinition))
 ];

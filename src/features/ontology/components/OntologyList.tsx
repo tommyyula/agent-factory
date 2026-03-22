@@ -3,10 +3,12 @@ import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { Brain, Database, GitBranch, Search } from 'lucide-react';
+import { Badge } from '@/components/ui/badge';
+import { Brain, Database, GitBranch, Search, Table } from 'lucide-react';
 import { ontologyDB } from '@/shared/services/database';
 import { useOntologyStore } from '@/stores/ontologyStore';
 import { OntologyCard } from './OntologyCard';
+import { schemaStats, DOMAIN_COLORS } from '@/data/agency-schemas-simple';
 
 export function OntologyList() {
   const { t } = useTranslation();
@@ -160,6 +162,45 @@ export function OntologyList() {
             </p>
           </CardContent>
         </Card>
+      </div>
+
+      {/* Agency Schema Statistics */}
+      <div className="space-y-3">
+        <div className="flex items-center gap-2">
+          <h3 className="text-lg font-semibold">🗄️ Agency 数据架构</h3>
+          <Badge variant="outline">SQLite Schema</Badge>
+        </div>
+        
+        <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-6">
+          {/* Total Tables */}
+          <Card>
+            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+              <CardTitle className="text-sm font-medium">数据表总数</CardTitle>
+              <Table className="h-4 w-4 text-muted-foreground" />
+            </CardHeader>
+            <CardContent>
+              <div className="text-2xl font-bold">{schemaStats.totalTables}</div>
+              <p className="text-xs text-muted-foreground">跨五大业务域</p>
+            </CardContent>
+          </Card>
+
+          {/* Domain-specific tables */}
+          {Object.entries(schemaStats.domains).map(([domain, stats]) => (
+            <Card key={domain}>
+              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                <CardTitle className="text-sm font-medium">{domain}</CardTitle>
+                <div 
+                  className="h-4 w-4 rounded-full"
+                  style={{ backgroundColor: DOMAIN_COLORS[domain as keyof typeof DOMAIN_COLORS] }}
+                />
+              </CardHeader>
+              <CardContent>
+                <div className="text-2xl font-bold">{stats.tables}</div>
+                <p className="text-xs text-muted-foreground">{stats.columns} 列</p>
+              </CardContent>
+            </Card>
+          ))}
+        </div>
       </div>
 
       {/* Ontology Domains Grid */}
