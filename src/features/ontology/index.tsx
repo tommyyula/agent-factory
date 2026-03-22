@@ -7,13 +7,26 @@ import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { OntologyList } from './components/OntologyList';
 import { KnowledgeGraphViewer } from './components/KnowledgeGraphViewer';
+// Import OBR components
+import { OBRPanel } from './components/obr/OBRPanel';
+import { OBRGraphView } from './components/obr/graph/OBRGraphView';
+import { SimulationPanel } from './components/obr/simulation/SimulationPanel';
 
 export function OntologyOverview() {
   return (
     <Routes>
       <Route index element={<OntologyList />} />
-      <Route path="graph/:ontologyId?" element={<KnowledgeGraphViewer />} />
+      {/* OBR Panel routes */}
+      <Route path="obr" element={<OBRPanel />} />
+      <Route path="obr/:domainId" element={<OBRPanel />} />
+      {/* OBR Graph View - replaced old KnowledgeGraphViewer */}
+      <Route path="graph/:domainId?" element={<OBRGraphView />} />
+      {/* Simulation Panel */}
+      <Route path="simulation/:scenarioId?" element={<SimulationPanel />} />
+      {/* Keep version history */}
       <Route path="versions/:ontologyId" element={<VersionHistory />} />
+      {/* Legacy fallback for old graph route */}
+      <Route path="legacy-graph/:ontologyId?" element={<KnowledgeGraphViewer />} />
     </Routes>
   );
 }

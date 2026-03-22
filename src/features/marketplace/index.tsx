@@ -9,6 +9,7 @@ import { agentDB, runtimeDB } from '@/shared/services/database';
 import { AgentDefinition } from '@/shared/types/agent.types';
 import { AgentDeployment, TokenUsage, CollaborationConfig } from '@/shared/types/runtime.types';
 import { AgentDetail } from './components/AgentDetail';
+import { simpleAgencyAgents, SimpleAgencyAgent } from '@/data/agency-agents-simple';
 
 export function AgentCatalog() {
   return (
@@ -604,13 +605,119 @@ function MarketplaceHome() {
   const [selectedAgent, setSelectedAgent] = useState<AgentDefinition | null>(null);
   const [showAdvancedFilters, setShowAdvancedFilters] = useState(true);
 
+  // Convert agency agents to AgentDefinition format
+  const convertAgencyAgent = (agencyAgent: SimpleAgencyAgent): AgentDefinition => {
+    const industryMap: Record<string, AgentDefinition['category']['industry']> = {
+      'wms': 'WMS',
+      'oms': 'OMS', 
+      'fms': 'FMS',
+      'bnp': 'general', // BNP maps to general since it's not in the AgentDefinition type
+      'yms': 'YMS',
+      'enterprise': 'general'
+    };
+
+    const functionMap: Record<string, AgentDefinition['category']['function']> = {
+      'reconciler': 'automation',
+      'calculator': 'analytics',
+      'accountant': 'data-analysis',
+      'handler': 'customer-service',
+      'operator': 'automation',
+      'agent': 'automation',
+      'warning': 'monitoring',
+      'sync': 'integration',
+      'generator': 'generation',
+      'merger': 'automation',
+      'sender': 'automation',
+      'converter': 'generation',
+      'planner': 'optimization',
+      'manager': 'productivity',
+      'coordinator': 'automation',
+      'dispatcher': 'optimization',
+      'tracker': 'monitoring',
+      'collector': 'data-analysis',
+      'shipper': 'automation',
+      'optimizer': 'optimization',
+      'scheduler': 'optimization',
+      'validator': 'analytics',
+      'monitor': 'monitoring',
+      'picker': 'automation',
+      'allocator': 'optimization',
+      'controller': 'monitoring',
+      'analyzer': 'data-analysis',
+      'executor': 'automation'
+    };
+
+    return {
+      id: agencyAgent.id,
+      name: agencyAgent.id,
+      displayName: agencyAgent.name,
+      description: agencyAgent.description,
+      version: '1.0.0',
+      status: 'published',
+      category: {
+        industry: industryMap[agencyAgent.domain] || 'general',
+        function: functionMap[agencyAgent.role] || 'automation'
+      },
+      pricing: {
+        model: 'subscription',
+        price: 15, // Default price for agency agents
+        currency: 'USD'
+      },
+      capabilities: agencyAgent.capabilities,
+      skills: [],
+      prompts: {
+        system: `You are a ${agencyAgent.name} specialized in ${agencyAgent.description}`,
+        user: 'Please help me with my request.',
+        variables: []
+      },
+      ontologySubset: [],
+      sdd: {
+        requirements: `# Requirements\n\n${agencyAgent.description}\n`,
+        design: `# Design\n\nAgency agent for ${agencyAgent.domain} domain.\n`,
+        domainAnalysis: `# Domain Analysis\n\nDomain: ${agencyAgent.domain}\nDepartment: ${agencyAgent.department}\n`,
+        tasks: `# Tasks\n\n${agencyAgent.capabilities.join('\n- ')}\n`
+      },
+      build: {
+        status: 'success',
+        steps: [],
+        artifacts: [],
+        logs: []
+      },
+      test: {
+        status: 'passed',
+        suites: [],
+        coverage: 100
+      },
+      metadata: {
+        author: 'Unis Agency',
+        tags: [agencyAgent.domain.toUpperCase(), agencyAgent.department, agencyAgent.role],
+        rating: 4.2 + Math.random() * 0.6, // Random rating between 4.2-4.8
+        downloads: Math.floor(Math.random() * 1000) + 100, // Random downloads
+        reviews: [],
+        source: 'agency-agents-simple',
+        // Store original domain for filtering
+        division: agencyAgent.domain.toUpperCase()
+      },
+      createdAt: new Date(),
+      updatedAt: new Date()
+    };
+  };
+
   useEffect(() => {
     const loadAgents = async () => {
       setLoading(true);
       try {
-        // 只显示已发布的 Agent
+        // Load database agents (published only)
         const publishedAgents = await agentDB.agents.where('status').equals('published').toArray();
-        setAgents(publishedAgents);
+        
+        // Convert agency agents to AgentDefinition format
+        const agencyAgentsFormatted = simpleAgencyAgents
+          .filter(agent => agent.status === 'active')
+          .map(convertAgencyAgent);
+        
+        // Merge both sources
+        const allAgents = [...publishedAgents, ...agencyAgentsFormatted];
+        setAgents(allAgents);
       } catch (error) {
         console.error('Failed to load marketplace agents:', error);
       } finally {
@@ -636,8 +743,15 @@ function MarketplaceHome() {
       if (selectedCategory !== 'all' && agent.category.function !== selectedCategory) {
         return false;
       }
-      if (selectedIndustry !== 'all' && agent.category.industry !== selectedIndustry) {
-        return false;
+      if (selectedIndustry !== 'all') {
+        // Handle BNP domain filtering
+        if (selectedIndustry === 'BNP') {
+          if (agent.metadata.division !== 'BNP') {
+            return false;
+          }
+        } else if (agent.category.industry !== selectedIndustry) {
+          return false;
+        }
       }
       return true;
     })
@@ -688,6 +802,7 @@ function MarketplaceHome() {
     { value: 'FMS', label: t('marketplace.industries.fms') },
     { value: 'YMS', label: t('marketplace.industries.yms') },
     { value: 'OMS', label: t('marketplace.industries.oms') },
+    { value: 'BNP', label: 'BNP' },
     { value: 'general', label: t('marketplace.industries.general') },
     { value: 'healthcare', label: t('marketplace.industries.healthcare') },
     { value: 'ai-tools', label: t('marketplace.industries.aiTools') },
@@ -854,7 +969,8 @@ function AgentMarketCard({ agent, viewMode, featured, onSelect }: AgentMarketCar
     navigate(`/marketplace/hire/${agent.id}`);
   };
 
-  const getCategoryText = (category: { industry: string; function: string }) => {
+  const getCategoryText = (agent: AgentDefinition) => {
+    const category = agent.category;
     const industryMap = {
       'WMS': t('marketplace.industries.wms'),
       'TMS': t('marketplace.industries.tms'),
@@ -870,6 +986,10 @@ function AgentMarketCard({ agent, viewMode, featured, onSelect }: AgentMarketCar
       'knowledge': t('marketplace.industries.knowledge'),
       'marketing': t('marketplace.industries.marketing')
     };
+
+    // Handle BNP domain display
+    const industryDisplay = agent.metadata.division === 'BNP' ? 'BNP' : 
+      (industryMap[category.industry as keyof typeof industryMap] || category.industry);
 
     const functionMap = {
       'data-analysis': t('marketplace.categories.dataAnalysis'),
@@ -888,7 +1008,7 @@ function AgentMarketCard({ agent, viewMode, featured, onSelect }: AgentMarketCar
       'lifestyle': t('marketplace.categories.lifestyle')
     };
 
-    return `${industryMap[category.industry as keyof typeof industryMap] || category.industry} • ${functionMap[category.function as keyof typeof functionMap] || category.function}`;
+    return `${industryDisplay} • ${functionMap[category.function as keyof typeof functionMap] || category.function}`;
   };
 
   const formatPrice = (agent: AgentDefinition) => {
@@ -923,7 +1043,7 @@ function AgentMarketCard({ agent, viewMode, featured, onSelect }: AgentMarketCar
                     {featured && <Badge className="bg-primary text-primary-foreground text-xs">Featured</Badge>}
                   </div>
                   <p className="text-sm text-muted-foreground">
-                    {getCategoryText(agent.category)}
+                    {getCategoryText(agent)}
                   </p>
                 </div>
                 <div className="text-right">
@@ -973,7 +1093,7 @@ function AgentMarketCard({ agent, viewMode, featured, onSelect }: AgentMarketCar
               {featured && <Badge className="bg-primary text-primary-foreground text-xs">Featured</Badge>}
             </div>
             <p className="text-sm text-muted-foreground">
-              {getCategoryText(agent.category)}
+              {getCategoryText(agent)}
             </p>
           </div>
           <div className="text-right">

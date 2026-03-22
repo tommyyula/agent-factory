@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { Plus, Code, Wrench, TestTube, FileText, Filter, Search } from 'lucide-react';
+import { Plus, Code, Wrench, TestTube, FileText, Filter, Search, Wand2 } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -53,6 +53,10 @@ export function IDEHome() {
     navigate('/ide/create');
   };
 
+  const handleCreateOBRAgent = () => {
+    navigate('/ide/obr-create');
+  };
+
   const handleEditAgent = (agentId: string) => {
     navigate(`/ide/agent/${agentId}`);
   };
@@ -101,10 +105,16 @@ export function IDEHome() {
             <h1 className="text-3xl font-bold tracking-tight">{t('ide.title', 'IDE')}</h1>
             <p className="text-muted-foreground">{t('ide.subtitle', 'Integrated Development Environment')}</p>
           </div>
-          <Button disabled>
-            <Plus className="mr-2 h-4 w-4" />
-            {t('ide.createAgent', '创建 Agent')}
-          </Button>
+          <div className="flex gap-2">
+            <Button variant="outline" disabled>
+              <Plus className="mr-2 h-4 w-4" />
+              {t('ide.createAgent', '创建 Agent')}
+            </Button>
+            <Button disabled>
+              <Wand2 className="mr-2 h-4 w-4" />
+              {t('ide.createOBRAgent', '从本体创建 Agent')}
+            </Button>
+          </div>
         </div>
 
         <div className="grid gap-4 md:grid-cols-5">
@@ -129,10 +139,16 @@ export function IDEHome() {
             {t('ide.subtitle', 'Agent 开发工作台')}
           </p>
         </div>
-        <Button onClick={handleCreateAgent}>
-          <Plus className="mr-2 h-4 w-4" />
-          {t('ide.createAgent', '创建 Agent')}
-        </Button>
+        <div className="flex gap-2">
+          <Button variant="outline" onClick={handleCreateAgent}>
+            <Plus className="mr-2 h-4 w-4" />
+            {t('ide.createAgent', '创建 Agent')}
+          </Button>
+          <Button onClick={handleCreateOBRAgent}>
+            <Wand2 className="mr-2 h-4 w-4" />
+            {t('ide.createOBRAgent', '从本体创建 Agent')}
+          </Button>
+        </div>
       </div>
 
       {/* Development Stats */}
@@ -246,10 +262,16 @@ export function IDEHome() {
                   : t('ide.createFirstAgent', '创建您的第一个 AI Agent 开始开发')}
               </p>
               {(!searchQuery && statusFilter === 'all') && (
-                <Button onClick={handleCreateAgent}>
-                  <Plus className="mr-2 h-4 w-4" />
-                  {t('ide.createAgent', '创建 Agent')}
-                </Button>
+                <div className="flex gap-2">
+                  <Button variant="outline" onClick={handleCreateAgent}>
+                    <Plus className="mr-2 h-4 w-4" />
+                    {t('ide.createAgent', '创建 Agent')}
+                  </Button>
+                  <Button onClick={handleCreateOBRAgent}>
+                    <Wand2 className="mr-2 h-4 w-4" />
+                    {t('ide.createOBRAgent', '从本体创建 Agent')}
+                  </Button>
+                </div>
               )}
             </CardContent>
           </Card>

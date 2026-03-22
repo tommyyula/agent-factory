@@ -4,38 +4,36 @@ import { useTranslation } from 'react-i18next';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { Brain, Database, GitBranch, Search, Table } from 'lucide-react';
+import { Brain, Database, GitBranch, Search, Table, Settings, Eye, Play } from 'lucide-react';
 import { ontologyDB } from '@/shared/services/database';
 import { useOntologyStore } from '@/stores/ontologyStore';
 import { OntologyCard } from './OntologyCard';
 import { schemaStats, DOMAIN_COLORS } from '@/data/agency-schemas-simple';
+import { OBR_DOMAINS, getCombinedMetrics, getAllDomains, DomainId } from '@/data/obr-domains';
 
 export function OntologyList() {
   const { t } = useTranslation();
   const navigate = useNavigate();
-  const { domains, setDomains, loading, setLoading } = useOntologyStore();
   const [searchQuery, setSearchQuery] = useState('');
+  const [loading, setLoading] = useState(true);
+
+  // Get OBR domains and metrics
+  const obrDomains = getAllDomains();
+  const metrics = getCombinedMetrics();
 
   useEffect(() => {
-    const loadOntologies = async () => {
-      setLoading(true);
-      try {
-        const ontologies = await ontologyDB.ontologies.toArray();
-        setDomains(ontologies);
-      } catch (error) {
-        console.error('Failed to load ontologies:', error);
-      } finally {
-        setLoading(false);
-      }
-    };
+    // Simulate loading for consistent UX
+    const timer = setTimeout(() => {
+      setLoading(false);
+    }, 500);
 
-    loadOntologies();
-  }, [setDomains, setLoading]);
+    return () => clearTimeout(timer);
+  }, []);
 
-  const filteredDomains = domains.filter(domain =>
-    domain.displayName.toLowerCase().includes(searchQuery.toLowerCase()) ||
-    domain.description.toLowerCase().includes(searchQuery.toLowerCase()) ||
-    domain.industry.toLowerCase().includes(searchQuery.toLowerCase())
+  const filteredDomains = obrDomains.filter(domain =>
+    domain.metadata.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+    domain.metadata.description.toLowerCase().includes(searchQuery.toLowerCase()) ||
+    domain.metadata.domain.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
   const handleViewGraph = (domainId: string) => {
@@ -107,7 +105,7 @@ export function OntologyList() {
             <Database className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">{domains.length}</div>
+            <div className="text-2xl font-bold">{metrics.totalDomains}</div>
             <p className="text-xs text-muted-foreground">
               {t('ontology.stats.totalDomainsDesc', '覆盖物流全流程')}
             </p>
@@ -117,16 +115,14 @@ export function OntologyList() {
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium">
-              {t('ontology.stats.totalConcepts', '概念总数')}
+              {t('ontology.stats.totalObjects', '对象总数')}
             </CardTitle>
             <Brain className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">
-              {domains.reduce((sum, domain) => sum + domain.metadata.conceptCount, 0)}
-            </div>
+            <div className="text-2xl font-bold">{metrics.totalObjects}</div>
             <p className="text-xs text-muted-foreground">
-              {t('ontology.stats.totalConceptsDesc', '结构化知识概念')}
+              {t('ontology.stats.totalObjectsDesc', '业务实体对象')}
             </p>
           </CardContent>
         </Card>
@@ -134,15 +130,13 @@ export function OntologyList() {
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium">
-              {t('ontology.stats.totalRelations', '关系总数')}
+              {t('ontology.stats.totalBehaviors', '行为总数')}
             </CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">
-              {domains.reduce((sum, domain) => sum + domain.metadata.relationCount, 0)}
-            </div>
+            <div className="text-2xl font-bold">{metrics.totalBehaviors}</div>
             <p className="text-xs text-muted-foreground">
-              {t('ontology.stats.totalRelationsDesc', '概念间关联')}
+              {t('ontology.stats.totalBehaviorsDesc', '业务行为流程')}
             </p>
           </CardContent>
         </Card>
@@ -150,15 +144,13 @@ export function OntologyList() {
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium">
-              {t('ontology.stats.avgCompleteness', '平均完整度')}
+              {t('ontology.stats.totalScenarios', '场景总数')}
             </CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">
-              {Math.round(domains.reduce((sum, domain) => sum + domain.metadata.completeness, 0) / domains.length)}%
-            </div>
+            <div className="text-2xl font-bold">{metrics.totalScenarios}</div>
             <p className="text-xs text-muted-foreground">
-              {t('ontology.stats.avgCompletenessDesc', '知识覆盖程度')}
+              {t('ontology.stats.totalScenariosDesc', '业务场景模型')}
             </p>
           </CardContent>
         </Card>
@@ -203,16 +195,97 @@ export function OntologyList() {
         </div>
       </div>
 
-      {/* Ontology Domains Grid */}
-      <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-        {filteredDomains.map((domain) => (
-          <OntologyCard
-            key={domain.id}
-            domain={domain}
-            onViewGraph={handleViewGraph}
-            onViewVersions={handleViewVersions}
-          />
-        ))}
+      {/* OBR Domains Grid */}
+      <div>
+        <h3 className="text-lg font-semibold mb-4">
+          {t('ontology.obrDomains', 'OBR 业务域')}
+          <span className="text-sm font-normal text-muted-foreground ml-2">
+            ({filteredDomains.length})
+          </span>
+        </h3>
+        
+        <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+          {filteredDomains.map((domain) => (
+            <Card key={domain.metadata.id} className="hover:shadow-lg transition-shadow">
+              <CardHeader>
+                <div className="flex items-center justify-between">
+                  <div>
+                    <CardTitle className="text-lg">
+                      {domain.metadata.domain}
+                    </CardTitle>
+                    <p className="text-sm text-muted-foreground mt-1">
+                      {domain.metadata.name}
+                    </p>
+                  </div>
+                  <Badge variant="outline" className="text-xs">
+                    v{domain.metadata.version}
+                  </Badge>
+                </div>
+              </CardHeader>
+              
+              <CardContent className="space-y-4">
+                {/* Description */}
+                <p className="text-sm text-muted-foreground line-clamp-2">
+                  {domain.metadata.description}
+                </p>
+                
+                {/* Metrics */}
+                <div className="grid grid-cols-2 gap-4 text-sm">
+                  <div className="space-y-1">
+                    <div className="flex justify-between">
+                      <span className="text-muted-foreground">对象:</span>
+                      <span className="font-medium">{domain.objects.length}</span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span className="text-muted-foreground">行为:</span>
+                      <span className="font-medium">{domain.behaviors.length}</span>
+                    </div>
+                  </div>
+                  <div className="space-y-1">
+                    <div className="flex justify-between">
+                      <span className="text-muted-foreground">规则:</span>
+                      <span className="font-medium">{domain.rules.length}</span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span className="text-muted-foreground">场景:</span>
+                      <span className="font-medium">{domain.scenarios.length}</span>
+                    </div>
+                  </div>
+                </div>
+                
+                {/* Action Buttons */}
+                <div className="flex gap-2 pt-2">
+                  <Button 
+                    size="sm" 
+                    onClick={() => navigate(`/ontology/obr/${domain.metadata.domain.toLowerCase()}`)}
+                    className="flex-1"
+                  >
+                    <Settings className="mr-1 h-3 w-3" />
+                    OBR 管理
+                  </Button>
+                  <Button 
+                    size="sm" 
+                    variant="outline"
+                    onClick={() => navigate(`/ontology/graph/${domain.metadata.domain.toLowerCase()}`)}
+                  >
+                    <Eye className="mr-1 h-3 w-3" />
+                    查看图谱
+                  </Button>
+                </div>
+                
+                <Button 
+                  size="sm" 
+                  variant="outline" 
+                  className="w-full"
+                  onClick={() => navigate(`/ontology/simulation`)}
+                >
+                  <Play className="mr-1 h-3 w-3" />
+                  模拟场景
+                </Button>
+              </CardContent>
+            </Card>
+          ))}
+        </div>
       </div>
     </div>
   );

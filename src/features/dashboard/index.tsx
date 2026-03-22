@@ -10,6 +10,7 @@ import { AgentStatusChart } from './components/AgentStatusChart';
 import { ActivityTrendChart } from './components/ActivityTrendChart';
 import { ActivityStream } from './components/ActivityStream';
 import { AGENCY_DOMAINS, agencyStats } from '@/data/agency-agents-simple';
+import { getAllDomains, getCombinedMetrics } from '@/data/obr-domains';
 
 interface DashboardStats {
   totalAgents: number;
@@ -64,6 +65,82 @@ function AgencyStatsCards() {
   );
 }
 
+function OBRStatsCards() {
+  const { t } = useTranslation();
+  const obrMetrics = getCombinedMetrics();
+  
+  return (
+    <div className="space-y-3">
+      <div className="flex items-center gap-2">
+        <h3 className="text-lg font-semibold">🧠 OBR 本体模型统计</h3>
+        <Badge variant="outline">知识图谱</Badge>
+      </div>
+      
+      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-5">
+        {/* Total Domains */}
+        <Card className="hover:shadow-md transition-shadow">
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+            <CardTitle className="text-sm font-medium">业务域</CardTitle>
+            <Package className="h-4 w-4 text-muted-foreground" />
+          </CardHeader>
+          <CardContent>
+            <div className="text-2xl font-bold">{obrMetrics.totalDomains}</div>
+            <p className="text-xs text-muted-foreground">WMS/FMS/OMS/YMS/BNP</p>
+          </CardContent>
+        </Card>
+
+        {/* Objects */}
+        <Card className="hover:shadow-md transition-shadow">
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+            <CardTitle className="text-sm font-medium">对象</CardTitle>
+            <div className="h-4 w-4 rounded-full bg-blue-500" />
+          </CardHeader>
+          <CardContent>
+            <div className="text-2xl font-bold">{obrMetrics.totalObjects}</div>
+            <p className="text-xs text-muted-foreground">业务实体对象</p>
+          </CardContent>
+        </Card>
+
+        {/* Behaviors */}
+        <Card className="hover:shadow-md transition-shadow">
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+            <CardTitle className="text-sm font-medium">行为</CardTitle>
+            <div className="h-4 w-4 rounded-full bg-green-500" />
+          </CardHeader>
+          <CardContent>
+            <div className="text-2xl font-bold">{obrMetrics.totalBehaviors}</div>
+            <p className="text-xs text-muted-foreground">业务行为流程</p>
+          </CardContent>
+        </Card>
+
+        {/* Rules */}
+        <Card className="hover:shadow-md transition-shadow">
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+            <CardTitle className="text-sm font-medium">规则</CardTitle>
+            <div className="h-4 w-4 rounded-full bg-orange-500" />
+          </CardHeader>
+          <CardContent>
+            <div className="text-2xl font-bold">{obrMetrics.totalRules}</div>
+            <p className="text-xs text-muted-foreground">业务规则约束</p>
+          </CardContent>
+        </Card>
+
+        {/* Scenarios */}
+        <Card className="hover:shadow-md transition-shadow">
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+            <CardTitle className="text-sm font-medium">场景</CardTitle>
+            <div className="h-4 w-4 rounded-full bg-purple-500" />
+          </CardHeader>
+          <CardContent>
+            <div className="text-2xl font-bold">{obrMetrics.totalScenarios}</div>
+            <p className="text-xs text-muted-foreground">业务场景模型</p>
+          </CardContent>
+        </Card>
+      </div>
+    </div>
+  );
+}
+
 export function Dashboard() {
   const { t } = useTranslation();
   const [stats, setStats] = useState<DashboardStats>({
@@ -73,6 +150,10 @@ export function Dashboard() {
     systemHealth: 0
   });
   const [loading, setLoading] = useState(true);
+
+  // Get OBR and Agency metrics
+  const obrMetrics = getCombinedMetrics();
+  const totalCombinedElements = obrMetrics.totalObjects + obrMetrics.totalBehaviors + obrMetrics.totalRules + obrMetrics.totalScenarios;
 
   // Mock data for charts
   const [agentStatusData] = useState([
@@ -110,8 +191,9 @@ export function Dashboard() {
   useEffect(() => {
     const loadStats = async () => {
       try {
-        // Get agent statistics
-        const totalAgents = await agentDB.agents.count();
+        // Get agent statistics (database agents + agency agents)
+        const dbAgents = await agentDB.agents.count();
+        const totalAgents = dbAgents + agencyStats.total; // Include 100 agency agents
         const publishedAgents = await agentDB.agents.where('status').equals('published').count();
 
         // Get runtime statistics
@@ -172,6 +254,9 @@ export function Dashboard() {
 
       {/* Agency Stats Cards */}
       <AgencyStatsCards />
+
+      {/* OBR Stats Cards */}
+      <OBRStatsCards />
 
       {/* Charts Section */}
       <div className="grid gap-6 lg:grid-cols-2">

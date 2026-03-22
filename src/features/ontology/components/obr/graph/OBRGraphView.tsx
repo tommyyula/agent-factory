@@ -1,5 +1,6 @@
 // @ts-nocheck
 import React, { useState, useCallback, useEffect, useMemo } from 'react';
+import { useParams, useNavigate } from 'react-router-dom';
 import { 
   ReactFlow, 
   Node, 
@@ -41,6 +42,7 @@ import dagre from 'dagre';
 import { OntologyBlueprint, OBRLink } from '@/shared/types/obr.types';
 import { useOBRStore } from '@/stores/obr.store';
 import { ObjectNode, BehaviorNode, RuleNode, ScenarioNode } from './OBRNodeTypes';
+import { OBR_DOMAINS, getDomain, DomainId } from '@/data/obr-domains';
 
 // Custom node types
 const nodeTypes: NodeTypes = {
@@ -82,6 +84,10 @@ export function OBRGraphView({
   onNodeSelect,
   readonly = false 
 }: OBRGraphViewProps) {
+  // URL parameters and navigation
+  const { domainId } = useParams<{ domainId?: string }>();
+  const navigate = useNavigate();
+  
   // Store hooks
   const { 
     currentBlueprint, 
@@ -90,8 +96,32 @@ export function OBRGraphView({
     selectNode 
   } = useOBRStore();
 
-  // Use provided blueprint or current from store
-  const activeBlueprint = blueprint || currentBlueprint;
+  // Domain switcher state
+  const [selectedDomainId, setSelectedDomainId] = useState<string>(domainId || 'wms');
+
+  // Load domain blueprint based on URL or selected domain
+  const loadDomainBlueprint = useCallback((targetDomainId: string) => {
+    if (targetDomainId && OBR_DOMAINS[targetDomainId.toLowerCase() as DomainId]) {
+      return getDomain(targetDomainId.toLowerCase() as DomainId);
+    }
+    return null;
+  }, []);
+
+  // Use provided blueprint, URL domain, or current from store
+  const activeBlueprint = blueprint || loadDomainBlueprint(selectedDomainId) || currentBlueprint;
+
+  // Update selected domain when URL changes
+  useEffect(() => {
+    if (domainId && domainId !== selectedDomainId) {
+      setSelectedDomainId(domainId);
+    }
+  }, [domainId, selectedDomainId]);
+
+  // Handle domain change
+  const handleDomainChange = useCallback((newDomainId: string) => {
+    setSelectedDomainId(newDomainId);
+    navigate(`/ontology/graph/${newDomainId}`);
+  }, [navigate]);
 
   // Local state
   const [nodes, setNodes, onNodesChange] = useNodesState<Node[]>([]);
@@ -490,14 +520,39 @@ export function OBRGraphView({
           </Card>
         </Panel>
 
-        {/* Statistics Panel */}
+        {/* Domain Switcher Panel */}
         <Panel position="top-right">
+          <Card className="mb-2">
+            <CardHeader className="pb-2">
+              <CardTitle className="text-sm">域切换</CardTitle>
+            </CardHeader>
+            <CardContent className="p-3 pt-0">
+              <Select value={selectedDomainId} onValueChange={handleDomainChange}>
+                <SelectTrigger className="w-32">
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  {Object.entries(OBR_DOMAINS).map(([key, domain]) => (
+                    <SelectItem key={key} value={key}>
+                      {domain.metadata.domain}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </CardContent>
+          </Card>
+        </Panel>
+
+        {/* Statistics Panel */}
+        <Panel position="top-right" className="mt-20">
           <Card>
             <CardContent className="p-3">
               <div className="space-y-1 text-xs">
                 <div>节点: {nodes.length}</div>
                 <div>关系: {edges.length}</div>
-                <div>域: {activeBlueprint.metadata.domain}</div>
+                {activeBlueprint && (
+                  <div>域: {activeBlueprint.metadata.domain}</div>
+                )}
               </div>
             </CardContent>
           </Card>
