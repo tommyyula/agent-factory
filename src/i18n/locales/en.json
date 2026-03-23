@@ -91,6 +91,27 @@
       "stable": "Stable",
       "stopped": "Stopped",
       "tasks": "Tasks"
+    },
+    "agency": {
+      "title": "🏢 Agency Agent Statistics",
+      "label": "UNIS Enterprise",
+      "agencyAgents": "Agency Agents",
+      "crossDomains": "Across 5 Business Domains",
+      "percentage": "Percentage"
+    },
+    "obr": {
+      "title": "🧠 OBR Ontology Model Statistics",
+      "label": "Knowledge Graph",
+      "businessDomains": "Business Domains",
+      "domainList": "WMS/FMS/OMS/YMS/BNP",
+      "objects": "Objects",
+      "objectsDesc": "Business Entity Objects",
+      "behaviors": "Behaviors",
+      "behaviorsDesc": "Business Behavior Processes",
+      "rules": "Rules",
+      "rulesDesc": "Business Rule Constraints",
+      "scenarios": "Scenarios",
+      "scenariosDesc": "Business Scenario Models"
     }
   },
   "marketplace": {
@@ -235,6 +256,11 @@
       "perMonth": "/month",
       "perUse": "/use"
     },
+    "hiring": {
+      "success": {
+        "monthlyPrice": "/month"
+      }
+    },
     "noResults": "No agents found matching your criteria",
     "tryAdjusting": "Try adjusting your search terms or filters"
   },
@@ -246,7 +272,46 @@
       "jobs": "Jobs",
       "messages": "Messages",
       "metrics": "Metrics",
-      "pipelines": "Pipelines"
+      "pipelines": "Pipelines",
+      "overview": "Overview",
+      "sandbox": "Agent Sandbox",
+      "team": "Team Testing",
+      "mockdata": "Mock Data"
+    },
+    "overview": {
+      "agentSandboxTitle": "Agent Sandbox",
+      "agentSandboxSubtitle": "Real-time interactive testing environment for individual agents",
+      "agentSandboxAgentCount": "100+ Agents",
+      "teamTestingTitle": "Team Testing",
+      "teamTestingSubtitle": "Multi-agent collaboration workflow testing",
+      "teamTestingLabel": "Collaboration Orchestration",
+      "mockDataTitle": "Mock Data Generation",
+      "mockDataSubtitle": "Business data simulation generation tool",
+      "mockDataLabel": "5 Domains 129 Tables",
+      "runtimeStatusTitle": "Runtime Environment Status",
+      "agentSandboxStatus": "Agent Sandbox",
+      "teamOrchestratorStatus": "Team Orchestrator",
+      "dataGeneratorStatus": "Data Generator",
+      "workflowSimulationStatus": "Workflow Simulation",
+      "agentStatsTitle": "Agent Statistics",
+      "ready": "Ready"
+    },
+    "agency": {
+      "title": "🏢 Agency Agent Runtime Status",
+      "subtitle": "100 Claude Code agents across WMS/FMS/OMS/BNP/YMS 5-domain hierarchical orchestration",
+      "hierarchyTitle": "Hierarchical Structure",
+      "hierarchySubtitle": "Front Desk → Enterprise Orchestrator → Domain Orchestrators → Agents",
+      "frontDesk": "Front Desk",
+      "frontDeskDesc": "Initial request routing and distribution",
+      "enterpriseOrchestrator": "Enterprise Orchestrator",
+      "enterpriseOrchestratorDesc": "Global process coordination and scheduling",
+      "domainOrchestrator": "Orchestrator",
+      "specialistAgents": "Specialist Agents",
+      "workflowChains": "Workflow Chains",
+      "status": "Status",
+      "running": "Running",
+      "idle": "Idle",
+      "error": "Error"
     },
     "detail": {
       "tabs": {
@@ -427,6 +492,84 @@
       "noWorkflow": "No workflow steps defined yet.",
       "noCommStyle": "No communication style defined yet.",
       "noMetrics": "No success metrics defined yet."
+    },
+    "obrWizard": {
+      "title": "OBR Agent Wizard",
+      "loadBlueprint": "Please load an ontology blueprint first to use the agent wizard",
+      "step": "Step",
+      "domain": {
+        "title": "Select Domain",
+        "subtitle": "Choose the business domain for the agent",
+        "businessDomain": "Business Domain",
+        "selectDomain": "Select Domain",
+        "domainInfo": "Domain Information",
+        "name": "Name",
+        "version": "Version",
+        "description": "Description",
+        "objects": "Objects",
+        "behaviors": "Behaviors",
+        "rules": "Rules",
+        "scenarios": "Scenarios"
+      },
+      "scenario": {
+        "title": "Select Business Scenario",
+        "subtitle": "Choose the specific business scenario for the agent to handle",
+        "steps": "Steps",
+        "participants": "Participants",
+        "successRate": "Success Rate"
+      },
+      "components": {
+        "title": "Configure Components",
+        "subtitle": "Select the business objects, behaviors and rules the agent needs",
+        "objects": "Business Objects",
+        "behaviors": "Business Behaviors",
+        "rules": "Business Rules"
+      },
+      "skills": {
+        "title": "Custom Skills",
+        "subtitle": "Configure specific skills and capabilities for the agent (optional)",
+        "agentType": "Agent Type",
+        "customSkills": "Custom Skills",
+        "skillPlaceholder": "Enter one skill per line, for example:\n- Data analysis capabilities\n- Multi-language support\n- API integration abilities",
+        "types": {
+          "assistant": "Assistant - Provides information and advice",
+          "executor": "Executor - Automatically executes business operations",
+          "validator": "Validator - Checks rule compliance",
+          "orchestrator": "Orchestrator - Manages complex workflows"
+        },
+        "tip": "Skills will be integrated into the agent's prompt template to enhance its professional capabilities."
+      },
+      "template": {
+        "title": "Generate Prompt Template",
+        "subtitle": "Automatically generate the agent's prompt template based on selected components",
+        "regenerate": "Regenerate",
+        "copy": "Copy",
+        "promptTemplate": "Prompt Template"
+      },
+      "review": {
+        "title": "Review Configuration",
+        "subtitle": "Review and complete the agent configuration",
+        "agentName": "Agent Name",
+        "agentNamePlaceholder": "Enter agent name",
+        "agentType": "Agent Type",
+        "description": "Description",
+        "descriptionPlaceholder": "Enter agent description",
+        "configSummary": "Configuration Summary",
+        "businessDomain": "Business Domain",
+        "targetScenario": "Target Scenario",
+        "objectComponents": "Object Components",
+        "behaviorComponents": "Behavior Components",
+        "ruleComponents": "Rule Components",
+        "customSkills": "Custom Skills",
+        "individual": "",
+        "completionMessage": "Configuration complete! Click 'Complete Creation' to generate an agent with OBR knowledge."
+      },
+      "navigation": {
+        "cancel": "Cancel",
+        "back": "Back",
+        "next": "Next",
+        "complete": "Complete Creation"
+      }
     }
   },
   "common": {
@@ -448,5 +591,8 @@
     "goBack": "Go Back",
     "enabled": "Enabled",
     "disabled": "Disabled"
+  },
+  "agentRuntime": {
+    "simulationResponse": "Simulation response: Your request has been processed"
   }
 }

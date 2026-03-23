@@ -91,6 +91,27 @@
       "stable": "安定",
       "stopped": "停止",
       "tasks": "タスク数"
+    },
+    "agency": {
+      "title": "🏢 Agencyエージェント統計",
+      "label": "UNIS エンタープライズ",
+      "agencyAgents": "Agencyエージェント",
+      "crossDomains": "5つのビジネスドメインにまたがる",
+      "percentage": "割合"
+    },
+    "obr": {
+      "title": "🧠 OBRオントロジーモデル統計",
+      "label": "知識グラフ",
+      "businessDomains": "ビジネスドメイン",
+      "domainList": "WMS/FMS/OMS/YMS/BNP",
+      "objects": "オブジェクト",
+      "objectsDesc": "ビジネスエンティティオブジェクト",
+      "behaviors": "行動",
+      "behaviorsDesc": "ビジネス行動プロセス",
+      "rules": "ルール",
+      "rulesDesc": "ビジネスルール制約",
+      "scenarios": "シナリオ",
+      "scenariosDesc": "ビジネスシナリオモデル"
     }
   },
   "marketplace": {
@@ -235,6 +256,11 @@
       "perMonth": "/月",
       "perUse": "/回"
     },
+    "hiring": {
+      "success": {
+        "monthlyPrice": "/月"
+      }
+    },
     "noResults": "条件に一致するエージェントが見つかりません",
     "tryAdjusting": "検索条件やフィルターを調整してください"
   },
@@ -246,7 +272,46 @@
       "jobs": "ジョブ",
       "messages": "メッセージ",
       "metrics": "メトリクス",
-      "pipelines": "パイプライン"
+      "pipelines": "パイプライン",
+      "overview": "概要",
+      "sandbox": "エージェントサンドボックス",
+      "team": "チームテスト",
+      "mockdata": "モックデータ"
+    },
+    "overview": {
+      "agentSandboxTitle": "エージェントサンドボックス",
+      "agentSandboxSubtitle": "単体エージェントリアルタイムインタラクションテスト環境",
+      "agentSandboxAgentCount": "100+ エージェント",
+      "teamTestingTitle": "チームテスト",
+      "teamTestingSubtitle": "マルチエージェントコラボレーションワークフローテスト",
+      "teamTestingLabel": "コラボレーション編成",
+      "mockDataTitle": "モックデータ生成",
+      "mockDataSubtitle": "ビジネスデータシミュレーション生成ツール",
+      "mockDataLabel": "5ドメイン129テーブル",
+      "runtimeStatusTitle": "ランタイム環境ステータス",
+      "agentSandboxStatus": "エージェントサンドボックス",
+      "teamOrchestratorStatus": "チームオーケストレーター",
+      "dataGeneratorStatus": "データジェネレーター",
+      "workflowSimulationStatus": "ワークフローシミュレーション",
+      "agentStatsTitle": "エージェント統計",
+      "ready": "準備完了"
+    },
+    "agency": {
+      "title": "🏢 Agencyエージェントランタイムステータス",
+      "subtitle": "WMS/FMS/OMS/BNP/YMS 5ドメイン階層オーケストレーション100 Claude Codeエージェント",
+      "hierarchyTitle": "階層構造",
+      "hierarchySubtitle": "フロントデスク → エンタープライズオーケストレーター → ドメインオーケストレーター → エージェント",
+      "frontDesk": "フロントデスク",
+      "frontDeskDesc": "初期リクエストルーティングと配布",
+      "enterpriseOrchestrator": "エンタープライズオーケストレーター",
+      "enterpriseOrchestratorDesc": "グローバルプロセス調整とスケジューリング",
+      "domainOrchestrator": "オーケストレーター",
+      "specialistAgents": "専門エージェント",
+      "workflowChains": "ワークフローチェーン",
+      "status": "ステータス",
+      "running": "実行中",
+      "idle": "アイドル",
+      "error": "エラー"
     },
     "detail": {
       "tabs": {
@@ -427,6 +492,84 @@
       "noWorkflow": "ワークフローステップはまだ定義されていません。",
       "noCommStyle": "コミュニケーションスタイルはまだ定義されていません。",
       "noMetrics": "成功指標はまだ定義されていません。"
+    },
+    "obrWizard": {
+      "title": "OBRエージェントウィザード",
+      "loadBlueprint": "エージェントウィザードを使用するには、まずオントロジーブループリントを読み込んでください",
+      "step": "ステップ",
+      "domain": {
+        "title": "ドメイン選択",
+        "subtitle": "エージェントのビジネスドメインを選択してください",
+        "businessDomain": "ビジネスドメイン",
+        "selectDomain": "ドメイン選択",
+        "domainInfo": "ドメイン情報",
+        "name": "名前",
+        "version": "バージョン",
+        "description": "説明",
+        "objects": "オブジェクト",
+        "behaviors": "行動",
+        "rules": "ルール",
+        "scenarios": "シナリオ"
+      },
+      "scenario": {
+        "title": "ビジネスシナリオ選択",
+        "subtitle": "エージェントが処理する具体的なビジネスシナリオを選択してください",
+        "steps": "ステップ",
+        "participants": "参加者",
+        "successRate": "成功率"
+      },
+      "components": {
+        "title": "コンポーネント設定",
+        "subtitle": "エージェントが必要とするビジネスオブジェクト、行動、ルールを選択してください",
+        "objects": "ビジネスオブジェクト",
+        "behaviors": "ビジネス行動",
+        "rules": "ビジネスルール"
+      },
+      "skills": {
+        "title": "カスタムスキル",
+        "subtitle": "エージェントの特定のスキルと能力を設定してください（オプション）",
+        "agentType": "エージェントタイプ",
+        "customSkills": "カスタムスキル",
+        "skillPlaceholder": "1行に1つのスキルを入力してください。例：\n- データ分析能力\n- 多言語サポート\n- API統合機能",
+        "types": {
+          "assistant": "アシスタント - 情報とアドバイスを提供",
+          "executor": "エクゼキューター - ビジネス操作を自動実行",
+          "validator": "バリデーター - ルールコンプライアンスをチェック",
+          "orchestrator": "オーケストレーター - 複雑なワークフローを管理"
+        },
+        "tip": "スキルはエージェントのプロンプトテンプレートに統合され、専門能力を向上させます。"
+      },
+      "template": {
+        "title": "プロンプトテンプレート生成",
+        "subtitle": "選択したコンポーネントに基づいてエージェントのプロンプトテンプレートを自動生成します",
+        "regenerate": "再生成",
+        "copy": "コピー",
+        "promptTemplate": "プロンプトテンプレート"
+      },
+      "review": {
+        "title": "設定の確認",
+        "subtitle": "エージェント設定を確認して完了してください",
+        "agentName": "エージェント名",
+        "agentNamePlaceholder": "エージェント名を入力",
+        "agentType": "エージェントタイプ",
+        "description": "説明",
+        "descriptionPlaceholder": "エージェントの説明を入力",
+        "configSummary": "設定サマリー",
+        "businessDomain": "ビジネスドメイン",
+        "targetScenario": "対象シナリオ",
+        "objectComponents": "オブジェクトコンポーネント",
+        "behaviorComponents": "行動コンポーネント",
+        "ruleComponents": "ルールコンポーネント",
+        "customSkills": "カスタムスキル",
+        "individual": "個",
+        "completionMessage": "設定完了！「作成完了」をクリックしてOBR知識を持つエージェントを生成します。"
+      },
+      "navigation": {
+        "cancel": "キャンセル",
+        "back": "戻る",
+        "next": "次へ",
+        "complete": "作成完了"
+      }
     }
   },
   "common": {
@@ -448,5 +591,8 @@
     "goBack": "戻る",
     "enabled": "有効",
     "disabled": "無効"
+  },
+  "agentRuntime": {
+    "simulationResponse": "シミュレーション応答: リクエストが処理されました"
   }
 }

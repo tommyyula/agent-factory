@@ -759,6 +759,7 @@ function getAgentStatusDot(status: CollaboratingAgent['status']): string {
 }
 
 function RuntimeOverviewPanel() {
+  const { t } = useTranslation();
   return (
     <div className="space-y-6">
       {/* Quick Navigation Cards */}
@@ -768,15 +769,15 @@ function RuntimeOverviewPanel() {
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
               <Activity className="h-5 w-5 text-blue-500" />
-              智能体沙盒
+{t('runtime.overview.agentSandboxTitle', '智能体沙盒')}
             </CardTitle>
             <p className="text-sm text-muted-foreground">
-              与单个智能体进行实时交互测试，调试智能体行为
+{t('runtime.overview.agentSandboxSubtitle', '与单个智能体进行实时交互测试，调试智能体行为')}
             </p>
           </CardHeader>
           <CardContent>
             <div className="flex justify-between items-center">
-              <Badge variant="secondary">100+ 智能体</Badge>
+<Badge variant="secondary">{t('runtime.overview.agentSandboxAgentCount', '100+ 智能体')}</Badge>
               <ArrowRight className="h-4 w-4" />
             </div>
           </CardContent>
@@ -787,15 +788,15 @@ function RuntimeOverviewPanel() {
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
               <Users className="h-5 w-5 text-green-500" />
-              团队测试
+{t('runtime.overview.teamTestingTitle', '团队测试')}
             </CardTitle>
             <p className="text-sm text-muted-foreground">
-              组建智能体团队，测试多智能体协作工作流程
+{t('runtime.overview.teamTestingSubtitle', '组建智能体团队，测试多智能体协作工作流程')}
             </p>
           </CardHeader>
           <CardContent>
             <div className="flex justify-between items-center">
-              <Badge variant="secondary">协作编排</Badge>
+<Badge variant="secondary">{t('runtime.overview.teamTestingLabel', '协作编排')}</Badge>
               <ArrowRight className="h-4 w-4" />
             </div>
           </CardContent>
@@ -806,15 +807,15 @@ function RuntimeOverviewPanel() {
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
               <BarChart3 className="h-5 w-5 text-purple-500" />
-              Mock数据生成
+{t('runtime.overview.mockDataTitle', 'Mock数据生成')}
             </CardTitle>
             <p className="text-sm text-muted-foreground">
-              生成符合业务规则的模拟数据用于智能体测试
+{t('runtime.overview.mockDataSubtitle', '生成符合业务规则的模拟数据用于智能体测试')}
             </p>
           </CardHeader>
           <CardContent>
             <div className="flex justify-between items-center">
-              <Badge variant="secondary">5个域 129张表</Badge>
+<Badge variant="secondary">{t('runtime.overview.mockDataLabel', '5个域 129张表')}</Badge>
               <ArrowRight className="h-4 w-4" />
             </div>
           </CardContent>
@@ -825,31 +826,31 @@ function RuntimeOverviewPanel() {
       <div className="grid gap-4 md:grid-cols-2">
         <Card>
           <CardHeader>
-            <CardTitle>运行环境状态</CardTitle>
+<CardTitle>{t('runtime.overview.runtimeStatusTitle', '运行环境状态')}</CardTitle>
           </CardHeader>
           <CardContent className="space-y-3">
             <div className="flex justify-between items-center">
-              <span className="text-sm">智能体沙盒</span>
-              <Badge variant="default">就绪</Badge>
+<span className="text-sm">{t('runtime.overview.agentSandboxStatus', '智能体沙盒')}</span>
+              <Badge variant="default">{t('runtime.overview.ready', '就绪')}</Badge>
             </div>
             <div className="flex justify-between items-center">
-              <span className="text-sm">团队编排器</span>
-              <Badge variant="default">就绪</Badge>
+<span className="text-sm">{t('runtime.overview.teamOrchestratorStatus', '团队编排器')}</span>
+              <Badge variant="default">{t('runtime.overview.ready', '就绪')}</Badge>
             </div>
             <div className="flex justify-between items-center">
-              <span className="text-sm">数据生成器</span>
-              <Badge variant="default">就绪</Badge>
+<span className="text-sm">{t('runtime.overview.dataGeneratorStatus', '数据生成器')}</span>
+              <Badge variant="default">{t('runtime.overview.ready', '就绪')}</Badge>
             </div>
             <div className="flex justify-between items-center">
-              <span className="text-sm">工作流模拟</span>
-              <Badge variant="default">就绪</Badge>
+<span className="text-sm">{t('runtime.overview.workflowSimulationStatus', '工作流模拟')}</span>
+              <Badge variant="default">{t('runtime.overview.ready', '就绪')}</Badge>
             </div>
           </CardContent>
         </Card>
 
         <Card>
           <CardHeader>
-            <CardTitle>智能体统计</CardTitle>
+<CardTitle>{t('runtime.overview.agentStatsTitle', '智能体统计')}</CardTitle>
           </CardHeader>
           <CardContent className="space-y-3">
             {Object.entries(AGENCY_DOMAINS).map(([domain, info]) => (
@@ -861,7 +862,7 @@ function RuntimeOverviewPanel() {
                   />
                   <span className="text-sm">{info.name}</span>
                 </div>
-                <Badge variant="outline">{info.count} 智能体</Badge>
+<Badge variant="outline">{info.count} {t('dashboard.charts.agents', '智能体')}</Badge>
               </div>
             ))}
           </CardContent>
@@ -927,14 +928,14 @@ function RuntimeHome() {
 
       <Tabs defaultValue="overview" className="space-y-4">
         <TabsList className="grid w-full grid-cols-9">
-          <TabsTrigger value="overview">概览</TabsTrigger>
+<TabsTrigger value="overview">{t('runtime.tabs.overview', '概览')}</TabsTrigger>
           <TabsTrigger value="deployments">{t('runtime.tabs.deployments')}</TabsTrigger>
           <TabsTrigger value="jobs">{t('runtime.tabs.jobs')}</TabsTrigger>
           <TabsTrigger value="messages">{t('runtime.tabs.messages')}</TabsTrigger>
           <TabsTrigger value="metrics">{t('runtime.tabs.metrics')}</TabsTrigger>
-          <TabsTrigger value="sandbox">智能体沙盒</TabsTrigger>
-          <TabsTrigger value="team">团队测试</TabsTrigger>
-          <TabsTrigger value="mockdata">Mock数据</TabsTrigger>
+<TabsTrigger value="sandbox">{t('runtime.tabs.sandbox', '智能体沙盒')}</TabsTrigger>
+<TabsTrigger value="team">{t('runtime.tabs.team', '团队测试')}</TabsTrigger>
+<TabsTrigger value="mockdata">{t('runtime.tabs.mockdata', 'Mock数据')}</TabsTrigger>
           <TabsTrigger value="agency">
             <Package className="mr-2 h-4 w-4" />
             Agency (100)
@@ -1175,9 +1176,9 @@ function AgencyPanel() {
     <div className="space-y-6">
       {/* Header */}
       <div>
-        <h3 className="text-lg font-medium">🏢 Agency 智能体运行状态</h3>
+<h3 className="text-lg font-medium">{t('runtime.agency.title', '🏢 Agency 智能体运行状态')}</h3>
         <p className="text-sm text-muted-foreground">
-          100个Claude Code代理横跨WMS/FMS/OMS/BNP/YMS五大域的层级化编排
+{t('runtime.agency.subtitle', '100个Claude Code代理横跨WMS/FMS/OMS/BNP/YMS五大域的层级化编排')}
         </p>
       </div>
 
@@ -1199,14 +1200,14 @@ function AgencyPanel() {
             </CardHeader>
             <CardContent className="space-y-3">
               <div className="flex items-center justify-between text-sm">
-                <span className="text-muted-foreground">状态</span>
+<span className="text-muted-foreground">{t('runtime.agency.status', '状态')}</span>
                 <div className="flex items-center gap-2">
                   <span className="w-2 h-2 rounded-full bg-green-500" />
-                  <span className="text-green-600">运行中</span>
+<span className="text-green-600">{t('runtime.agency.running', '运行中')}</span>
                 </div>
               </div>
               <div className="flex items-center justify-between text-sm">
-                <span className="text-muted-foreground">工作流链</span>
+<span className="text-muted-foreground">{t('runtime.agency.workflowChains', '工作流链')}</span>
                 <span>{agencyWorkflows[domain as keyof typeof agencyWorkflows]?.length || 0}</span>
               </div>
             </CardContent>
@@ -1219,10 +1220,10 @@ function AgencyPanel() {
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
             <GitBranch className="h-5 w-5" />
-            层级化编排结构
+{t('runtime.agency.hierarchyTitle', '层级化编排结构')}
           </CardTitle>
           <p className="text-sm text-muted-foreground">
-            前台接待 → 企业编排器 → 域编排器 → 专业智能体
+{t('runtime.agency.hierarchySubtitle', '前台接待 → 企业编排器 → 域编排器 → 专业智能体')}
           </p>
         </CardHeader>
         <CardContent>

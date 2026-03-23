@@ -91,6 +91,27 @@
       "stable": "稳定",
       "stopped": "已停止",
       "tasks": "任务数"
+    },
+    "agency": {
+      "title": "🏢 Agency 智能体统计",
+      "label": "UNIS 企业级",
+      "agencyAgents": "Agency 智能体",
+      "crossDomains": "跨五大业务域",
+      "percentage": "占比"
+    },
+    "obr": {
+      "title": "🧠 OBR 本体模型统计",
+      "label": "知识图谱",
+      "businessDomains": "业务域",
+      "domainList": "WMS/FMS/OMS/YMS/BNP",
+      "objects": "对象",
+      "objectsDesc": "业务实体对象",
+      "behaviors": "行为",
+      "behaviorsDesc": "业务行为流程",
+      "rules": "规则",
+      "rulesDesc": "业务规则约束",
+      "scenarios": "场景",
+      "scenariosDesc": "业务场景模型"
     }
   },
   "marketplace": {
@@ -235,6 +256,11 @@
       "perMonth": "/月",
       "perUse": "/次"
     },
+    "hiring": {
+      "success": {
+        "monthlyPrice": "/月"
+      }
+    },
     "noResults": "没有找到符合条件的 Agent",
     "tryAdjusting": "尝试调整搜索条件或筛选器"
   },
@@ -246,7 +272,46 @@
       "jobs": "任务调度",
       "messages": "消息队列",
       "metrics": "性能指标",
-      "pipelines": "流水线"
+      "pipelines": "流水线",
+      "overview": "概览",
+      "sandbox": "智能体沙盒",
+      "team": "团队测试",
+      "mockdata": "Mock数据"
+    },
+    "overview": {
+      "agentSandboxTitle": "智能体沙盒",
+      "agentSandboxSubtitle": "单体智能体实时交互测试环境",
+      "agentSandboxAgentCount": "100+ 智能体",
+      "teamTestingTitle": "团队测试",
+      "teamTestingSubtitle": "多智能体协作工作流测试",
+      "teamTestingLabel": "协作编排",
+      "mockDataTitle": "Mock数据生成",
+      "mockDataSubtitle": "业务数据模拟生成工具",
+      "mockDataLabel": "5个域 129张表",
+      "runtimeStatusTitle": "运行环境状态",
+      "agentSandboxStatus": "智能体沙盒",
+      "teamOrchestratorStatus": "团队编排器",
+      "dataGeneratorStatus": "数据生成器",
+      "workflowSimulationStatus": "工作流模拟",
+      "agentStatsTitle": "智能体统计",
+      "ready": "就绪"
+    },
+    "agency": {
+      "title": "🏢 Agency 智能体运行状态",
+      "subtitle": "100个Claude Code代理横跨WMS/FMS/OMS/BNP/YMS五大域的层级化编排",
+      "hierarchyTitle": "层级结构",
+      "hierarchySubtitle": "Front Desk → Enterprise Orchestrator → Domain Orchestrators → Agents",
+      "frontDesk": "前台接待 (Front Desk)",
+      "frontDeskDesc": "初始请求分流和路由",
+      "enterpriseOrchestrator": "企业编排器 (Enterprise Orchestrator)",
+      "enterpriseOrchestratorDesc": "全局流程协调和调度",
+      "domainOrchestrator": "编排器",
+      "specialistAgents": "专业智能体",
+      "workflowChains": "工作流链",
+      "status": "状态",
+      "running": "运行中",
+      "idle": "空闲",
+      "error": "错误"
     },
     "pipelines": {
       "title": "Agent 流水线",
@@ -427,6 +492,84 @@
       "noWorkflow": "尚未定义流程内容。",
       "noCommStyle": "尚未定义沟通风格。",
       "noMetrics": "尚未定义成功指标。"
+    },
+    "obrWizard": {
+      "title": "OBR 智能代理向导",
+      "loadBlueprint": "请先加载一个本体蓝图以使用智能代理向导",
+      "step": "步骤",
+      "domain": {
+        "title": "选择领域",
+        "subtitle": "选择智能代理所属的业务领域",
+        "businessDomain": "业务领域",
+        "selectDomain": "选择领域",
+        "domainInfo": "领域信息",
+        "name": "名称",
+        "version": "版本",
+        "description": "描述",
+        "objects": "对象",
+        "behaviors": "行为",
+        "rules": "规则",
+        "scenarios": "场景"
+      },
+      "scenario": {
+        "title": "选择业务场景",
+        "subtitle": "选择智能代理要处理的具体业务场景",
+        "steps": "步骤",
+        "participants": "参与者",
+        "successRate": "成功率"
+      },
+      "components": {
+        "title": "配置组件",
+        "subtitle": "选择智能代理需要的业务对象、行为和规则",
+        "objects": "业务对象",
+        "behaviors": "业务行为",
+        "rules": "业务规则"
+      },
+      "skills": {
+        "title": "自定义技能",
+        "subtitle": "为智能代理配置特定的技能和能力（可选）",
+        "agentType": "代理类型",
+        "customSkills": "自定义技能",
+        "skillPlaceholder": "每行输入一个技能，例如：\n- 数据分析能力\n- 多语言支持\n- API 集成能力",
+        "types": {
+          "assistant": "助手型 - 提供信息和建议",
+          "executor": "执行型 - 自动执行业务操作",
+          "validator": "验证型 - 检查规则合规性",
+          "orchestrator": "协调型 - 管理复杂工作流"
+        },
+        "tip": "技能将被整合到代理的提示模板中，增强其专业能力。"
+      },
+      "template": {
+        "title": "生成提示模板",
+        "subtitle": "基于选择的组件自动生成智能代理的提示模板",
+        "regenerate": "重新生成",
+        "copy": "复制",
+        "promptTemplate": "提示模板"
+      },
+      "review": {
+        "title": "审核配置",
+        "subtitle": "检查并完成智能代理的配置",
+        "agentName": "代理名称",
+        "agentNamePlaceholder": "输入代理名称",
+        "agentType": "代理类型",
+        "description": "描述",
+        "descriptionPlaceholder": "输入代理描述",
+        "configSummary": "配置摘要",
+        "businessDomain": "业务领域",
+        "targetScenario": "目标场景",
+        "objectComponents": "对象组件",
+        "behaviorComponents": "行为组件",
+        "ruleComponents": "规则组件",
+        "customSkills": "自定义技能",
+        "individual": "个",
+        "completionMessage": "配置完成！点击完成创建将生成具有 OBR 知识的智能代理。"
+      },
+      "navigation": {
+        "cancel": "取消",
+        "back": "返回",
+        "next": "下一步",
+        "complete": "完成创建"
+      }
     }
   },
   "common": {
@@ -448,5 +591,8 @@
     "goBack": "返回",
     "enabled": "已启用",
     "disabled": "已禁用"
+  },
+  "agentRuntime": {
+    "simulationResponse": "模拟响应：已处理您的请求"
   }
 }
