@@ -17,6 +17,9 @@ import { DeploymentList } from './components/DeploymentList';
 import { JobLog } from './components/JobLog';
 import { MessageBoard } from './components/MessageBoard';
 import { PerformanceMetrics } from './components/PerformanceMetrics';
+import { AgentSandbox } from './components/sandbox/AgentSandbox';
+import { TeamComposer } from './components/team/TeamComposer';
+import { MockDataGenerator } from './components/mockdata/MockDataGenerator';
 import { AGENCY_DOMAINS } from '@/data/agency-agents-simple';
 
 export function RuntimeOverview() {
@@ -27,6 +30,11 @@ export function RuntimeOverview() {
       <Route path="agent/:deploymentId" element={<DeploymentDetail />} />
       <Route path="jobs" element={<JobLog />} />
       <Route path="messages" element={<MessageBoard />} />
+      <Route path="sandbox" element={<AgentSandbox />} />
+      <Route path="sandbox/:agentId" element={<AgentSandbox />} />
+      <Route path="team" element={<TeamComposer />} />
+      <Route path="mockdata" element={<MockDataGenerator />} />
+      <Route path="mockdata/:domainId" element={<MockDataGenerator />} />
     </Routes>
   );
 }
@@ -804,19 +812,19 @@ function RuntimeHome() {
         </p>
       </div>
 
-      <Tabs defaultValue="deployments" className="space-y-4">
-        <TabsList className="grid w-full grid-cols-6">
+      <Tabs defaultValue="overview" className="space-y-4">
+        <TabsList className="grid w-full grid-cols-9">
+          <TabsTrigger value="overview">概览</TabsTrigger>
           <TabsTrigger value="deployments">{t('runtime.tabs.deployments')}</TabsTrigger>
           <TabsTrigger value="jobs">{t('runtime.tabs.jobs')}</TabsTrigger>
           <TabsTrigger value="messages">{t('runtime.tabs.messages')}</TabsTrigger>
           <TabsTrigger value="metrics">{t('runtime.tabs.metrics')}</TabsTrigger>
+          <TabsTrigger value="sandbox">智能体沙盒</TabsTrigger>
+          <TabsTrigger value="team">团队测试</TabsTrigger>
+          <TabsTrigger value="mockdata">Mock数据</TabsTrigger>
           <TabsTrigger value="agency">
             <Package className="mr-2 h-4 w-4" />
             Agency (100)
-          </TabsTrigger>
-          <TabsTrigger value="pipelines">
-            <GitBranch className="mr-2 h-4 w-4" />
-            {t('runtime.tabs.pipelines', 'Pipelines')}
           </TabsTrigger>
         </TabsList>
 
@@ -836,12 +844,24 @@ function RuntimeHome() {
           <PerformanceMetrics />
         </TabsContent>
 
-        <TabsContent value="agency" className="space-y-4">
-          <AgencyPanel />
+        <TabsContent value="overview" className="space-y-4">
+          <RuntimeOverviewPanel />
         </TabsContent>
 
-        <TabsContent value="pipelines" className="space-y-4">
-          <PipelinesPanel />
+        <TabsContent value="sandbox" className="space-y-4">
+          <AgentSandbox />
+        </TabsContent>
+
+        <TabsContent value="team" className="space-y-4">
+          <TeamComposer />
+        </TabsContent>
+
+        <TabsContent value="mockdata" className="space-y-4">
+          <MockDataGenerator />
+        </TabsContent>
+
+        <TabsContent value="agency" className="space-y-4">
+          <AgencyPanel />
         </TabsContent>
       </Tabs>
     </div>

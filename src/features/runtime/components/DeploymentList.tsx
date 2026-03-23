@@ -140,7 +140,7 @@ export function DeploymentList() {
 
       <div className="grid gap-4 md:grid-cols-1 lg:grid-cols-1">
         {allInstances.map((instance) => (
-          <Card key={instance.id} className={`hover:shadow-md transition-shadow ${instance.isDexie ? 'cursor-pointer border-primary/30' : ''}`} onClick={() => instance.isDexie && navigate(`/runtime/agent/${instance.id}`)}>
+          <Card key={instance.id} className="hover:shadow-md transition-shadow cursor-pointer" onClick={() => instance.isDexie && navigate(`/runtime/agent/${instance.id}`)}>
             <CardContent className="p-6">
               <div className="flex items-center justify-between">
                 <div className="flex items-center space-x-4">
