@@ -758,6 +758,119 @@ function getAgentStatusDot(status: CollaboratingAgent['status']): string {
   }
 }
 
+function RuntimeOverviewPanel() {
+  return (
+    <div className="space-y-6">
+      {/* Quick Navigation Cards */}
+      <div className="grid gap-4 md:grid-cols-3">
+        <Card className="cursor-pointer hover:shadow-md transition-shadow" 
+              onClick={() => window.location.hash = '#/runtime/sandbox'}>
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2">
+              <Activity className="h-5 w-5 text-blue-500" />
+              智能体沙盒
+            </CardTitle>
+            <p className="text-sm text-muted-foreground">
+              与单个智能体进行实时交互测试，调试智能体行为
+            </p>
+          </CardHeader>
+          <CardContent>
+            <div className="flex justify-between items-center">
+              <Badge variant="secondary">100+ 智能体</Badge>
+              <ArrowRight className="h-4 w-4" />
+            </div>
+          </CardContent>
+        </Card>
+
+        <Card className="cursor-pointer hover:shadow-md transition-shadow" 
+              onClick={() => window.location.hash = '#/runtime/team'}>
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2">
+              <Users className="h-5 w-5 text-green-500" />
+              团队测试
+            </CardTitle>
+            <p className="text-sm text-muted-foreground">
+              组建智能体团队，测试多智能体协作工作流程
+            </p>
+          </CardHeader>
+          <CardContent>
+            <div className="flex justify-between items-center">
+              <Badge variant="secondary">协作编排</Badge>
+              <ArrowRight className="h-4 w-4" />
+            </div>
+          </CardContent>
+        </Card>
+
+        <Card className="cursor-pointer hover:shadow-md transition-shadow" 
+              onClick={() => window.location.hash = '#/runtime/mockdata'}>
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2">
+              <BarChart3 className="h-5 w-5 text-purple-500" />
+              Mock数据生成
+            </CardTitle>
+            <p className="text-sm text-muted-foreground">
+              生成符合业务规则的模拟数据用于智能体测试
+            </p>
+          </CardHeader>
+          <CardContent>
+            <div className="flex justify-between items-center">
+              <Badge variant="secondary">5个域 129张表</Badge>
+              <ArrowRight className="h-4 w-4" />
+            </div>
+          </CardContent>
+        </Card>
+      </div>
+
+      {/* Feature Status */}
+      <div className="grid gap-4 md:grid-cols-2">
+        <Card>
+          <CardHeader>
+            <CardTitle>运行环境状态</CardTitle>
+          </CardHeader>
+          <CardContent className="space-y-3">
+            <div className="flex justify-between items-center">
+              <span className="text-sm">智能体沙盒</span>
+              <Badge variant="default">就绪</Badge>
+            </div>
+            <div className="flex justify-between items-center">
+              <span className="text-sm">团队编排器</span>
+              <Badge variant="default">就绪</Badge>
+            </div>
+            <div className="flex justify-between items-center">
+              <span className="text-sm">数据生成器</span>
+              <Badge variant="default">就绪</Badge>
+            </div>
+            <div className="flex justify-between items-center">
+              <span className="text-sm">工作流模拟</span>
+              <Badge variant="default">就绪</Badge>
+            </div>
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardHeader>
+            <CardTitle>智能体统计</CardTitle>
+          </CardHeader>
+          <CardContent className="space-y-3">
+            {Object.entries(AGENCY_DOMAINS).map(([domain, info]) => (
+              <div key={domain} className="flex justify-between items-center">
+                <div className="flex items-center gap-2">
+                  <div 
+                    className="w-3 h-3 rounded-full"
+                    style={{ backgroundColor: info.color }}
+                  />
+                  <span className="text-sm">{info.name}</span>
+                </div>
+                <Badge variant="outline">{info.count} 智能体</Badge>
+              </div>
+            ))}
+          </CardContent>
+        </Card>
+      </div>
+    </div>
+  );
+}
+
 function RuntimeHome() {
   const { t } = useTranslation();
   const { deployments, tasks, setDeployments, setTasks, loading, setLoading } = useRuntimeStore();
@@ -845,7 +958,7 @@ function RuntimeHome() {
         </TabsContent>
 
         <TabsContent value="overview" className="space-y-4">
-          <RuntimeOverviewPanel />
+          <RuntimeOverview />
         </TabsContent>
 
         <TabsContent value="sandbox" className="space-y-4">
