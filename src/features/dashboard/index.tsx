@@ -25,20 +25,20 @@ function AgencyStatsCards() {
   return (
     <div className="space-y-3">
       <div className="flex items-center gap-2">
-        <h3 className="text-lg font-semibold">🏢 Agency 智能体统计</h3>
-        <Badge variant="outline">UNIS 企业级</Badge>
+<h3 className="text-lg font-semibold">{t('dashboard.agency.title', '🏢 Agency 智能体统计')}</h3>
+        <Badge variant="outline">{t('dashboard.agency.label', 'UNIS 企业级')}</Badge>
       </div>
       
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-5">
         {/* Total Agency Agents */}
         <Card className="hover:shadow-md transition-shadow">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Agency 智能体</CardTitle>
+<CardTitle className="text-sm font-medium">{t('dashboard.agency.agencyAgents', 'Agency 智能体')}</CardTitle>
             <Package className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">{agencyStats.total}</div>
-            <p className="text-xs text-muted-foreground">跨五大业务域</p>
+<p className="text-xs text-muted-foreground">{t('dashboard.agency.crossDomains', '跨五大业务域')}</p>
           </CardContent>
         </Card>
 
@@ -55,7 +55,7 @@ function AgencyStatsCards() {
             <CardContent>
               <div className="text-2xl font-bold">{info.count}</div>
               <p className="text-xs text-muted-foreground">
-                {Math.round((info.count / agencyStats.total) * 100)}% 占比
+{Math.round((info.count / agencyStats.total) * 100)}% {t('dashboard.agency.percentage', '占比')}
               </p>
             </CardContent>
           </Card>
@@ -72,68 +72,68 @@ function OBRStatsCards() {
   return (
     <div className="space-y-3">
       <div className="flex items-center gap-2">
-        <h3 className="text-lg font-semibold">🧠 OBR 本体模型统计</h3>
-        <Badge variant="outline">知识图谱</Badge>
+<h3 className="text-lg font-semibold">{t('dashboard.obr.title', '🧠 OBR 本体模型统计')}</h3>
+        <Badge variant="outline">{t('dashboard.obr.label', '知识图谱')}</Badge>
       </div>
       
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-5">
         {/* Total Domains */}
         <Card className="hover:shadow-md transition-shadow">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">业务域</CardTitle>
+<CardTitle className="text-sm font-medium">{t('dashboard.obr.businessDomains', '业务域')}</CardTitle>
             <Package className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">{obrMetrics.totalDomains}</div>
-            <p className="text-xs text-muted-foreground">WMS/FMS/OMS/YMS/BNP</p>
+<p className="text-xs text-muted-foreground">{t('dashboard.obr.domainList', 'WMS/FMS/OMS/YMS/BNP')}</p>
           </CardContent>
         </Card>
 
         {/* Objects */}
         <Card className="hover:shadow-md transition-shadow">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">对象</CardTitle>
+<CardTitle className="text-sm font-medium">{t('dashboard.obr.objects', '对象')}</CardTitle>
             <div className="h-4 w-4 rounded-full bg-blue-500" />
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">{obrMetrics.totalObjects}</div>
-            <p className="text-xs text-muted-foreground">业务实体对象</p>
+<p className="text-xs text-muted-foreground">{t('dashboard.obr.objectsDesc', '业务实体对象')}</p>
           </CardContent>
         </Card>
 
         {/* Behaviors */}
         <Card className="hover:shadow-md transition-shadow">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">行为</CardTitle>
+<CardTitle className="text-sm font-medium">{t('dashboard.obr.behaviors', '行为')}</CardTitle>
             <div className="h-4 w-4 rounded-full bg-green-500" />
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">{obrMetrics.totalBehaviors}</div>
-            <p className="text-xs text-muted-foreground">业务行为流程</p>
+<p className="text-xs text-muted-foreground">{t('dashboard.obr.behaviorsDesc', '业务行为流程')}</p>
           </CardContent>
         </Card>
 
         {/* Rules */}
         <Card className="hover:shadow-md transition-shadow">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">规则</CardTitle>
+<CardTitle className="text-sm font-medium">{t('dashboard.obr.rules', '规则')}</CardTitle>
             <div className="h-4 w-4 rounded-full bg-orange-500" />
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">{obrMetrics.totalRules}</div>
-            <p className="text-xs text-muted-foreground">业务规则约束</p>
+<p className="text-xs text-muted-foreground">{t('dashboard.obr.rulesDesc', '业务规则约束')}</p>
           </CardContent>
         </Card>
 
         {/* Scenarios */}
         <Card className="hover:shadow-md transition-shadow">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">场景</CardTitle>
+<CardTitle className="text-sm font-medium">{t('dashboard.obr.scenarios', '场景')}</CardTitle>
             <div className="h-4 w-4 rounded-full bg-purple-500" />
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">{obrMetrics.totalScenarios}</div>
-            <p className="text-xs text-muted-foreground">业务场景模型</p>
+<p className="text-xs text-muted-foreground">{t('dashboard.obr.scenariosDesc', '业务场景模型')}</p>
           </CardContent>
         </Card>
       </div>

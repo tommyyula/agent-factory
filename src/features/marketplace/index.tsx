@@ -524,7 +524,7 @@ function HiringWorkflow() {
                     <span className="font-semibold">
                       {t('marketplace.hiring.step3.monthlyPrice', 'Monthly Price')}
                     </span>
-                    <span className="text-xl font-bold text-primary">${selectedPrice}/月</span>
+<span className="text-xl font-bold text-primary">${selectedPrice}{t('marketplace.hiring.success.monthlyPrice', '/月')}</span>
                   </div>
                 </div>
               </div>

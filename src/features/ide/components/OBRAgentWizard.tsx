@@ -1,4 +1,5 @@
 import React, { useState, useCallback, useEffect } from 'react';
+import { useTranslation } from 'react-i18next';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -55,8 +56,9 @@ interface AgentConfiguration {
 type WizardStep = 'domain' | 'scenario' | 'components' | 'skills' | 'template' | 'review';
 
 export function OBRAgentWizard({ onComplete, onCancel }: OBRAgentWizardProps) {
-  // Store hooks
+// Store hooks
   const { currentBlueprint } = useOBRStore();
+  const { t } = useTranslation();
 
   // Wizard state
   const [currentStep, setCurrentStep] = useState<WizardStep>('domain');
@@ -268,7 +270,7 @@ Remember: You are here to streamline business processes while ensuring complianc
     return (
       <Card>
         <CardContent className="text-center py-8">
-          <p className="text-muted-foreground">请先加载一个本体蓝图以使用智能代理向导</p>
+<p className="text-muted-foreground">{t('ide.obrWizard.loadBlueprint', '请先加载一个本体蓝图以使用智能代理向导')}</p>
         </CardContent>
       </Card>
     );

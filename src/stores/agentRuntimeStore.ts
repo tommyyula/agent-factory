@@ -267,7 +267,7 @@ export const useAgentRuntimeStore = create<AgentRuntimeStore>((set, get) => ({
       const agentMessage: ChatMessage = {
         id: `msg_${Date.now()}_agent`,
         type: 'agent',
-        content: `模拟响应：已处理您的请求 "${content}"`,
+content: `Simulation response: Your request "${content}" has been processed`,
         timestamp: new Date(),
         metadata: {
           tokenCount: Math.floor(Math.random() * 100) + 50,
@@ -541,7 +541,7 @@ export const useAgentRuntimeStore = create<AgentRuntimeStore>((set, get) => ({
           // Complete generation after a short delay
           setTimeout(() => {
             const mockData = new Map([
-              ['sample_table', [{ id: 1, name: '示例数据', status: 'ACTIVE', created_at: new Date().toISOString() }]]
+['sample_table', [{ id: 1, name: 'Sample Data', status: 'ACTIVE', created_at: new Date().toISOString() }]]
             ]);
             get().completeGeneration(sessionId, mockData);
           }, 1000);
