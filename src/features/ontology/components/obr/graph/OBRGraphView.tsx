@@ -1,5 +1,6 @@
 // @ts-nocheck
 import React, { useState, useCallback, useEffect, useMemo } from 'react';
+import "@xyflow/react/dist/style.css";
 import { useParams, useNavigate } from 'react-router-dom';
 import { 
   ReactFlow, 
@@ -369,7 +370,7 @@ export function OBRGraphView({
   }
 
   return (
-    <div className="obr-graph-view h-full relative">
+    <div className="obr-graph-view relative" style={{ height: "calc(100vh - 10rem)" }}>
       <ReactFlow
         nodes={nodes}
         edges={edges}
