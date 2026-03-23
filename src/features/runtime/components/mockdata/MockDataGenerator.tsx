@@ -399,7 +399,7 @@ export function MockDataGenerator() {
                           key={tableName}
                           table={table}
                           config={config}
-                          onChange={(newConfig) => handleTableConfigChange(tableName, newConfig)}
+                          onChange={(newConfig: TableGenerationConfig) => handleTableConfigChange(tableName, newConfig)}
                         />
                       ) : null;
                     })}

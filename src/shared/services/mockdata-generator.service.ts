@@ -21,7 +21,7 @@ export interface TableGenerationConfig {
   rowCount: number;
   statusDistribution?: Record<string, number>;
   customGenerators?: Record<string, DataGenerator>;
-  constraints: GenerationConstraint[];
+  constraints?: GenerationConstraint[];
 }
 
 export interface GenerationConstraint {
