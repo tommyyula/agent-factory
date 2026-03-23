@@ -1,4 +1,5 @@
 import React, { useState, useCallback, useEffect } from 'react';
+import { useParams } from 'react-router-dom';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
@@ -29,6 +30,7 @@ import {
   RuleExecutionResult
 } from '@/shared/types/obr.types';
 import { useOBRStore } from '@/stores/obr.store';
+import { OBR_DOMAINS, getDomain, getDomainIds, DomainId } from '@/data/obr-domains';
 import { SimulationTimeline } from './SimulationTimeline';
 
 interface SimulationPanelProps {
@@ -36,6 +38,9 @@ interface SimulationPanelProps {
 }
 
 export function SimulationPanel({ readonly = false }: SimulationPanelProps) {
+  // Get scenarioId from URL params (which could include domain info)
+  const { scenarioId } = useParams<{ scenarioId?: string }>();
+  
   // Store hooks
   const { 
     currentBlueprint,
@@ -48,12 +53,31 @@ export function SimulationPanel({ readonly = false }: SimulationPanelProps) {
   } = useOBRStore();
 
   // Local state
+  const [selectedDomainId, setSelectedDomainId] = useState<DomainId | ''>('');
   const [selectedScenarioId, setSelectedScenarioId] = useState<string>('');
   const [executionLog, setExecutionLog] = useState<string[]>([]);
   const [isExecuting, setIsExecuting] = useState(false);
   const [currentStepResult, setCurrentStepResult] = useState<StepExecutionResult | null>(null);
   const [simulationSpeed, setSimulationSpeed] = useState<'slow' | 'normal' | 'fast'>('normal');
   const [showDetails, setShowDetails] = useState(true);
+
+  // Load domain data on mount or when domain selection changes
+  useEffect(() => {
+    if (selectedDomainId) {
+      const blueprint = getDomain(selectedDomainId);
+      useOBRStore.setState({ currentBlueprint: blueprint });
+    }
+  }, [selectedDomainId]);
+
+  // Auto-select first domain if none selected and no blueprint loaded
+  useEffect(() => {
+    if (!selectedDomainId && !currentBlueprint) {
+      const domainIds = getDomainIds();
+      if (domainIds.length > 0) {
+        setSelectedDomainId(domainIds[0]);
+      }
+    }
+  }, [selectedDomainId, currentBlueprint]);
 
   // Available scenarios
   const availableScenarios = currentBlueprint?.scenarios || [];
@@ -211,6 +235,40 @@ export function SimulationPanel({ readonly = false }: SimulationPanelProps) {
 
   const progress = calculateProgress();
 
+  // No blueprint available
+  if (!currentBlueprint) {
+    return (
+      <Card>
+        <CardContent className="text-center py-8">
+          <p className="text-muted-foreground mb-4">请选择一个业务领域以使用模拟功能</p>
+          <Select 
+            value={selectedDomainId} 
+            onValueChange={(value) => setSelectedDomainId(value as DomainId)}
+          >
+            <SelectTrigger className="max-w-xs mx-auto">
+              <SelectValue placeholder="选择业务领域" />
+            </SelectTrigger>
+            <SelectContent>
+              {getDomainIds().map(domainId => {
+                const domain = getDomain(domainId);
+                return (
+                  <SelectItem key={domainId} value={domainId}>
+                    <div className="flex items-center gap-2">
+                      <span>{domain.metadata.name}</span>
+                      <Badge variant="outline" className="text-xs">
+                        {domain.scenarios.length} 场景
+                      </Badge>
+                    </div>
+                  </SelectItem>
+                );
+              })}
+            </SelectContent>
+          </Select>
+        </CardContent>
+      </Card>
+    );
+  }
+
   return (
     <div className="simulation-panel space-y-6">
       {/* Control Panel */}
@@ -236,14 +294,42 @@ export function SimulationPanel({ readonly = false }: SimulationPanelProps) {
           </div>
         </CardHeader>
         <CardContent className="space-y-4">
-          {/* Scenario Selection */}
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+          {/* Domain and Scenario Selection */}
+          <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+            <div className="space-y-2">
+              <label className="text-sm font-medium">选择领域</label>
+              <Select 
+                value={selectedDomainId} 
+                onValueChange={(value) => setSelectedDomainId(value as DomainId)}
+                disabled={simulationState.isRunning}
+              >
+                <SelectTrigger>
+                  <SelectValue placeholder="选择业务领域" />
+                </SelectTrigger>
+                <SelectContent>
+                  {getDomainIds().map(domainId => {
+                    const domain = getDomain(domainId);
+                    return (
+                      <SelectItem key={domainId} value={domainId}>
+                        <div className="flex items-center gap-2">
+                          <span>{domain.metadata.name}</span>
+                          <Badge variant="outline" className="text-xs">
+                            {domain.scenarios.length} 场景
+                          </Badge>
+                        </div>
+                      </SelectItem>
+                    );
+                  })}
+                </SelectContent>
+              </Select>
+            </div>
+
             <div className="space-y-2">
               <label className="text-sm font-medium">选择场景</label>
               <Select 
                 value={selectedScenarioId} 
                 onValueChange={setSelectedScenarioId}
-                disabled={simulationState.isRunning}
+                disabled={simulationState.isRunning || !currentBlueprint}
               >
                 <SelectTrigger>
                   <SelectValue placeholder="选择要模拟的场景" />

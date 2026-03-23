@@ -1,4 +1,5 @@
-import React, { useState, useCallback } from 'react';
+import React, { useState, useCallback, useEffect } from 'react';
+import { useParams } from 'react-router-dom';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
@@ -25,6 +26,7 @@ import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Input } from '@/components/ui/input';
 
 import { useOBRStore } from '@/stores/obr.store';
+import { OBR_DOMAINS, getDomain, DomainId } from '@/data/obr-domains';
 import { 
   OBRObject,
   OBRBehavior,
@@ -49,6 +51,9 @@ type ActiveTab = 'objects' | 'behaviors' | 'rules' | 'scenarios' | 'graph' | 'si
 type EditorMode = 'list' | 'create' | 'edit' | 'view';
 
 export function OBRPanel({ readonly = false }: OBRPanelProps) {
+  // Get domainId from URL params
+  const { domainId } = useParams<{ domainId?: string }>();
+  
   // Store hooks
   const { 
     currentBlueprint,
@@ -68,6 +73,18 @@ export function OBRPanel({ readonly = false }: OBRPanelProps) {
     removeScenario,
     selectNode
   } = useOBRStore();
+
+  // Load domain data when domainId changes
+  useEffect(() => {
+    if (domainId) {
+      const domainKey = domainId.toLowerCase() as DomainId;
+      if (OBR_DOMAINS[domainKey]) {
+        const blueprint = getDomain(domainKey);
+        // Set directly in store
+        useOBRStore.setState({ currentBlueprint: blueprint });
+      }
+    }
+  }, [domainId]);
 
   // Local state
   const [activeTab, setActiveTab] = useState<ActiveTab>('objects');
