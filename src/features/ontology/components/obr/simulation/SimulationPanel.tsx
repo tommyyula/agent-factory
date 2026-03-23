@@ -117,6 +117,10 @@ export function SimulationPanel({ readonly = false }: SimulationPanelProps) {
       if (scenario) {
         addLogEntry(`启动场景: ${scenario.displayName || scenario.name}`, 'success');
         addLogEntry(`参与者: ${scenario.actors.map(a => a.name).join(', ')}`, 'info');
+        // Auto-execute first step after brief delay
+        setTimeout(() => {
+          handleExecuteNextStep();
+        }, 500);
       }
     } catch (error) {
       addLogEntry(`启动失败: ${error instanceof Error ? error.message : '未知错误'}`, 'error');
@@ -194,15 +198,17 @@ export function SimulationPanel({ readonly = false }: SimulationPanelProps) {
         addLogEntry(`步骤执行失败: ${mockResult.error || '未知错误'}`, 'error');
       }
 
-      // Auto-advance if successful and not at end
-      if (mockResult.success && mockResult.nextSteps && mockResult.nextSteps.length > 0) {
-        // Move to next step after a brief delay
-        setTimeout(() => {
-          // This would normally be handled by the store
-          console.log('Would advance to next step:', mockResult.nextSteps);
-        }, 1000);
-      } else if (mockResult.success) {
-        addLogEntry('场景执行完成', 'success');
+      // Auto-advance to next step
+      if (mockResult.success) {
+        const delay2 = { slow: 1500, normal: 800, fast: 300 }[simulationSpeed];
+        setTimeout(async () => {
+          await executeNextStep();
+          // Check if simulation ended
+          const state = useOBRStore.getState().simulationState;
+          if (!state.isRunning) {
+            addLogEntry('场景执行完成 ✅', 'success');
+          }
+        }, delay2);
       }
 
     } catch (error) {

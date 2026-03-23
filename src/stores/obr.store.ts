@@ -546,8 +546,56 @@ export const useOBRStore = create<OBRState & OBRActions>()(
       },
       
       executeNextStep: async () => {
-        // Implementation would be complex - placeholder for now
-        console.log('Execute next step - implementation needed');
+        const { currentBlueprint, simulationState } = get();
+        if (!currentBlueprint || !simulationState.activeScenario) return;
+        
+        const scenario = currentBlueprint.scenarios.find(
+          s => s.id === simulationState.activeScenario
+        );
+        if (!scenario) return;
+        
+        const currentStepId = simulationState.currentStep;
+        const steps = scenario.steps;
+        
+        // Find current step index
+        const currentIndex = currentStepId 
+          ? steps.findIndex(s => s.id === currentStepId)
+          : -1;
+        
+        // Find next step
+        let nextStep = null;
+        if (currentIndex >= 0 && currentIndex < steps.length - 1) {
+          // Try to follow the 'next' pointer first
+          const current = steps[currentIndex];
+          if (current.next) {
+            const nextIds = Array.isArray(current.next) ? current.next : [current.next];
+            nextStep = steps.find(s => nextIds.includes(s.id));
+          }
+          // Fallback to sequential
+          if (!nextStep) {
+            nextStep = steps[currentIndex + 1];
+          }
+        } else if (currentIndex === -1 && steps.length > 0) {
+          // Start from beginning
+          nextStep = steps[0];
+        }
+        
+        if (nextStep) {
+          set(state => {
+            state.simulationState.currentStep = nextStep!.id;
+            state.simulationState.executionHistory.push({
+              stepId: nextStep!.id,
+              timestamp: new Date(),
+              result: { success: true, stepId: nextStep!.id, executionTime: 0, duration: 0, newContext: {}, stateChanges: {}, ruleValidations: [], nextSteps: [] },
+              duration: 0
+            });
+          });
+        } else {
+          // No more steps - simulation complete
+          set(state => {
+            state.simulationState.isRunning = false;
+          });
+        }
       },
       
       resetSimulation: () => {
